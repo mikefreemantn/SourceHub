@@ -127,6 +127,7 @@ final class SourceHub {
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-hub-manager.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-spoke-manager.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-yoast-integration.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-newspaper-integration.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-ai-rewriter.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-api-handler.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-smart-links.php';

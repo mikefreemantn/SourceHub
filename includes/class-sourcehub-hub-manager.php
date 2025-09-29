@@ -16,15 +16,33 @@ if (!defined('ABSPATH')) {
 class SourceHub_Hub_Manager {
 
     /**
+     * Track posts that need syncing after Newspaper saves its data
+     */
+    private $pending_syncs = array();
+
+    /**
      * Initialize hub functionality
      */
     public function init() {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
-        add_action('save_post', array($this, 'save_post_meta'), 10, 2);
-        add_action('post_updated', array($this, 'handle_post_update'), 10, 3);
+        add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
+        add_action('post_updated', array($this, 'handle_post_update'), 99, 3); // Also run later on updates
         add_action('transition_post_status', array($this, 'handle_post_status_transition'), 10, 3);
+        
+        // Try additional hooks that might run after Newspaper saves its data
+        add_action('wp_insert_post', array($this, 'delayed_sync_check'), 99, 3);
+        add_action('updated_post_meta', array($this, 'meta_updated_check'), 10, 4);
+        
+        // Hook into the very end of the request to catch any late meta saves
+        add_action('wp_footer', array($this, 'final_sync_check'), 999);
+        add_action('admin_footer', array($this, 'final_sync_check'), 999);
+        add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
+        
+        // Hook into WordPress's shutdown action to catch any late saves
+        add_action('shutdown', array($this, 'check_pending_syncs'));
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
+        add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
     }
 
     /**
@@ -351,7 +369,7 @@ class SourceHub_Hub_Manager {
     }
 
     /**
-     * Save post meta data
+     * Save post meta
      *
      * @param int $post_id Post ID
      * @param WP_Post $post Post object
@@ -362,14 +380,53 @@ class SourceHub_Hub_Manager {
             return;
         }
 
+        // Check if this is a revision
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+
         // Check user permissions
         if (!current_user_can('edit_post', $post_id)) {
             return;
         }
 
-        // Verify nonce
-        if (!isset($_POST['sourcehub_syndication_nonce']) || 
-            !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
+        // Check nonce
+        if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
+            return;
+        }
+
+        // Check if Newspaper meta exists
+        $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
+        $newspaper_exists = !empty($newspaper_meta);
+        error_log('SourceHub: save_post_meta called for post ' . $post_id . ', Newspaper meta exists: ' . ($newspaper_exists ? 'YES' : 'NO'));
+
+        if (!$newspaper_exists) {
+            // Add to pending syncs - we'll check again later
+            $this->pending_syncs[$post_id] = true;
+            error_log('SourceHub: Added post ' . $post_id . ' to pending syncs');
+            
+            // Also schedule a delayed sync as backup
+            error_log('SourceHub: Scheduling delayed sync for post ' . $post_id . ' in 3 seconds');
+            wp_schedule_single_event(time() + 3, 'sourcehub_delayed_sync', array($post_id));
+            
+            // For local development, also trigger cron manually after a short delay
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('SourceHub: Setting up manual cron trigger for local development');
+                // Output JavaScript directly to trigger cron after page load
+                echo '<script>
+                console.log("SourceHub: Setting up delayed sync for post ' . $post_id . '");
+                setTimeout(function() {
+                    console.log("SourceHub: Triggering manual cron for post ' . $post_id . '");
+                    fetch("' . admin_url('admin-ajax.php') . '", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                        body: "action=sourcehub_manual_cron&post_id=' . $post_id . '&nonce=' . wp_create_nonce('sourcehub_manual_cron') . '"
+                    }).then(response => response.text()).then(data => {
+                        console.log("SourceHub: Manual cron response:", data);
+                    });
+                }, 3000);
+                </script>';
+            }
             return;
         }
 
@@ -632,6 +689,10 @@ class SourceHub_Hub_Manager {
      * @return array
      */
     private function prepare_post_data($post, $connection, $use_ai = false) {
+        // Get page template
+        $page_template = get_page_template_slug($post->ID);
+        error_log('SourceHub: Collecting page template for post ' . $post->ID . ': ' . ($page_template ? $page_template : 'DEFAULT'));
+
         // Basic post data
         $data = array(
             'hub_id' => $post->ID,
@@ -645,6 +706,7 @@ class SourceHub_Hub_Manager {
             'modified' => $post->post_modified,
             'modified_gmt' => $post->post_modified_gmt,
             'post_type' => $post->post_type,
+            'page_template' => $page_template,
             'hub_url' => home_url()
         );
 
@@ -703,6 +765,9 @@ class SourceHub_Hub_Manager {
 
         // Add Yoast SEO data
         $data['yoast_meta'] = SourceHub_Yoast_Integration::get_post_meta($post->ID);
+
+        // Add Newspaper theme data
+        $data['newspaper_meta'] = SourceHub_Newspaper_Integration::get_post_meta($post->ID);
 
         // Add custom fields (filtered)
         $custom_fields = get_post_meta($post->ID);
@@ -860,6 +925,21 @@ class SourceHub_Hub_Manager {
     }
 
     /**
+     * AJAX handler for manual cron trigger
+     */
+    public function ajax_manual_cron() {
+        check_ajax_referer('sourcehub_manual_cron', 'nonce');
+        
+        $post_id = intval($_POST['post_id']);
+        error_log('SourceHub: Manual cron triggered for post ' . $post_id);
+        
+        // Run the delayed sync immediately
+        $this->handle_delayed_sync($post_id);
+        
+        wp_die('Manual cron executed');
+    }
+
+    /**
      * AJAX handler for testing connections
      */
     public function ajax_test_connection() {
@@ -907,13 +987,185 @@ class SourceHub_Hub_Manager {
     }
 
     /**
-     * AJAX handler for syncing individual posts
+     * Check for delayed sync after post insertion
+     */
+    public function delayed_sync_check($post_id, $post, $update) {
+        // Only for updates, not new posts
+        if (!$update) {
+            return;
+        }
+        
+        // Check if this post should be synced
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        if (empty($selected_spokes)) {
+            return;
+        }
+        
+        // Check if Newspaper meta exists now
+        $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
+        error_log('SourceHub: delayed_sync_check for post ' . $post_id . ', Newspaper meta exists: ' . ($newspaper_meta ? 'YES' : 'NO'));
+        
+        if ($newspaper_meta) {
+            // Trigger sync with a slight delay
+            wp_schedule_single_event(time() + 2, 'sourcehub_delayed_sync', array($post_id));
+        }
+    }
+    
+    /**
+     * Check when Newspaper meta is updated
+     */
+    public function meta_updated_check($meta_id, $post_id, $meta_key, $meta_value) {
+        // Only care about Newspaper theme settings
+        if ($meta_key !== 'td_post_theme_settings') {
+            return;
+        }
+        
+        error_log('SourceHub: Newspaper meta updated for post ' . $post_id . ': ' . json_encode($meta_value));
+        
+        // Remove from pending syncs since Newspaper has now saved its data
+        if (isset($this->pending_syncs[$post_id])) {
+            unset($this->pending_syncs[$post_id]);
+            error_log('SourceHub: Removed post ' . $post_id . ' from pending syncs');
+        }
+        
+        // Check if this post should be synced
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        if (!empty($selected_spokes)) {
+            // Trigger immediate sync
+            $post = get_post($post_id);
+            if ($post) {
+                $this->syndicate_post($post_id, $selected_spokes);
+            }
+        }
+    }
+    
+    /**
+     * Handle delayed sync
+     */
+    public function handle_delayed_sync($post_id) {
+        error_log('SourceHub: handle_delayed_sync called for post ' . $post_id);
+        
+        $post = get_post($post_id);
+        if ($post) {
+            // Check if Newspaper meta exists now
+            $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
+            error_log('SourceHub: Delayed sync - Newspaper meta exists: ' . (!empty($newspaper_meta) ? 'YES' : 'NO'));
+            
+            $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            
+            if (!empty($selected_spokes)) {
+                error_log('SourceHub: Running delayed sync for post ' . $post_id . ' to ' . count($selected_spokes) . ' spokes');
+                
+                // If post has been syndicated before, update existing posts
+                if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                    error_log('SourceHub: Post already syndicated, updating existing posts');
+                    $this->update_syndicated_post($post_id, $syndicated_spokes);
+                } else {
+                    // First time syndication
+                    error_log('SourceHub: First time syndication');
+                    $this->syndicate_post($post_id, $selected_spokes);
+                }
+            } else {
+                error_log('SourceHub: No selected spokes found for post ' . $post_id);
+            }
+        } else {
+            error_log('SourceHub: Post ' . $post_id . ' not found for delayed sync');
+        }
+    }
+    
+    /**
+     * Final sync check - runs at the very end of admin requests
+     */
+    public function final_sync_check() {
+        // Prevent multiple executions
+        if (defined('SOURCEHUB_FINAL_SYNC_DONE')) {
+            return;
+        }
+        define('SOURCEHUB_FINAL_SYNC_DONE', true);
+        
+        error_log('SourceHub: Running final sync check');
+        
+        // Check all pending syncs one more time
+        foreach ($this->pending_syncs as $post_id => $pending) {
+            if (!$pending) continue;
+            
+            // Check if Newspaper meta exists now
+            $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
+            $has_newspaper_meta = !empty($newspaper_meta);
+            if ($has_newspaper_meta) {
+                error_log('SourceHub: Final sync check found Newspaper meta for post ' . $post_id . ', syncing now');
+                $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+                $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+                
+                if (!empty($selected_spokes)) {
+                    // If post has been syndicated before, update existing posts
+                    if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                        error_log('SourceHub: Post already syndicated, updating existing posts');
+                        $this->update_syndicated_post($post_id, $syndicated_spokes);
+                    } else {
+                        // First time syndication
+                        error_log('SourceHub: First time syndication');
+                        $this->syndicate_post($post_id, $selected_spokes);
+                    }
+                    // Remove from pending syncs
+                    unset($this->pending_syncs[$post_id]);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Check for pending syncs at shutdown
+     */
+    public function check_pending_syncs() {
+        if (empty($this->pending_syncs)) {
+            return;
+        }
+        
+        error_log('SourceHub: Checking pending syncs at shutdown: ' . json_encode(array_keys($this->pending_syncs)));
+        
+        foreach ($this->pending_syncs as $post_id => $pending) {
+            if (!$pending) continue;
+            
+            // Check if Newspaper meta exists now
+            $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
+            if ($newspaper_meta) {
+                error_log('SourceHub: Found Newspaper meta at shutdown for post ' . $post_id . ', syncing now');
+                $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+                $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+                
+                if (!empty($selected_spokes)) {
+                    // If post has been syndicated before, update existing posts
+                    if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                        error_log('SourceHub: Post already syndicated, updating existing posts');
+                        $this->update_syndicated_post($post_id, $syndicated_spokes);
+                    } else {
+                        // First time syndication
+                        error_log('SourceHub: First time syndication');
+                        $this->syndicate_post($post_id, $selected_spokes);
+                    }
+                    // Remove from pending syncs
+                    unset($this->pending_syncs[$post_id]);
+                }
+            } else {
+                error_log('SourceHub: Still no Newspaper meta at shutdown for post ' . $post_id);
+            }
+        }
+        
+        // Clear pending syncs
+        $this->pending_syncs = array();
+    }
+
+    /**
+     * Handle AJAX sync post request
      */
     public function ajax_sync_post() {
         check_ajax_referer('sourcehub_sync_post', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Insufficient permissions', 'sourcehub'));
+            wp_send_json_error(__('Insufficient permissions', 'sourcehub'));
+            return;
         }
 
         $connection_id = intval($_POST['connection_id']);

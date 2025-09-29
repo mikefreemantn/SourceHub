@@ -112,16 +112,6 @@ class SourceHub_Spoke_Manager {
                 ), 400);
             }
 
-            // Check if post already exists
-            $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
-            if ($existing_post) {
-                return new WP_REST_Response(array(
-                    'success' => false,
-                    'message' => sprintf(__('Post already exists with ID %d', 'sourcehub'), $existing_post->ID),
-                    'post_id' => $existing_post->ID
-                ), 409);
-            }
-
             // Create the post
             $post_id = $this->create_post_from_data($data);
             
@@ -184,10 +174,9 @@ class SourceHub_Spoke_Manager {
             // Find existing post
             $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
             if (!$existing_post) {
-                return new WP_REST_Response(array(
-                    'success' => false,
-                    'message' => __('Post not found for update', 'sourcehub')
-                ), 404);
+                // If post doesn't exist, create it instead of failing
+                error_log('SourceHub: Post not found for update, creating new post instead. Hub ID: ' . $data['hub_id']);
+                return $this->receive_post($request);
             }
 
             // Validate data
@@ -384,6 +373,12 @@ class SourceHub_Spoke_Manager {
         update_post_meta($post_id, '_sourcehub_origin_url', esc_url_raw($data['hub_url']));
         update_post_meta($post_id, '_sourcehub_received_at', current_time('mysql'));
 
+        // Handle page template
+        if (isset($data['page_template']) && !empty($data['page_template'])) {
+            update_post_meta($post_id, '_wp_page_template', sanitize_text_field($data['page_template']));
+            error_log('SourceHub: Set page template for post ' . $post_id . ': ' . $data['page_template']);
+        }
+
         // Handle categories
         if (isset($data['categories']) && is_array($data['categories'])) {
             $this->set_post_categories($post_id, $data['categories']);
@@ -407,6 +402,12 @@ class SourceHub_Spoke_Manager {
             // Set canonical URL
             $canonical_url = SourceHub_Yoast_Integration::generate_canonical_url($post_id, $data['hub_url'], $data['hub_id']);
             SourceHub_Yoast_Integration::set_canonical_url($post_id, $canonical_url);
+        }
+
+        // Handle Newspaper theme meta
+        if (isset($data['newspaper_meta']) && !empty($data['newspaper_meta'])) {
+            $allow_override = get_option('sourcehub_allow_newspaper_override', true);
+            SourceHub_Newspaper_Integration::set_post_meta($post_id, $data['newspaper_meta'], $allow_override);
         }
 
         // Handle custom fields
@@ -449,6 +450,12 @@ class SourceHub_Spoke_Manager {
         // Update metadata
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
 
+        // Update page template
+        if (isset($data['page_template']) && !empty($data['page_template'])) {
+            update_post_meta($post_id, '_wp_page_template', sanitize_text_field($data['page_template']));
+            error_log('SourceHub: Updated page template for post ' . $post_id . ': ' . $data['page_template']);
+        }
+
         // Update categories
         if (isset($data['categories']) && is_array($data['categories'])) {
             $this->set_post_categories($post_id, $data['categories']);
@@ -468,6 +475,12 @@ class SourceHub_Spoke_Manager {
         if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
             $allow_override = get_option('sourcehub_allow_yoast_override', true);
             SourceHub_Yoast_Integration::set_post_meta($post_id, $data['yoast_meta'], $allow_override);
+        }
+
+        // Update Newspaper theme meta
+        if (isset($data['newspaper_meta']) && !empty($data['newspaper_meta'])) {
+            $allow_override = get_option('sourcehub_allow_newspaper_override', true);
+            SourceHub_Newspaper_Integration::set_post_meta($post_id, $data['newspaper_meta'], $allow_override);
         }
 
         // Update custom fields
