@@ -1,0 +1,457 @@
+<?php
+/**
+ * Database management class
+ *
+ * @package SourceHub
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * SourceHub Database Class
+ */
+class SourceHub_Database {
+
+    /**
+     * Initialize database
+     */
+    public static function init() {
+        // Check if tables exist and create if needed
+        if (get_option('sourcehub_db_version') !== SOURCEHUB_VERSION) {
+            self::create_tables();
+            update_option('sourcehub_db_version', SOURCEHUB_VERSION);
+        }
+    }
+
+    /**
+     * Create database tables
+     */
+    public static function create_tables() {
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        // Connections table
+        $connections_table = $wpdb->prefix . 'sourcehub_connections';
+        $connections_sql = "CREATE TABLE $connections_table (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            name varchar(255) NOT NULL,
+            url varchar(255) NOT NULL,
+            api_key varchar(255) NOT NULL,
+            mode enum('hub','spoke') NOT NULL DEFAULT 'spoke',
+            status enum('active','inactive','error') NOT NULL DEFAULT 'active',
+            last_sync datetime DEFAULT NULL,
+            sync_settings longtext,
+            ai_settings longtext,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY url (url)
+        ) $charset_collate;";
+
+        // Logs table
+        $logs_table = $wpdb->prefix . 'sourcehub_logs';
+        $logs_sql = "CREATE TABLE $logs_table (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            post_id bigint(20) DEFAULT NULL,
+            connection_id mediumint(9) DEFAULT NULL,
+            action varchar(50) NOT NULL,
+            status enum('SUCCESS','ERROR','WARNING','INFO') NOT NULL,
+            message text,
+            data longtext,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY post_id (post_id),
+            KEY connection_id (connection_id),
+            KEY status (status),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+
+        // Queue table for failed/retry operations
+        $queue_table = $wpdb->prefix . 'sourcehub_queue';
+        $queue_sql = "CREATE TABLE $queue_table (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            post_id bigint(20) NOT NULL,
+            connection_id mediumint(9) NOT NULL,
+            action varchar(50) NOT NULL,
+            payload longtext NOT NULL,
+            attempts tinyint(3) NOT NULL DEFAULT 0,
+            max_attempts tinyint(3) NOT NULL DEFAULT 3,
+            next_attempt datetime DEFAULT NULL,
+            status enum('pending','processing','failed','completed') NOT NULL DEFAULT 'pending',
+            error_message text,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY post_id (post_id),
+            KEY connection_id (connection_id),
+            KEY status (status),
+            KEY next_attempt (next_attempt)
+        ) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        
+        $results = array();
+        $results['connections'] = dbDelta($connections_sql);
+        $results['logs'] = dbDelta($logs_sql);
+        $results['queue'] = dbDelta($queue_sql);
+        
+        // Check for errors
+        if ($wpdb->last_error) {
+            error_log('SourceHub Database Creation Error: ' . $wpdb->last_error);
+        }
+        
+        // Verify tables were created
+        $tables_created = array();
+        $tables_created['connections'] = ($wpdb->get_var("SHOW TABLES LIKE '$connections_table'") == $connections_table);
+        $tables_created['logs'] = ($wpdb->get_var("SHOW TABLES LIKE '$logs_table'") == $logs_table);
+        $tables_created['queue'] = ($wpdb->get_var("SHOW TABLES LIKE '$queue_table'") == $queue_table);
+        
+        foreach ($tables_created as $table => $created) {
+            if (!$created) {
+                error_log("SourceHub: Failed to create $table table");
+            }
+        }
+        
+        return $tables_created;
+    }
+
+    /**
+     * Get connections
+     *
+     * @param array $args Query arguments
+     * @return array
+     */
+    public static function get_connections($args = array()) {
+        global $wpdb;
+
+        $defaults = array(
+            'status' => 'active',
+            'mode' => null,
+            'limit' => 50,
+            'offset' => 0
+        );
+
+        $args = wp_parse_args($args, $defaults);
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+        
+        // Check if table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+            return array();
+        }
+        
+        $where = array('1=1');
+        $values = array();
+
+        if (!empty($args['status'])) {
+            $where[] = 'status = %s';
+            $values[] = $args['status'];
+        }
+
+        if (!empty($args['mode'])) {
+            $where[] = 'mode = %s';
+            $values[] = $args['mode'];
+        }
+
+        $where_clause = implode(' AND ', $where);
+        $limit_clause = '';
+
+        if ($args['limit'] > 0) {
+            $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
+        }
+
+        $sql = "SELECT * FROM $table WHERE $where_clause ORDER BY name ASC$limit_clause";
+
+        if (!empty($values)) {
+            $sql = $wpdb->prepare($sql, $values);
+        }
+
+        $results = $wpdb->get_results($sql);
+        
+        if ($wpdb->last_error) {
+            error_log('SourceHub Database Error: ' . $wpdb->last_error);
+            return array();
+        }
+        
+        return $results ? $results : array();
+    }
+
+    /**
+     * Get connection by ID
+     *
+     * @param int $id Connection ID
+     * @return object|null
+     */
+    public static function get_connection($id) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+        
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table WHERE id = %d",
+            $id
+        ));
+    }
+
+    /**
+     * Get connection by URL
+     *
+     * @param string $url Connection URL
+     * @return object|null
+     */
+    public static function get_connection_by_url($url) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+        
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table WHERE url = %s",
+            $url
+        ));
+    }
+
+    /**
+     * Add connection
+     *
+     * @param array $data Connection data
+     * @return int|false Connection ID or false on failure
+     */
+    public static function add_connection($data) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+
+        $defaults = array(
+            'name' => '',
+            'url' => '',
+            'api_key' => wp_generate_password(32, false),
+            'mode' => 'spoke',
+            'status' => 'active',
+            'sync_settings' => json_encode(array()),
+            'ai_settings' => json_encode(array())
+        );
+
+        $data = wp_parse_args($data, $defaults);
+
+        $result = $wpdb->insert($table, $data);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Update connection
+     *
+     * @param int $id Connection ID
+     * @param array $data Connection data
+     * @return bool
+     */
+    public static function update_connection($id, $data) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+
+        return $wpdb->update(
+            $table,
+            $data,
+            array('id' => $id),
+            null,
+            array('%d')
+        ) !== false;
+    }
+
+    /**
+     * Delete connection
+     *
+     * @param int $id Connection ID
+     * @return bool
+     */
+    public static function delete_connection($id) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_connections';
+
+        return $wpdb->delete(
+            $table,
+            array('id' => $id),
+            array('%d')
+        ) !== false;
+    }
+
+    /**
+     * Get logs
+     *
+     * @param array $args Query arguments
+     * @return array
+     */
+    public static function get_logs($args = array()) {
+        global $wpdb;
+
+        $defaults = array(
+            'post_id' => null,
+            'connection_id' => null,
+            'status' => null,
+            'action' => null,
+            'limit' => 50,
+            'offset' => 0,
+            'order' => 'DESC'
+        );
+
+        $args = wp_parse_args($args, $defaults);
+
+        $table = $wpdb->prefix . 'sourcehub_logs';
+        
+        // Check if table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+            return array();
+        }
+        
+        $where = array('1=1');
+        $values = array();
+
+        if (!empty($args['post_id'])) {
+            $where[] = 'post_id = %d';
+            $values[] = $args['post_id'];
+        }
+
+        if (!empty($args['connection_id'])) {
+            $where[] = 'connection_id = %d';
+            $values[] = $args['connection_id'];
+        }
+
+        if (!empty($args['status'])) {
+            $where[] = 'status = %s';
+            $values[] = $args['status'];
+        }
+
+        if (!empty($args['action'])) {
+            $where[] = 'action = %s';
+            $values[] = $args['action'];
+        }
+
+        $where_clause = implode(' AND ', $where);
+        $order = in_array(strtoupper($args['order']), array('ASC', 'DESC')) ? $args['order'] : 'DESC';
+        $limit_clause = '';
+
+        if ($args['limit'] > 0) {
+            $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
+        }
+
+        $sql = "SELECT * FROM $table WHERE $where_clause ORDER BY created_at $order$limit_clause";
+
+        if (!empty($values)) {
+            $sql = $wpdb->prepare($sql, $values);
+        }
+
+        $results = $wpdb->get_results($sql);
+        
+        if ($wpdb->last_error) {
+            error_log('SourceHub Database Error: ' . $wpdb->last_error);
+            return array();
+        }
+        
+        return $results ? $results : array();
+    }
+
+    /**
+     * Add log entry
+     *
+     * @param array $data Log data
+     * @return int|false Log ID or false on failure
+     */
+    public static function add_log($data) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_logs';
+
+        $defaults = array(
+            'post_id' => null,
+            'connection_id' => null,
+            'action' => '',
+            'status' => 'INFO',
+            'message' => '',
+            'data' => null
+        );
+
+        $data = wp_parse_args($data, $defaults);
+
+        if (is_array($data['data']) || is_object($data['data'])) {
+            $data['data'] = json_encode($data['data']);
+        }
+
+        $result = $wpdb->insert($table, $data);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Clean old logs
+     *
+     * @param int $days Number of days to keep
+     * @return int Number of deleted rows
+     */
+    public static function clean_old_logs($days = 30) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_logs';
+
+        return $wpdb->query($wpdb->prepare(
+            "DELETE FROM $table WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
+            $days
+        ));
+    }
+
+    /**
+     * Count logs
+     *
+     * @param array $args Query arguments
+     * @return int Number of logs
+     */
+    public static function count_logs($args = array()) {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'sourcehub_logs';
+        $where_clauses = array();
+        $where_values = array();
+
+        // Status filter
+        if (!empty($args['status'])) {
+            $where_clauses[] = 'status = %s';
+            $where_values[] = $args['status'];
+        }
+
+        // Post ID filter
+        if (!empty($args['post_id'])) {
+            $where_clauses[] = 'post_id = %d';
+            $where_values[] = $args['post_id'];
+        }
+
+        // Connection ID filter
+        if (!empty($args['connection_id'])) {
+            $where_clauses[] = 'connection_id = %d';
+            $where_values[] = $args['connection_id'];
+        }
+
+        // Action filter
+        if (!empty($args['action'])) {
+            $where_clauses[] = 'action = %s';
+            $where_values[] = $args['action'];
+        }
+
+        $where_sql = '';
+        if (!empty($where_clauses)) {
+            $where_sql = 'WHERE ' . implode(' AND ', $where_clauses);
+        }
+
+        $sql = "SELECT COUNT(*) FROM $table $where_sql";
+
+        if (!empty($where_values)) {
+            $sql = $wpdb->prepare($sql, $where_values);
+        }
+
+        return (int) $wpdb->get_var($sql);
+    }
+}

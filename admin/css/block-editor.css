@@ -1,0 +1,151 @@
+/**
+ * SourceHub Block Editor Styles
+ */
+
+/* Smart Link styling in editor */
+.sourcehub-smart-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+}
+
+.sourcehub-smart-link::before {
+    content: "🔗";
+    margin-right: 4px;
+    font-size: 0.9em;
+}
+
+.sourcehub-smart-link:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Modal styling */
+.sourcehub-smart-link-modal {
+    max-width: 500px;
+}
+
+.sourcehub-smart-link-form {
+    padding: 20px;
+}
+
+.sourcehub-smart-link-form .components-text-control__input {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.sourcehub-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+/* Toolbar button styling */
+.block-editor-format-toolbar .components-button[aria-label*="Smart Link"] {
+    position: relative;
+}
+
+.block-editor-format-toolbar .components-button[aria-label*="Smart Link"]::after {
+    content: "Smart";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* Custom Smart Link styling in editor */
+.sourcehub-custom-smart-link {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+}
+
+.sourcehub-custom-smart-link::before {
+    content: "🌐";
+    margin-right: 4px;
+    font-size: 0.9em;
+}
+
+.sourcehub-custom-smart-link:hover {
+    background: linear-gradient(135deg, #ee5a52 0%, #ff6b6b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Custom Smart Link modal styling */
+.sourcehub-custom-smart-link-modal {
+    max-width: 600px;
+}
+
+.sourcehub-custom-smart-link-form {
+    padding: 20px;
+}
+
+.custom-url-field {
+    margin-bottom: 15px;
+}
+
+.custom-url-field .components-text-control__input {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* Toolbar button styling for custom smart link */
+.block-editor-format-toolbar .components-button[aria-label*="Custom Smart Link"] {
+    position: relative;
+}
+
+.block-editor-format-toolbar .components-button[aria-label*="Custom Smart Link"]::after {
+    content: "Custom";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* Frontend smart link styling */
+.sourcehub-smart-link-processed {
+    color: #667eea;
+    text-decoration: underline;
+    text-decoration-color: #667eea;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+.sourcehub-smart-link-processed:hover {
+    color: #764ba2;
+    text-decoration-color: #764ba2;
+}
+
+.sourcehub-custom-smart-link-processed {
+    color: #ff6b6b;
+    text-decoration: underline;
+    text-decoration-color: #ff6b6b;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+.sourcehub-custom-smart-link-processed:hover {
+    color: #ee5a52;
+    text-decoration-color: #ee5a52;
+}
