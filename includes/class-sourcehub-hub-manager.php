@@ -21,24 +21,20 @@ class SourceHub_Hub_Manager {
     private $pending_syncs = array();
 
     /**
-     * Initialize hub functionality
+     * Sync lock to prevent duplicate syncs
+     */
+    private $sync_locks = array();
+
+    /**
      */
     public function init() {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
-        add_action('post_updated', array($this, 'handle_post_update'), 99, 3); // Also run later on updates
-        add_action('transition_post_status', array($this, 'handle_post_status_transition'), 10, 3);
+        add_action('post_updated', array($this, 'handle_post_update'), 99, 3); // Handle updates properly
         
-        // Try additional hooks that might run after Newspaper saves its data
-        add_action('wp_insert_post', array($this, 'delayed_sync_check'), 99, 3);
+        // Multiple hooks to catch Newspaper meta at different points
         add_action('updated_post_meta', array($this, 'meta_updated_check'), 10, 4);
-        
-        // Hook into the very end of the request to catch any late meta saves
-        add_action('wp_footer', array($this, 'final_sync_check'), 999);
         add_action('admin_footer', array($this, 'final_sync_check'), 999);
-        add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
-        
-        // Hook into WordPress's shutdown action to catch any late saves
         add_action('shutdown', array($this, 'check_pending_syncs'));
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
@@ -395,12 +391,15 @@ class SourceHub_Hub_Manager {
             return;
         }
 
-        // Check if Newspaper meta exists
+        // Check if this is a Newspaper theme post that might need delayed syncing
         $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
-        $newspaper_exists = !empty($newspaper_meta);
-        error_log('SourceHub: save_post_meta called for post ' . $post_id . ', Newspaper meta exists: ' . ($newspaper_exists ? 'YES' : 'NO'));
+        $has_newspaper_meta = !empty($newspaper_meta);
+        $is_newspaper_theme = (wp_get_theme()->get('Name') === 'Newspaper' || wp_get_theme()->get_template() === 'Newspaper');
+        
+        error_log('SourceHub: save_post_meta called for post ' . $post_id . ', Newspaper theme: ' . ($is_newspaper_theme ? 'YES' : 'NO') . ', has meta: ' . ($has_newspaper_meta ? 'YES' : 'NO'));
 
-        if (!$newspaper_exists) {
+        // Only delay syncing if this is a Newspaper theme post that doesn't have meta yet
+        if ($is_newspaper_theme && !$has_newspaper_meta) {
             // Add to pending syncs - we'll check again later
             $this->pending_syncs[$post_id] = true;
             error_log('SourceHub: Added post ' . $post_id . ' to pending syncs');
@@ -445,9 +444,18 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
-        // If this is a published post, trigger syndication
+        // If this is a published post, trigger syndication (only for NEW posts)
         if ($post->post_status === 'publish' && !empty($selected_spokes)) {
-            $this->syndicate_post($post_id, $selected_spokes);
+            // Check if this post has already been syndicated
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            if (empty($syndicated_spokes)) {
+                // This is a new post - syndicate it
+                error_log('SourceHub: New post detected, syndicating for first time');
+                $this->syndicate_post($post_id, $selected_spokes);
+            } else {
+                // This is an existing post - let handle_post_update handle it
+                error_log('SourceHub: Existing post detected, letting handle_post_update handle it');
+            }
         }
     }
 
@@ -512,8 +520,18 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function syndicate_post($post_id, $spoke_ids) {
+        // Check if sync is already in progress for this post
+        if (isset($this->sync_locks[$post_id])) {
+            error_log('SourceHub: Sync already in progress for post ' . $post_id . ', skipping');
+            return;
+        }
+        
+        // Set sync lock
+        $this->sync_locks[$post_id] = true;
+        
         $post = get_post($post_id);
         if (!$post) {
+            unset($this->sync_locks[$post_id]);
             return;
         }
 
@@ -562,6 +580,9 @@ class SourceHub_Hub_Manager {
         // Update syndicated spokes list
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
+        
+        // Release sync lock
+        unset($this->sync_locks[$post_id]);
     }
 
     /**
@@ -571,17 +592,44 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function update_syndicated_post($post_id, $spoke_ids) {
-        $post = get_post($post_id);
-        if (!$post) {
+        // Check if sync is already in progress for this post
+        if (isset($this->sync_locks[$post_id])) {
+            error_log('SourceHub: Update sync already in progress for post ' . $post_id . ', skipping');
             return;
         }
+        
+        // Set sync lock
+        $this->sync_locks[$post_id] = true;
+        
+        $post = get_post($post_id);
+        if (!$post) {
+            unset($this->sync_locks[$post_id]);
+            return;
+        }
+
+        // Get currently selected spokes (respects user's current checkbox selection)
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        if (!is_array($selected_spokes)) {
+            $selected_spokes = array();
+        }
+        
+        // Only update spokes that are both syndicated AND currently selected
+        $spokes_to_update = array_intersect($spoke_ids, $selected_spokes);
+        
+        if (empty($spokes_to_update)) {
+            error_log('SourceHub: No spokes selected for update, skipping');
+            unset($this->sync_locks[$post_id]);
+            return;
+        }
+        
+        error_log('SourceHub: Updating ' . count($spokes_to_update) . ' selected spokes out of ' . count($spoke_ids) . ' previously syndicated');
 
         $ai_overrides = get_post_meta($post_id, '_sourcehub_ai_overrides', true);
         if (!is_array($ai_overrides)) {
             $ai_overrides = array();
         }
 
-        foreach ($spoke_ids as $spoke_id) {
+        foreach ($spokes_to_update as $spoke_id) {
             $connection = SourceHub_Database::get_connection($spoke_id);
             if (!$connection) {
                 continue;
@@ -613,6 +661,9 @@ class SourceHub_Hub_Manager {
         }
 
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
+        
+        // Release sync lock
+        unset($this->sync_locks[$post_id]);
     }
 
     /**
@@ -1030,10 +1081,15 @@ class SourceHub_Hub_Manager {
         
         // Check if this post should be synced
         $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        
         if (!empty($selected_spokes)) {
-            // Trigger immediate sync
-            $post = get_post($post_id);
-            if ($post) {
+            // Use smart routing logic
+            if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                error_log('SourceHub: Post already syndicated, updating existing posts with Newspaper template');
+                $this->update_syndicated_post($post_id, $syndicated_spokes);
+            } else {
+                error_log('SourceHub: First time syndication with Newspaper template');
                 $this->syndicate_post($post_id, $selected_spokes);
             }
         }
@@ -1057,13 +1113,12 @@ class SourceHub_Hub_Manager {
             if (!empty($selected_spokes)) {
                 error_log('SourceHub: Running delayed sync for post ' . $post_id . ' to ' . count($selected_spokes) . ' spokes');
                 
-                // If post has been syndicated before, update existing posts
+                // Check if this post has been syndicated before
                 if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                    error_log('SourceHub: Post already syndicated, updating existing posts');
+                    error_log('SourceHub: Post already syndicated, updating existing posts with Newspaper template');
                     $this->update_syndicated_post($post_id, $syndicated_spokes);
                 } else {
-                    // First time syndication
-                    error_log('SourceHub: First time syndication');
+                    error_log('SourceHub: First time syndication with Newspaper template');
                     $this->syndicate_post($post_id, $selected_spokes);
                 }
             } else {
@@ -1099,13 +1154,12 @@ class SourceHub_Hub_Manager {
                 $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
                 
                 if (!empty($selected_spokes)) {
-                    // If post has been syndicated before, update existing posts
+                    // Check if this post has been syndicated before
                     if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                        error_log('SourceHub: Post already syndicated, updating existing posts');
+                        error_log('SourceHub: Post already syndicated, updating existing posts with Newspaper template');
                         $this->update_syndicated_post($post_id, $syndicated_spokes);
                     } else {
-                        // First time syndication
-                        error_log('SourceHub: First time syndication');
+                        error_log('SourceHub: First time syndication with Newspaper template');
                         $this->syndicate_post($post_id, $selected_spokes);
                     }
                     // Remove from pending syncs
@@ -1136,17 +1190,14 @@ class SourceHub_Hub_Manager {
                 $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
                 
                 if (!empty($selected_spokes)) {
-                    // If post has been syndicated before, update existing posts
+                    // Check if this post has been syndicated before
                     if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                        error_log('SourceHub: Post already syndicated, updating existing posts');
+                        error_log('SourceHub: Post already syndicated, updating existing posts with Newspaper template');
                         $this->update_syndicated_post($post_id, $syndicated_spokes);
                     } else {
-                        // First time syndication
-                        error_log('SourceHub: First time syndication');
+                        error_log('SourceHub: First time syndication with Newspaper template');
                         $this->syndicate_post($post_id, $selected_spokes);
                     }
-                    // Remove from pending syncs
-                    unset($this->pending_syncs[$post_id]);
                 }
             } else {
                 error_log('SourceHub: Still no Newspaper meta at shutdown for post ' . $post_id);
