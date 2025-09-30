@@ -66,11 +66,19 @@
                 e.stopPropagation();
                 
                 var modalId = $(this).data('modal');
+                var connectionId = $(this).data('connection-id');
+                
                 if (SOURCEHUB_DEBUG) {
                     debug('Modal trigger clicked:', {
                         element: this,
-                        modalId: modalId
+                        modalId: modalId,
+                        connectionId: connectionId
                     });
+                }
+                
+                // If this is an edit modal, load the connection data first
+                if (modalId === 'edit-connection-modal' && connectionId) {
+                    SourceHubAdmin.loadConnectionForEdit(connectionId);
                 }
                 
                 SourceHubAdmin.openModal(modalId);
@@ -396,13 +404,12 @@
         },
 
         openModal: function(e) {
-            if (e) e.preventDefault();
-            
             // Handle both direct calls with modalId and event-based calls
             var modalId;
             if (typeof e === 'string') {
                 modalId = e;
             } else {
+                if (e && e.preventDefault) e.preventDefault();
                 modalId = $(this).data('modal');
             }
             
@@ -652,6 +659,89 @@
 
         hideFieldError: function($field) {
             $field.siblings('.field-error').remove();
+        },
+
+        loadConnectionForEdit: function(connectionId) {
+            if (SOURCEHUB_DEBUG) {
+                debug('Loading connection for edit:', connectionId);
+            }
+
+            // Make AJAX request to get connection data
+            $.ajax({
+                url: sourcehub_admin.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_get_connection',
+                    connection_id: connectionId,
+                    nonce: sourcehub_admin.ajax_nonce
+                },
+                success: function(response) {
+                    if (SOURCEHUB_DEBUG) {
+                        debug('Get connection response:', response);
+                    }
+                    if (response.success && response.data) {
+                        SourceHubAdmin.populateEditForm(response.data);
+                    } else {
+                        var errorMsg = response.data ? response.data.message : 'Failed to load connection data';
+                        SourceHubAdmin.showNotice('error', errorMsg);
+                        console.error('Connection load failed:', response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText, status, error);
+                    SourceHubAdmin.showNotice('error', 'AJAX Error: ' + error + ' - Check console for details');
+                }
+            });
+        },
+
+        populateEditForm: function(connection) {
+            if (SOURCEHUB_DEBUG) {
+                debug('Populating edit form with:', connection);
+            }
+
+            // Populate basic fields
+            $('#edit-connection-id').val(connection.id);
+            $('#edit_connection_name').val(connection.name);
+            $('#edit_connection_url').val(connection.url);
+            $('#edit_connection_api_key').val(connection.api_key);
+
+            // Parse and populate sync settings
+            var syncSettings = {};
+            try {
+                syncSettings = JSON.parse(connection.sync_settings || '{}');
+            } catch (e) {
+                syncSettings = {};
+            }
+            
+            $('#edit_sync_auto_publish').prop('checked', syncSettings.auto_publish || false);
+            $('#edit_sync_categories').prop('checked', syncSettings.categories || false);
+            $('#edit_sync_tags').prop('checked', syncSettings.tags || false);
+            $('#edit_sync_featured_image').prop('checked', syncSettings.featured_image || false);
+            $('#edit_sync_yoast_meta').prop('checked', syncSettings.yoast_meta || false);
+
+            // Populate AI settings
+            $('#edit_ai_enabled').prop('checked', connection.ai_enabled == 1);
+            $('#edit_ai_rewrite_title').prop('checked', connection.ai_rewrite_title == 1);
+            $('#edit_ai_rewrite_content').prop('checked', connection.ai_rewrite_content == 1);
+            $('#edit_ai_rewrite_excerpt').prop('checked', connection.ai_rewrite_excerpt == 1);
+            $('#edit_ai_tone').val(connection.ai_tone || 'professional');
+            $('#edit_ai_length_adjustment').val(connection.ai_length_adjustment || 'maintain');
+
+            // Show/hide AI settings based on ai_enabled
+            if (connection.ai_enabled == 1) {
+                $('.edit-ai-settings').show();
+            } else {
+                $('.edit-ai-settings').hide();
+            }
+
+            // Add event handler for AI enabled toggle in edit modal
+            $('#edit_ai_enabled').off('change').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('.edit-ai-settings').slideDown();
+                } else {
+                    $('.edit-ai-settings').slideUp();
+                }
+            });
         }
     };
 

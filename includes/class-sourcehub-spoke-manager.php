@@ -358,6 +358,10 @@ class SourceHub_Spoke_Manager {
             $author_id = $this->find_or_create_author($data['author']);
             if ($author_id) {
                 $post_data['post_author'] = $author_id;
+            } else {
+                // Fallback to default author if author matching fails
+                $default_author = get_option('sourcehub_default_author', 1);
+                $post_data['post_author'] = $default_author;
             }
         }
 
@@ -440,6 +444,18 @@ class SourceHub_Spoke_Manager {
             'post_modified_gmt' => isset($data['modified_gmt']) ? sanitize_text_field($data['modified_gmt']) : current_time('mysql', 1)
         );
 
+        // Handle author
+        if (isset($data['author'])) {
+            $author_id = $this->find_or_create_author($data['author']);
+            if ($author_id) {
+                $post_data['post_author'] = $author_id;
+            } else {
+                // Fallback to default author if author matching fails
+                $default_author = get_option('sourcehub_default_author', 1);
+                $post_data['post_author'] = $default_author;
+            }
+        }
+
         // Update the post
         $result = wp_update_post($post_data, true);
         
@@ -501,33 +517,55 @@ class SourceHub_Spoke_Manager {
      */
     private function find_or_create_author($author_data) {
         if (empty($author_data['email'])) {
-            return false;
+            SourceHub_Logger::warning(
+                'Author data missing email, using default author',
+                array('author_data' => $author_data),
+                null,
+                null,
+                'find_author'
+            );
+            return get_option('sourcehub_default_author', 1);
         }
 
         // Try to find existing user by email
         $user = get_user_by('email', $author_data['email']);
         if ($user) {
+            SourceHub_Logger::info(
+                'Found matching author by email: ' . $author_data['email'],
+                array('matched_user_id' => $user->ID, 'display_name' => $user->display_name),
+                null,
+                null,
+                'find_author'
+            );
             return $user->ID;
         }
 
-        // Check if we should create new authors
-        $create_authors = get_option('sourcehub_create_authors', false);
-        if (!$create_authors) {
-            // Use default author
-            return get_option('sourcehub_default_author', 1);
+        // Try to find by username as fallback
+        if (!empty($author_data['login'])) {
+            $user = get_user_by('login', $author_data['login']);
+            if ($user) {
+                SourceHub_Logger::info(
+                    'Found matching author by username: ' . $author_data['login'],
+                    array('matched_user_id' => $user->ID, 'display_name' => $user->display_name),
+                    null,
+                    null,
+                    'find_author'
+                );
+                return $user->ID;
+            }
         }
 
-        // Create new user
-        $user_data = array(
-            'user_login' => sanitize_user($author_data['login']),
-            'user_email' => sanitize_email($author_data['email']),
-            'display_name' => sanitize_text_field($author_data['name']),
-            'role' => 'author'
+        // No matching user found, use default author
+        $default_author = get_option('sourcehub_default_author', 1);
+        SourceHub_Logger::info(
+            'No matching author found for email: ' . $author_data['email'] . ', using default author',
+            array('default_author_id' => $default_author, 'original_author' => $author_data),
+            null,
+            null,
+            'find_author'
         );
-
-        $user_id = wp_insert_user($user_data);
         
-        return is_wp_error($user_id) ? false : $user_id;
+        return $default_author;
     }
 
     /**

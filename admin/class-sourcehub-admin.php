@@ -25,6 +25,8 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_save_settings', array($this, 'save_settings'));
         add_action('wp_ajax_sourcehub_test_api', array($this, 'test_api_connection'));
         add_action('wp_ajax_sourcehub_regenerate_spoke_key', array($this, 'regenerate_spoke_key'));
+        add_action('wp_ajax_sourcehub_clear_logs', array($this, 'clear_logs'));
+        add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
     }
 
@@ -646,6 +648,51 @@ class SourceHub_Admin {
         } else {
             $days = floor($time / 86400);
             return sprintf(_n('%d day ago', '%d days ago', $days, 'sourcehub'), $days);
+        }
+    }
+
+    /**
+     * Get connection data for editing via AJAX
+     */
+    public function get_connection() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Insufficient permissions', 'sourcehub'));
+        }
+
+        $connection_id = intval($_POST['connection_id']);
+        
+        if (!$connection_id) {
+            wp_send_json_error(array(
+                'message' => __('Invalid connection ID', 'sourcehub')
+            ));
+        }
+
+        try {
+            // Check if database class exists
+            if (!class_exists('SourceHub_Database')) {
+                wp_send_json_error(array(
+                    'message' => __('Database class not available', 'sourcehub')
+                ));
+                return;
+            }
+
+            $connection = SourceHub_Database::get_connection($connection_id);
+            
+            if (!$connection) {
+                wp_send_json_error(array(
+                    'message' => __('Connection not found', 'sourcehub')
+                ));
+                return;
+            }
+
+            wp_send_json_success($connection);
+
+        } catch (Exception $e) {
+            wp_send_json_error(array(
+                'message' => __('Failed to load connection: ', 'sourcehub') . $e->getMessage()
+            ));
         }
     }
 }
