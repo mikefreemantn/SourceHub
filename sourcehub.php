@@ -3,7 +3,7 @@
  * Plugin Name: SourceHub - Hub & Spoke Publisher
  * Plugin URI: https://manovermachine.com
  * Description: A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
- * Version: 1.0.2
+ * Version: 1.2.3
  * Author: Mike Freeman
  * Author URI: https://manovermachine.com
  * License: GPL v2 or later
