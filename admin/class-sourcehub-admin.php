@@ -108,6 +108,18 @@ class SourceHub_Admin {
             'sourcehub-logs',
             array($this, 'render_logs')
         );
+
+        // Smart Links Documentation (only for hub mode)
+        if ($mode === 'hub') {
+            add_submenu_page(
+                'sourcehub',
+                __('Smart Links Guide', 'sourcehub'),
+                __('Smart Links Guide', 'sourcehub'),
+                $capability,
+                'sourcehub-smart-links',
+                array($this, 'render_smart_links_guide')
+            );
+        }
     }
 
     /**
@@ -116,6 +128,32 @@ class SourceHub_Admin {
      * @param string $hook Current admin page hook
      */
     public function enqueue_admin_scripts($hook) {
+        // Load TinyMCE shortcode buttons on post edit pages
+        global $pagenow;
+        if (in_array($pagenow, array('post.php', 'post-new.php'))) {
+            wp_enqueue_script(
+                'sourcehub-tinymce-shortcodes',
+                SOURCEHUB_PLUGIN_URL . 'assets/js/tinymce-shortcodes.js',
+                array('jquery'),
+                SOURCEHUB_VERSION,
+                true
+            );
+            
+            wp_enqueue_style(
+                'sourcehub-tinymce-shortcodes',
+                SOURCEHUB_PLUGIN_URL . 'assets/css/tinymce-shortcodes.css',
+                array(),
+                SOURCEHUB_VERSION
+            );
+            
+            // Localize script for TinyMCE buttons
+            wp_localize_script('sourcehub-tinymce-shortcodes', 'sourcehub_admin', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('sourcehub_admin_nonce'),
+                'mode' => sourcehub()->get_mode()
+            ));
+        }
+        
         // Only load on SourceHub admin pages
         if (strpos($hook, 'sourcehub') === false) {
             return;
@@ -694,5 +732,13 @@ class SourceHub_Admin {
                 'message' => __('Failed to load connection: ', 'sourcehub') . $e->getMessage()
             ));
         }
+    }
+
+    /**
+     * Render Smart Links Guide page
+     */
+    public function render_smart_links_guide() {
+        $documentation = SourceHub_Shortcodes::get_documentation();
+        include SOURCEHUB_PLUGIN_DIR . 'admin/views/smart-links-guide.php';
     }
 }

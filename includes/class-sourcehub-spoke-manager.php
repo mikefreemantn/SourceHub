@@ -335,16 +335,86 @@ class SourceHub_Spoke_Manager {
     }
 
     /**
+     * Allow all HTML for SourceHub syndicated content
+     * This temporarily disables WordPress content filtering to preserve iframes and embeds
+     *
+     * @param array $allowed_html Allowed HTML tags
+     * @param string $context Context
+     * @return array Modified allowed HTML tags
+     */
+    public function allow_all_html_for_sourcehub($allowed_html, $context) {
+        // Only apply this for post content context
+        if ($context === 'post') {
+            // Allow all HTML tags and attributes
+            return array_merge($allowed_html, array(
+                'iframe' => array(
+                    'src' => true,
+                    'width' => true,
+                    'height' => true,
+                    'frameborder' => true,
+                    'allowfullscreen' => true,
+                    'allow' => true,
+                    'title' => true,
+                    'loading' => true,
+                    'class' => true,
+                    'id' => true,
+                    'style' => true,
+                    'scrolling' => true,
+                    'name' => true
+                ),
+                'script' => array(
+                    'src' => true,
+                    'type' => true,
+                    'async' => true,
+                    'defer' => true,
+                    'crossorigin' => true,
+                    'integrity' => true
+                ),
+                'embed' => array(
+                    'src' => true,
+                    'width' => true,
+                    'height' => true,
+                    'type' => true,
+                    'class' => true,
+                    'id' => true
+                ),
+                'object' => array(
+                    'data' => true,
+                    'type' => true,
+                    'width' => true,
+                    'height' => true,
+                    'class' => true,
+                    'id' => true
+                )
+            ));
+        }
+        
+        return $allowed_html;
+    }
+
+    /**
      * Create post from hub data
      *
      * @param array $data Post data from hub
      * @return int|WP_Error Post ID or error
      */
     private function create_post_from_data($data) {
+        // Debug: Log content received from hub
+        SourceHub_Logger::info(
+            'DEBUG: Content received from hub: ' . substr($data['content'], 0, 500),
+            array('full_content_length' => strlen($data['content'])),
+            null,
+            null,
+            'debug_content'
+        );
+        
+        // Temporarily disable content filtering to preserve iframes and embeds
+        add_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10, 2);
+        
         // Prepare post data
         $post_data = array(
             'post_title' => sanitize_text_field($data['title']),
-            'post_content' => wp_kses_post($data['content']),
+            'post_content' => $data['content'],
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
             'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
             'post_type' => isset($data['post_type']) ? sanitize_text_field($data['post_type']) : 'post',
@@ -365,13 +435,17 @@ class SourceHub_Spoke_Manager {
             }
         }
 
-        // Create the post
-        $post_id = wp_insert_post($post_data, true);
+        // Insert the post
+        $post_id = wp_insert_post($post_data);
+        
+        // Re-enable content filtering
+        remove_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10);
         
         if (is_wp_error($post_id)) {
             return $post_id;
         }
 
+        // Update post metadata
         // Store hub metadata
         update_post_meta($post_id, '_sourcehub_hub_id', intval($data['hub_id']));
         update_post_meta($post_id, '_sourcehub_origin_url', esc_url_raw($data['hub_url']));
@@ -432,11 +506,14 @@ class SourceHub_Spoke_Manager {
      * @return bool|WP_Error
      */
     private function update_post_from_data($post_id, $data) {
+        // Temporarily disable content filtering to preserve iframes and embeds
+        add_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10, 2);
+        
         // Prepare post data
         $post_data = array(
             'ID' => $post_id,
             'post_title' => sanitize_text_field($data['title']),
-            'post_content' => wp_kses_post($data['content']),
+            'post_content' => $data['content'],
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
             'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
             'post_name' => isset($data['slug']) ? sanitize_title($data['slug']) : '',
@@ -458,6 +535,9 @@ class SourceHub_Spoke_Manager {
 
         // Update the post
         $result = wp_update_post($post_data, true);
+        
+        // Re-enable content filtering
+        remove_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10);
         
         if (is_wp_error($result)) {
             return $result;
@@ -832,4 +912,5 @@ class SourceHub_Spoke_Manager {
 
         return !empty($logs) ? $logs[0]->created_at : null;
     }
+
 }

@@ -118,7 +118,7 @@ class SourceHub_AI_Rewriter {
      * @return string|false Rewritten content or false on failure
      */
     public function rewrite_post_content($content, $settings) {
-        // Check content length limits
+        // Check content length limits (strip tags only for counting, not for processing)
         $word_count = str_word_count(strip_tags($content));
         $max_words = get_option('sourcehub_ai_max_words', 2000);
         
@@ -228,7 +228,7 @@ class SourceHub_AI_Rewriter {
      */
     private function rewrite_seo_title($title, $settings) {
         $prompt = sprintf(
-            "Rewrite this SEO title to be more engaging while keeping it under 60 characters and maintaining the core message. %s\n\nOriginal title: %s\n\nRewritten title:",
+            "Rewrite this SEO title to be more engaging while keeping it under 60 characters and maintaining the core message. It is important not to wrap the title in quotes %s\n\nOriginal title: %s\n\nRewritten title:",
             $this->get_tone_instruction($settings),
             $title
         );
@@ -239,7 +239,16 @@ class SourceHub_AI_Rewriter {
         ));
 
         if ($response && isset($response['choices'][0]['message']['content'])) {
-            return trim($response['choices'][0]['message']['content']);
+            $rewritten_title = trim($response['choices'][0]['message']['content']);
+            
+            // Remove only wrapping quotes, not quotes that are part of the content
+            // Check if title starts and ends with the same quote type
+            if ((substr($rewritten_title, 0, 1) === '"' && substr($rewritten_title, -1) === '"') ||
+                (substr($rewritten_title, 0, 1) === "'" && substr($rewritten_title, -1) === "'")) {
+                $rewritten_title = substr($rewritten_title, 1, -1);
+            }
+            
+            return $rewritten_title;
         }
 
         return false;
@@ -342,9 +351,9 @@ class SourceHub_AI_Rewriter {
         $instruction_text = !empty($instructions) ? implode('. ', $instructions) . '.' : '';
 
         return sprintf(
-            "Rewrite this article content to make it more engaging while preserving all factual information and key points. Do not change any direct quotes or quoted material - keep all quotes exactly as they appear in the original. %s\n\nOriginal content:\n%s\n\nRewritten content:",
+            "Rewrite this article content to make it more engaging while preserving all factual information and key points. Do not change any direct quotes or quoted material - keep all quotes exactly as they appear in the original. IMPORTANT: Preserve all HTML tags, iframes, and embedded content exactly as they appear - do not remove or modify any HTML elements. %s\n\nOriginal content:\n%s\n\nRewritten content:",
             $instruction_text,
-            strip_tags($content)
+            $content
         );
     }
 

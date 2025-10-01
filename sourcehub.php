@@ -131,6 +131,8 @@ final class SourceHub {
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-ai-rewriter.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-api-handler.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-smart-links.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-shortcodes.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-validation.php';
 
         // Load admin classes
         if (is_admin()) {

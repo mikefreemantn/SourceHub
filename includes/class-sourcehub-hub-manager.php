@@ -526,6 +526,13 @@ class SourceHub_Hub_Manager {
             return;
         }
         
+        // Check if post should be syndicated (validation filter)
+        $should_syndicate = apply_filters('sourcehub_should_syndicate_post', true, $post_id);
+        if (!$should_syndicate) {
+            error_log('SourceHub: Syndication halted for post ' . $post_id . ' by validation filter');
+            return;
+        }
+        
         // Set sync lock
         $this->sync_locks[$post_id] = true;
         
@@ -679,6 +686,15 @@ class SourceHub_Hub_Manager {
         // Prepare post data
         $post_data = $this->prepare_post_data($post, $connection, $use_ai);
         
+        // Debug: Log final content being sent to spoke
+        SourceHub_Logger::info(
+            'DEBUG: Final content being sent to spoke: ' . substr($post_data['content'], 0, 500),
+            array('connection_name' => $connection->name, 'full_content_length' => strlen($post_data['content'])),
+            $post->ID,
+            $connection->id,
+            'debug_content'
+        );
+        
         // Wake up the spoke site before sending content
         $wake_up_success = $this->wake_up_spoke($connection);
         if (!$wake_up_success) {
@@ -745,10 +761,22 @@ class SourceHub_Hub_Manager {
         error_log('SourceHub: Collecting page template for post ' . $post->ID . ': ' . ($page_template ? $page_template : 'DEFAULT'));
 
         // Basic post data
+        // Debug: Log original content
+        SourceHub_Logger::info(
+            'DEBUG: Original post content: ' . substr($post->post_content, 0, 500),
+            array('full_content_length' => strlen($post->post_content)),
+            $post->ID,
+            null,
+            'debug_content'
+        );
+        
+        // Process shortcodes before syndication (for Classic Editor smart links)
+        $processed_content = apply_filters('sourcehub_before_syndication', $post->post_content);
+        
         $data = array(
             'hub_id' => $post->ID,
             'title' => $post->post_title,
-            'content' => $post->post_content,
+            'content' => $processed_content,
             'excerpt' => $post->post_excerpt,
             'status' => $post->post_status,
             'slug' => $post->post_name,
