@@ -34,92 +34,131 @@ class SourceHub_Admin {
      * Add admin menu pages
      */
     public function add_admin_menu() {
-        $capability = 'manage_options';
-        $mode = sourcehub()->get_mode();
+        // Check if user has any SourceHub access
+        if (!$this->user_can_access_sourcehub()) {
+            return; // No menu for users without access
+        }
 
-        // Main menu page
+        $mode = sourcehub()->get_mode();
+        
+        // Determine capability based on user role
+        $dashboard_capability = $this->get_dashboard_capability();
+        $admin_capability = $this->get_admin_capability();
+
+        // Main menu page - accessible to editors and above
         add_menu_page(
             __('SourceHub', 'sourcehub'),
             __('SourceHub', 'sourcehub'),
-            $capability,
+            $dashboard_capability,
             'sourcehub',
             array($this, 'render_dashboard'),
             'dashicons-networking',
             30
         );
 
-        // Dashboard (same as main page)
+        // Dashboard (same as main page) - accessible to editors and above
         add_submenu_page(
             'sourcehub',
             __('Dashboard', 'sourcehub'),
             __('Dashboard', 'sourcehub'),
-            $capability,
+            $dashboard_capability,
             'sourcehub',
             array($this, 'render_dashboard')
         );
 
-        // Mode-specific pages
+        // Admin-only pages (connections and settings)
         if ($mode === 'hub') {
+            // Spoke Connections - Admin only
             add_submenu_page(
                 'sourcehub',
                 __('Spoke Connections', 'sourcehub'),
                 __('Spoke Connections', 'sourcehub'),
-                $capability,
+                $admin_capability,
                 'sourcehub-connections',
                 array($this, 'render_connections')
             );
             
-            // Add a dedicated page for adding spoke sites
+            // Add Spoke Site - Admin only
             add_submenu_page(
                 'sourcehub',
                 __('Add Spoke Site', 'sourcehub'),
                 __('Add Spoke Site', 'sourcehub'),
-                $capability,
+                $admin_capability,
                 'sourcehub-add-spoke',
                 array($this, 'render_add_spoke')
             );
         } elseif ($mode === 'spoke') {
+            // Hub Connections - Admin only
             add_submenu_page(
                 'sourcehub',
                 __('Hub Connections', 'sourcehub'),
                 __('Hub Connections', 'sourcehub'),
-                $capability,
+                $admin_capability,
                 'sourcehub-connections',
                 array($this, 'render_connections')
             );
         }
 
-        // Settings page
+        // Settings page - Admin only
         add_submenu_page(
             'sourcehub',
             __('Settings', 'sourcehub'),
             __('Settings', 'sourcehub'),
-            $capability,
+            $admin_capability,
             'sourcehub-settings',
             array($this, 'render_settings')
         );
 
-        // Logs page
+        // Logs page - accessible to editors and above
         add_submenu_page(
             'sourcehub',
             __('Activity Logs', 'sourcehub'),
             __('Activity Logs', 'sourcehub'),
-            $capability,
+            $dashboard_capability,
             'sourcehub-logs',
             array($this, 'render_logs')
         );
 
-        // Smart Links Documentation (only for hub mode)
+        // Smart Links Documentation (only for hub mode) - accessible to editors and above
         if ($mode === 'hub') {
             add_submenu_page(
                 'sourcehub',
                 __('Smart Links Guide', 'sourcehub'),
                 __('Smart Links Guide', 'sourcehub'),
-                $capability,
+                $dashboard_capability,
                 'sourcehub-smart-links',
                 array($this, 'render_smart_links_guide')
             );
         }
+    }
+
+    /**
+     * Check if current user can access SourceHub
+     *
+     * @return bool
+     */
+    private function user_can_access_sourcehub() {
+        return current_user_can('edit_posts') || current_user_can('manage_options');
+    }
+
+    /**
+     * Get capability required for dashboard access
+     *
+     * @return string
+     */
+    private function get_dashboard_capability() {
+        // Allow editors, authors, contributors, and admins
+        return 'edit_posts';
+    }
+
+    /**
+     * Get capability required for admin functions
+     *
+     * @return string
+     */
+    private function get_admin_capability() {
+        // Only administrators
+        return 'manage_options';
     }
 
     /**
@@ -252,6 +291,11 @@ class SourceHub_Admin {
      * Render dashboard page
      */
     public function render_dashboard() {
+        // Check permissions
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         $mode = sourcehub()->get_mode();
         
         // Get stats with error handling
@@ -305,6 +349,11 @@ class SourceHub_Admin {
      * Render connections page
      */
     public function render_connections() {
+        // Check admin permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         $mode = sourcehub()->get_mode();
         $connection_mode = $mode === 'hub' ? 'spoke' : 'hub';
         $connections = SourceHub_Database::get_connections(array('mode' => $connection_mode));
@@ -316,6 +365,11 @@ class SourceHub_Admin {
      * Render add spoke site page
      */
     public function render_add_spoke() {
+        // Check admin permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         // Only available in hub mode
         $mode = sourcehub()->get_mode();
         if ($mode !== 'hub') {
@@ -330,6 +384,11 @@ class SourceHub_Admin {
      * Render settings page
      */
     public function render_settings() {
+        // Check admin permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         $mode = sourcehub()->get_mode();
         $ai_models = SourceHub_AI_Rewriter::get_available_models();
         $ai_tones = SourceHub_AI_Rewriter::get_available_tones();
@@ -359,6 +418,11 @@ class SourceHub_Admin {
      * Render logs page
      */
     public function render_logs() {
+        // Check permissions
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         $page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
         $per_page = 20;
         $status_filter = isset($_GET['status']) ? sanitize_text_field($_GET['status']) : '';
@@ -738,6 +802,11 @@ class SourceHub_Admin {
      * Render Smart Links Guide page
      */
     public function render_smart_links_guide() {
+        // Check permissions
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
         $documentation = SourceHub_Shortcodes::get_documentation();
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/smart-links-guide.php';
     }
