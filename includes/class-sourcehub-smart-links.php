@@ -49,8 +49,7 @@ class SourceHub_Smart_Links {
                 
                 error_log('SourceHub Smart Links: Found match - Path: ' . $smart_path . ', Text: ' . $link_text);
                 
-                // Remove the emoji and clean up the text
-                $link_text = preg_replace('/🔗\s*/', '', $link_text);
+                // Clean up the text
                 $link_text = trim($link_text);
                 
                 // Build the full URL
@@ -94,13 +93,21 @@ class SourceHub_Smart_Links {
             return $content;
         }
 
-        error_log('SourceHub Custom Smart Links: Processing for connection ID: ' . $spoke_connection->id);
+        error_log('SourceHub Custom Smart Links: Processing for connection "' . $spoke_connection->name . '" (ID: ' . $spoke_connection->id . ')');
+        error_log('SourceHub Custom Smart Links: Content length: ' . strlen($content));
+        
+        // Also log to SourceHub activity log
+        if (class_exists('SourceHub_Logger')) {
+            SourceHub_Logger::log('Custom Smart Links processing started for: ' . $spoke_connection->name, 'info');
+        }
         
         // Find all custom smart links in the content
         $patterns = array(
-            '/<span[^>]*class="[^"]*sourcehub-custom-smart-link[^"]*"[^>]*data-custom-urls="([^"]*)"[^>]*>(.*?)<\/span>/i',
-            '/<span[^>]*data-custom-urls="([^"]*)"[^>]*class="[^"]*sourcehub-custom-smart-link[^"]*"[^>]*>(.*?)<\/span>/i'
+            '/<span[^>]*class="[^"]*sourcehub-custom-smart-link[^"]*"[^>]*data-custom-urls="([^"]*)"[^>]*>(.*?)<\/span>/is',
+            '/<span[^>]*data-custom-urls="([^"]*)"[^>]*class="[^"]*sourcehub-custom-smart-link[^"]*"[^>]*>(.*?)<\/span>/is'
         );
+        
+        error_log('SourceHub Custom Smart Links: Looking for patterns in content: ' . substr($content, 0, 500));
         
         $processed_content = $content;
         
@@ -108,29 +115,45 @@ class SourceHub_Smart_Links {
             error_log('SourceHub Custom Smart Links: Trying pattern: ' . $pattern);
             
             $processed_content = preg_replace_callback($pattern, function($matches) use ($spoke_connection) {
-                $custom_urls_json = html_entity_decode($matches[1]);
+                // Handle multiple levels of HTML entity encoding
+                $custom_urls_json = $matches[1];
+                error_log('SourceHub Custom Smart Links: Raw JSON: ' . $custom_urls_json);
+                $custom_urls_json = html_entity_decode($custom_urls_json, ENT_QUOTES | ENT_HTML5);
+                error_log('SourceHub Custom Smart Links: After first decode: ' . $custom_urls_json);
+                $custom_urls_json = html_entity_decode($custom_urls_json, ENT_QUOTES | ENT_HTML5); // Second pass for double encoding
+                error_log('SourceHub Custom Smart Links: After second decode: ' . $custom_urls_json);
                 $link_text = strip_tags($matches[2]);
                 
                 error_log('SourceHub Custom Smart Links: Found match - URLs JSON: ' . $custom_urls_json . ', Text: ' . $link_text);
+                error_log('SourceHub Custom Smart Links: Processing for spoke connection: ' . $spoke_connection->name . ' (ID: ' . $spoke_connection->id . ')');
                 
                 // Decode the JSON to get the URLs for each spoke
                 $custom_urls = json_decode($custom_urls_json, true);
                 if (!is_array($custom_urls)) {
-                    error_log('SourceHub Custom Smart Links: Invalid JSON data');
+                    error_log('SourceHub Custom Smart Links: Invalid JSON data: ' . json_last_error_msg());
                     return $matches[0]; // Return original if JSON is invalid
                 }
                 
-                // Get the URL for this specific spoke
-                $spoke_url = isset($custom_urls[$spoke_connection->id]) ? $custom_urls[$spoke_connection->id] : '';
+                error_log('SourceHub Custom Smart Links: Decoded URLs: ' . print_r($custom_urls, true));
+                
+                // Get the URL for this specific spoke (try both connection name and ID)
+                $spoke_url = '';
+                if (isset($custom_urls[$spoke_connection->name])) {
+                    $spoke_url = $custom_urls[$spoke_connection->name];
+                    error_log('SourceHub Custom Smart Links: Found URL by name "' . $spoke_connection->name . '": ' . $spoke_url);
+                } elseif (isset($custom_urls[$spoke_connection->id])) {
+                    $spoke_url = $custom_urls[$spoke_connection->id];
+                    error_log('SourceHub Custom Smart Links: Found URL by ID "' . $spoke_connection->id . '": ' . $spoke_url);
+                }
                 
                 if (empty($spoke_url)) {
-                    error_log('SourceHub Custom Smart Links: No URL found for spoke ID: ' . $spoke_connection->id);
+                    error_log('SourceHub Custom Smart Links: No URL found for spoke "' . $spoke_connection->name . '" (ID: ' . $spoke_connection->id . ')');
+                    error_log('SourceHub Custom Smart Links: Available URL keys: ' . print_r(array_keys($custom_urls), true));
                     // Return just the text without link if no URL is set for this spoke
                     return esc_html(trim($link_text));
                 }
                 
-                // Remove the emoji and clean up the text
-                $link_text = preg_replace('/🌐\s*/', '', $link_text);
+                // Clean up the text
                 $link_text = trim($link_text);
                 
                 error_log('SourceHub Custom Smart Links: Creating link - URL: ' . $spoke_url . ', Text: ' . $link_text);
@@ -176,8 +199,7 @@ class SourceHub_Smart_Links {
         $processed_title = preg_replace_callback($pattern, function($matches) {
             $link_text = strip_tags($matches[2]); // Remove any HTML from link text
             
-            // Remove the emoji and clean up the text
-            $link_text = preg_replace('/🔗\s*/', '', $link_text);
+            // Clean up the text
             return trim($link_text);
         }, $title);
 
@@ -208,8 +230,7 @@ class SourceHub_Smart_Links {
             $processed_title = preg_replace_callback($pattern, function($matches) {
                 $link_text = strip_tags($matches[2]); // Remove any HTML from link text
                 
-                // Remove the emoji and clean up the text
-                $link_text = preg_replace('/🌐\s*/', '', $link_text);
+                // Clean up the text
                 return trim($link_text);
             }, $processed_title);
             
@@ -244,8 +265,7 @@ class SourceHub_Smart_Links {
             $smart_path = $matches[1];
             $link_text = strip_tags($matches[2]); // Remove any HTML from link text
             
-            // Remove the emoji and clean up the text
-            $link_text = preg_replace('/🔗\s*/', '', $link_text);
+            // Clean up the text
             $link_text = trim($link_text);
             
             // Build the full URL
@@ -284,7 +304,10 @@ class SourceHub_Smart_Links {
         
         foreach ($patterns as $pattern) {
             $processed_excerpt = preg_replace_callback($pattern, function($matches) use ($spoke_connection) {
-                $custom_urls_json = html_entity_decode($matches[1]);
+                // Handle multiple levels of HTML entity encoding
+                $custom_urls_json = $matches[1];
+                $custom_urls_json = html_entity_decode($custom_urls_json, ENT_QUOTES | ENT_HTML5);
+                $custom_urls_json = html_entity_decode($custom_urls_json, ENT_QUOTES | ENT_HTML5); // Second pass for double encoding
                 $link_text = strip_tags($matches[2]);
                 
                 // Decode the JSON to get the URLs for each spoke
@@ -293,16 +316,20 @@ class SourceHub_Smart_Links {
                     return $matches[0]; // Return original if JSON is invalid
                 }
                 
-                // Get the URL for this specific spoke
-                $spoke_url = isset($custom_urls[$spoke_connection->id]) ? $custom_urls[$spoke_connection->id] : '';
+                // Get the URL for this specific spoke (try both connection name and ID)
+                $spoke_url = '';
+                if (isset($custom_urls[$spoke_connection->name])) {
+                    $spoke_url = $custom_urls[$spoke_connection->name];
+                } elseif (isset($custom_urls[$spoke_connection->id])) {
+                    $spoke_url = $custom_urls[$spoke_connection->id];
+                }
                 
                 if (empty($spoke_url)) {
                     // Return just the text without link if no URL is set for this spoke
                     return esc_html(trim($link_text));
                 }
                 
-                // Remove the emoji and clean up the text
-                $link_text = preg_replace('/🌐\s*/', '', $link_text);
+                // Clean up the text
                 $link_text = trim($link_text);
                 
                 // Create a proper link
