@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,10 @@ SourceHub transforms your WordPress network into a centralized content distribut
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.5 - 2025-10-21 =
+* Test: Git Updater functionality test release
+* Added: Version display in admin footer for verification
 
 = 1.2.4 - 2025-10-21 =
 * Performance: Fixed critical 21-second page load issue

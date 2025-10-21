@@ -28,6 +28,21 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_clear_logs', array($this, 'clear_logs'));
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
+        add_filter('admin_footer_text', array($this, 'admin_footer_text'));
+    }
+
+    /**
+     * Add SourceHub version to admin footer
+     */
+    public function admin_footer_text($text) {
+        $screen = get_current_screen();
+        if ($screen && strpos($screen->id, 'sourcehub') !== false) {
+            $text = sprintf(
+                __('SourceHub v%s | Thank you for using SourceHub!', 'sourcehub'),
+                SOURCEHUB_VERSION
+            );
+        }
+        return $text;
     }
 
     /**
