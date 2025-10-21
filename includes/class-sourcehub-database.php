@@ -67,7 +67,9 @@ class SourceHub_Database {
             KEY post_id (post_id),
             KEY connection_id (connection_id),
             KEY status (status),
-            KEY created_at (created_at)
+            KEY created_at (created_at),
+            KEY status_created (status, created_at),
+            KEY action_created (action, created_at)
         ) $charset_collate;";
 
         // Queue table for failed/retry operations
@@ -302,10 +304,11 @@ class SourceHub_Database {
 
         $args = wp_parse_args($args, $defaults);
 
-        $table = $wpdb->prefix . 'sourcehub_logs';
+        $logs_table = $wpdb->prefix . 'sourcehub_logs';
+        $connections_table = $wpdb->prefix . 'sourcehub_connections';
         
         // Check if table exists
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        if ($wpdb->get_var("SHOW TABLES LIKE '$logs_table'") != $logs_table) {
             return array();
         }
         
@@ -313,22 +316,22 @@ class SourceHub_Database {
         $values = array();
 
         if (!empty($args['post_id'])) {
-            $where[] = 'post_id = %d';
+            $where[] = 'l.post_id = %d';
             $values[] = $args['post_id'];
         }
 
         if (!empty($args['connection_id'])) {
-            $where[] = 'connection_id = %d';
+            $where[] = 'l.connection_id = %d';
             $values[] = $args['connection_id'];
         }
 
         if (!empty($args['status'])) {
-            $where[] = 'status = %s';
+            $where[] = 'l.status = %s';
             $values[] = $args['status'];
         }
 
         if (!empty($args['action'])) {
-            $where[] = 'action = %s';
+            $where[] = 'l.action = %s';
             $values[] = $args['action'];
         }
 
@@ -340,7 +343,15 @@ class SourceHub_Database {
             $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
         }
 
-        $sql = "SELECT * FROM $table WHERE $where_clause ORDER BY created_at $order$limit_clause";
+        // Use LEFT JOIN to fetch connection data in a single query (eliminates N+1 problem)
+        $sql = "SELECT l.*, 
+                       c.name as connection_name, 
+                       c.url as connection_url,
+                       c.mode as connection_mode
+                FROM $logs_table l
+                LEFT JOIN $connections_table c ON l.connection_id = c.id
+                WHERE $where_clause 
+                ORDER BY l.created_at $order$limit_clause";
 
         if (!empty($values)) {
             $sql = $wpdb->prepare($sql, $values);

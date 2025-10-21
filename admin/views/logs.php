@@ -137,10 +137,10 @@ if (!defined('ABSPATH')) {
                             <td class="column-connection">
                                 <?php if (!empty($log->connection_id)): ?>
                                     <?php
-                                    $connection = SourceHub_Database::get_connection($log->connection_id);
-                                    if ($connection) {
-                                        echo '<a href="' . admin_url('admin.php?page=sourcehub-connections') . '" title="' . esc_attr($connection->url) . '">';
-                                        echo esc_html($connection->name);
+                                    // Connection data is now pre-fetched via JOIN (no additional query needed)
+                                    if (!empty($log->connection_name)) {
+                                        echo '<a href="' . admin_url('admin.php?page=sourcehub-connections') . '" title="' . esc_attr($log->connection_url) . '">';
+                                        echo esc_html($log->connection_name);
                                         echo '</a>';
                                     } else {
                                         echo '<span class="text-muted">' . __('Deleted', 'sourcehub') . '</span>';

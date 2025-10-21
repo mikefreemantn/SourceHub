@@ -437,11 +437,31 @@ class SourceHub_Admin {
             $args['status'] = $status_filter;
         }
 
+        // Start profiling
+        $start_time = microtime(true);
+        
+        $time_before_logs = microtime(true);
         $logs = SourceHub_Logger::get_formatted_logs($args);
+        $logs_time = microtime(true) - $time_before_logs;
+        
+        $time_before_count = microtime(true);
         $total_logs = SourceHub_Database::count_logs($args);
+        $count_time = microtime(true) - $time_before_count;
+        
         $total_pages = ceil($total_logs / $per_page);
 
+        $time_before_stats = microtime(true);
         $stats = SourceHub_Logger::get_stats(array('days' => 7));
+        $stats_time = microtime(true) - $time_before_stats;
+
+        // Log performance metrics
+        $total_time = microtime(true) - $start_time;
+        error_log(sprintf('[SourceHub Performance] Logs Page - Total: %.2fs | Logs Query: %.2fs | Count: %.2fs | Stats: %.2fs | Total Logs: %d', 
+            $total_time, $logs_time, $count_time, $stats_time, $total_logs));
+
+        // Set variables for the template
+        $current_page = $page;
+        $mode = sourcehub()->get_mode();
 
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/logs.php';
     }

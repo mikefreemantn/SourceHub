@@ -835,6 +835,7 @@ class SourceHub_Hub_Manager {
                     'url' => $image_data[0],
                     'width' => $image_data[1],
                     'height' => $image_data[2],
+                    'title' => get_the_title($featured_image_id),
                     'alt' => get_post_meta($featured_image_id, '_wp_attachment_image_alt', true),
                     'caption' => wp_get_attachment_caption($featured_image_id),
                     'description' => get_post_field('post_content', $featured_image_id)

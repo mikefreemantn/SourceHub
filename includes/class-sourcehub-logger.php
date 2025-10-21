@@ -129,19 +129,13 @@ class SourceHub_Logger {
             }
 
             foreach ($logs as $log) {
-                $formatted[] = array(
-                    'id' => $log->id,
-                    'post_id' => $log->post_id,
-                    'connection_id' => $log->connection_id,
-                    'action' => $log->action,
-                    'status' => $log->status,
-                    'message' => $log->message,
-                    'data' => !empty($log->data) ? json_decode($log->data, true) : array(),
-                    'created_at' => $log->created_at,
-                    'formatted_date' => date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($log->created_at)),
-                    'status_class' => self::get_status_class($log->status),
-                    'status_icon' => self::get_status_icon($log->status)
-                );
+                // Add formatted fields to the existing log object
+                $log->formatted_date = date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($log->created_at));
+                $log->status_class = self::get_status_class($log->status);
+                $log->status_icon = self::get_status_icon($log->status);
+                $log->details = !empty($log->data) ? $log->data : null;
+                
+                $formatted[] = $log;
             }
 
             return $formatted;

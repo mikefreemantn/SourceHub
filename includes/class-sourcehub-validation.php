@@ -17,20 +17,27 @@ if (!defined('ABSPATH')) {
 class SourceHub_Validation {
 
     /**
+     * Track if validation has been initialized
+     */
+    private static $initialized = false;
+
+    /**
      * Initialize validation hooks
      */
     public static function init() {
-        // Debug spoke site detection
+        // Prevent multiple initializations
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+        
+        // Check if this is a spoke site (spoke sites don't need validation)
         $is_spoke = self::is_spoke_site();
-        error_log('SourceHub Validation: Site detection - Is spoke site: ' . ($is_spoke ? 'YES' : 'NO'));
         
-        // Temporarily disable spoke detection until we fix the logic
-        // if ($is_spoke) {
-        //     error_log('SourceHub Validation: Skipping validation - site detected as spoke');
-        //     return; // Skip validation entirely on spoke sites
-        // }
-        
-        error_log('SourceHub Validation: Initializing validation - site detected as hub');
+        // Skip validation entirely on spoke sites
+        if ($is_spoke) {
+            return;
+        }
         
         // Safe validation approach - halt syndication if validation fails
         add_action('transition_post_status', array(__CLASS__, 'check_post_validation'), 10, 3);
@@ -432,11 +439,9 @@ class SourceHub_Validation {
     public static function is_spoke_site() {
         // Check if this site has a spoke API key (indicates it's a spoke)
         $spoke_api_key = get_option('sourcehub_spoke_api_key');
-        error_log('SourceHub Validation: Spoke API key check - ' . ($spoke_api_key ? 'EXISTS' : 'EMPTY'));
         
         // If there's a spoke API key, this is a spoke site
         if (!empty($spoke_api_key)) {
-            error_log('SourceHub Validation: Site has spoke API key - returning TRUE (spoke site)');
             return true;
         }
         
@@ -444,18 +449,11 @@ class SourceHub_Validation {
         $spoke_connections = get_option('sourcehub_spoke_connections', array());
         $hub_connections = get_option('sourcehub_hub_connections', array());
         
-        error_log('SourceHub Validation: Spoke connections count: ' . count($spoke_connections));
-        error_log('SourceHub Validation: Hub connections count: ' . count($hub_connections));
-        
         $has_hub_connections = !empty($hub_connections);
         $has_no_spoke_connections = empty($spoke_connections);
         
         // If no spoke connections but has hub connections, likely a spoke
-        $is_spoke_by_connections = ($has_no_spoke_connections && $has_hub_connections);
-        
-        error_log('SourceHub Validation: Is spoke by connections logic: ' . ($is_spoke_by_connections ? 'TRUE' : 'FALSE'));
-        
-        return $is_spoke_by_connections;
+        return ($has_no_spoke_connections && $has_hub_connections);
     }
 }
 

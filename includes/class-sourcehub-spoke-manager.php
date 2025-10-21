@@ -812,6 +812,13 @@ class SourceHub_Spoke_Manager {
         }
 
         // Set image metadata
+        if (!empty($image_data['title'])) {
+            wp_update_post(array(
+                'ID' => $attachment_id,
+                'post_title' => sanitize_text_field($image_data['title'])
+            ));
+        }
+
         if (!empty($image_data['alt'])) {
             update_post_meta($attachment_id, '_wp_attachment_image_alt', sanitize_text_field($image_data['alt']));
         }
