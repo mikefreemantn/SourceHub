@@ -17,7 +17,7 @@
  * 
  * GitHub Plugin URI: https://github.com/mikefreemantn/SourceHub
  * Primary Branch: main
- * Release Asset: false
+ * Release Asset: true
  *
  * @package SourceHub
  */
