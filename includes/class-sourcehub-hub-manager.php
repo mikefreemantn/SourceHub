@@ -36,6 +36,10 @@ class SourceHub_Hub_Manager {
         add_action('updated_post_meta', array($this, 'meta_updated_check'), 10, 4);
         add_action('admin_footer', array($this, 'final_sync_check'), 999);
         add_action('shutdown', array($this, 'check_pending_syncs'));
+        
+        // Hook into Yoast SEO save to trigger sync when Yoast meta is updated
+        add_action('wpseo_saved_postdata', array($this, 'handle_yoast_meta_save'));
+        
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
@@ -494,6 +498,58 @@ class SourceHub_Hub_Manager {
     }
 
     /**
+     * Handle Yoast meta save
+     * Triggered after Yoast SEO saves its meta data
+     *
+     * @param int $post_id Post ID
+     */
+    public function handle_yoast_meta_save($post_id) {
+        // Get the post
+        $post = get_post($post_id);
+        
+        // Only handle published posts
+        if (!$post || $post->post_status !== 'publish') {
+            return;
+        }
+
+        // Skip if this is an autosave or revision
+        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        // Get previously syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+            // Yoast has a timing issue where meta isn't fully available on first save
+            // Similar to Newspaper theme issue - schedule a delayed sync to ensure Yoast data is ready
+            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 3 seconds');
+            wp_schedule_single_event(time() + 3, 'sourcehub_delayed_sync', array($post_id));
+            
+            // For local development, also trigger cron manually after a short delay
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('SourceHub: Setting up manual cron trigger for Yoast sync (local development)');
+                add_action('admin_footer', function() use ($post_id) {
+                    echo '<script>
+                    console.log("SourceHub: Setting up delayed Yoast sync for post ' . $post_id . '");
+                    setTimeout(function() {
+                        console.log("SourceHub: Triggering manual cron for Yoast sync post ' . $post_id . '");
+                        fetch("' . admin_url('admin-ajax.php') . '", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            body: "action=sourcehub_manual_cron&post_id=' . $post_id . '"
+                        }).then(response => response.json())
+                          .then(data => console.log("SourceHub: Manual cron response:", data))
+                          .catch(error => console.error("SourceHub: Manual cron error:", error));
+                    }, 3000);
+                    </script>';
+                });
+            }
+        }
+    }
+
+    /**
      * Handle post status transitions
      *
      * @param string $new_status New post status
@@ -770,8 +826,16 @@ class SourceHub_Hub_Manager {
             'debug_content'
         );
         
-        // Process shortcodes before syndication (for Classic Editor smart links)
-        $processed_content = apply_filters('sourcehub_before_syndication', $post->post_content);
+        // Extract gallery images from RAW content BEFORE processing shortcodes
+        $gallery_image_ids = SourceHub_Gallery_Handler::extract_image_ids($post->post_content);
+        
+        // For syndication, we want to preserve gallery shortcodes as-is
+        // So we DON'T process shortcodes - just send raw content
+        // The spoke site will handle gallery remapping
+        $processed_content = $post->post_content;
+        
+        // Apply any custom filters but NOT do_shortcode
+        $processed_content = apply_filters('sourcehub_before_syndication', $processed_content);
         
         $data = array(
             'hub_id' => $post->ID,
@@ -841,6 +905,22 @@ class SourceHub_Hub_Manager {
                     'description' => get_post_field('post_content', $featured_image_id)
                 );
             }
+        }
+
+        // Add gallery images (already extracted from raw content above)
+        if (!empty($gallery_image_ids)) {
+            $data['gallery_images'] = array();
+            error_log('SourceHub Gallery: Extracting data for ' . count($gallery_image_ids) . ' image IDs: ' . implode(', ', $gallery_image_ids));
+            foreach ($gallery_image_ids as $image_id) {
+                $image_data = SourceHub_Gallery_Handler::get_image_data($image_id);
+                if ($image_data) {
+                    $data['gallery_images'][] = $image_data;
+                    error_log('SourceHub Gallery: Successfully got data for image ' . $image_id . ' - URL: ' . $image_data['url']);
+                } else {
+                    error_log('SourceHub Gallery: WARNING - Failed to get data for image ID ' . $image_id);
+                }
+            }
+            error_log('SourceHub: Found ' . count($data['gallery_images']) . ' gallery images for post ' . $post->ID);
         }
 
         // Add Yoast SEO data
@@ -1275,4 +1355,5 @@ class SourceHub_Hub_Manager {
             wp_send_json_error($result['message']);
         }
     }
+
 }

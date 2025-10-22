@@ -58,17 +58,6 @@ $recent_logs = isset($recent_logs) ? $recent_logs : array();
                     <p><?php echo __('Activities (30 days)', 'sourcehub'); ?></p>
                 </div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <?php $success_rate = isset($stats['success_rate']) ? $stats['success_rate'] : 0; ?>
-                    <span class="dashicons dashicons-<?php echo $success_rate >= 90 ? 'yes' : ($success_rate >= 70 ? 'warning' : 'no'); ?>"></span>
-                </div>
-                <div class="stat-content">
-                    <h3><?php echo round($success_rate); ?>%</h3>
-                    <p><?php echo __('Success Rate', 'sourcehub'); ?></p>
-                </div>
-            </div>
         </div>
 
         <div class="dashboard-content">
@@ -230,14 +219,14 @@ $recent_logs = isset($recent_logs) ? $recent_logs : array();
                             <?php foreach ($recent_logs as $log): ?>
                                 <div class="activity-item">
                                     <div class="activity-icon">
-                                        <?php echo SourceHub_Admin::get_log_level_badge($log['status']); ?>
+                                        <?php echo SourceHub_Admin::get_log_level_badge($log->status); ?>
                                     </div>
                                     <div class="activity-content">
-                                        <p><?php echo esc_html($log['message']); ?></p>
+                                        <p><?php echo esc_html($log->message); ?></p>
                                         <small>
-                                            <?php echo SourceHub_Admin::time_ago($log['created_at']); ?>
-                                            <?php if (!empty($log['action'])): ?>
-                                                • <?php echo esc_html($log['action']); ?>
+                                            <?php echo SourceHub_Admin::time_ago($log->created_at); ?>
+                                            <?php if (!empty($log->action)): ?>
+                                                • <?php echo esc_html($log->action); ?>
                                             <?php endif; ?>
                                         </small>
                                     </div>

@@ -472,6 +472,40 @@ class SourceHub_Spoke_Manager {
             $this->set_featured_image($post_id, $data['featured_image']);
         }
 
+        // Handle gallery images
+        if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
+            error_log('SourceHub Gallery: Received ' . count($data['gallery_images']) . ' gallery images for post ' . $post_id);
+            error_log('SourceHub Gallery: Content before remap: ' . substr($data['content'], 0, 500));
+            
+            $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
+            
+            error_log('SourceHub Gallery: Image ID map: ' . print_r($image_id_map, true));
+            
+            // Remap gallery IDs in post content
+            if (!empty($image_id_map)) {
+                $updated_content = SourceHub_Gallery_Handler::process_galleries(
+                    $data['content'],
+                    $data['hub_id'],
+                    $post_id,
+                    $image_id_map
+                );
+                
+                error_log('SourceHub Gallery: Content after remap: ' . substr($updated_content, 0, 500));
+                
+                // Update post content with remapped gallery IDs
+                wp_update_post(array(
+                    'ID' => $post_id,
+                    'post_content' => $updated_content
+                ));
+                
+                error_log('SourceHub: Remapped gallery IDs for post ' . $post_id);
+            } else {
+                error_log('SourceHub Gallery: WARNING - No images were downloaded, image_id_map is empty!');
+            }
+        } else {
+            error_log('SourceHub Gallery: No gallery_images found in data for post ' . $post_id);
+        }
+
         // Handle Yoast SEO meta
         if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
             $allow_override = get_option('sourcehub_allow_yoast_override', true);
@@ -565,6 +599,29 @@ class SourceHub_Spoke_Manager {
         // Update featured image
         if (isset($data['featured_image'])) {
             $this->set_featured_image($post_id, $data['featured_image']);
+        }
+
+        // Update gallery images
+        if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
+            $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
+            
+            // Remap gallery IDs in post content
+            if (!empty($image_id_map)) {
+                $updated_content = SourceHub_Gallery_Handler::process_galleries(
+                    $data['content'],
+                    $data['hub_id'],
+                    $post_id,
+                    $image_id_map
+                );
+                
+                // Update post content with remapped gallery IDs
+                wp_update_post(array(
+                    'ID' => $post_id,
+                    'post_content' => $updated_content
+                ));
+                
+                error_log('SourceHub: Remapped gallery IDs for updated post ' . $post_id);
+            }
         }
 
         // Update Yoast SEO meta
@@ -846,6 +903,90 @@ class SourceHub_Spoke_Manager {
             null,
             'set_featured_image'
         );
+    }
+
+    /**
+     * Download gallery images and create ID mapping
+     *
+     * @param int $post_id Spoke post ID
+     * @param array $gallery_images Array of gallery image data from hub
+     * @return array Map of hub image IDs to spoke image data
+     */
+    private function download_gallery_images($post_id, $gallery_images) {
+        $image_map = array();
+        
+        foreach ($gallery_images as $image_data) {
+            error_log('SourceHub Gallery: Processing image data: ' . print_r($image_data, true));
+            $hub_id = isset($image_data['id']) ? $image_data['id'] : 'UNKNOWN';
+            $image_url = isset($image_data['url']) ? $image_data['url'] : 'MISSING';
+            error_log('SourceHub Gallery: Hub ID: ' . $hub_id . ', URL: ' . $image_url);
+            
+            if (empty($image_data['url'])) {
+                error_log('SourceHub Gallery: Skipping image ' . $hub_id . ' - URL is empty or missing');
+                continue;
+            }
+            
+            // Download the image
+            $temp_file = download_url($image_data['url']);
+            
+            if (is_wp_error($temp_file)) {
+                error_log('SourceHub Gallery: Failed to download image ' . $hub_id . ': ' . $temp_file->get_error_message());
+                continue;
+            }
+            
+            // Prepare file array for media_handle_sideload
+            $file_array = array(
+                'name' => $image_data['filename'],
+                'tmp_name' => $temp_file
+            );
+            
+            $attachment_id = media_handle_sideload($file_array, $post_id);
+            
+            if (is_wp_error($attachment_id)) {
+                error_log('SourceHub Gallery: Failed to attach image ' . $hub_id . ': ' . $attachment_id->get_error_message());
+                @unlink($temp_file);
+                continue;
+            }
+            
+            // Set image metadata
+            if (!empty($image_data['title'])) {
+                wp_update_post(array(
+                    'ID' => $attachment_id,
+                    'post_title' => sanitize_text_field($image_data['title'])
+                ));
+            }
+            
+            if (!empty($image_data['alt'])) {
+                update_post_meta($attachment_id, '_wp_attachment_image_alt', sanitize_text_field($image_data['alt']));
+            }
+            
+            if (!empty($image_data['caption'])) {
+                wp_update_post(array(
+                    'ID' => $attachment_id,
+                    'post_excerpt' => sanitize_text_field($image_data['caption'])
+                ));
+            }
+            
+            if (!empty($image_data['description'])) {
+                wp_update_post(array(
+                    'ID' => $attachment_id,
+                    'post_content' => wp_kses_post($image_data['description'])
+                ));
+            }
+            
+            // Map hub ID to spoke ID and URLs
+            $image_map[$hub_id] = array(
+                'spoke_id' => $attachment_id,
+                'hub_url' => $image_data['url'],
+                'spoke_url' => wp_get_attachment_url($attachment_id)
+            );
+            
+            error_log("SourceHub Gallery: Downloaded image - Hub ID: {$hub_id} -> Spoke ID: {$attachment_id}");
+        }
+        
+        error_log('SourceHub Gallery: Downloaded ' . count($image_map) . ' gallery images for post ' . $post_id);
+        
+        return $image_map;
     }
 
     /**

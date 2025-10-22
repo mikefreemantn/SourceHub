@@ -26,10 +26,13 @@ if (!defined('ABSPATH')) {
                 <label for="calendar-view-select"><?php _e('View:', 'sourcehub'); ?></label>
                 <select id="calendar-view-select" class="calendar-filter">
                     <option value="dayGridMonth"><?php _e('Month', 'sourcehub'); ?></option>
-                    <option value="timeGridWeek"><?php _e('Week', 'sourcehub'); ?></option>
-                    <option value="timeGridDay"><?php _e('Day', 'sourcehub'); ?></option>
-                    <option value="listWeek"><?php _e('List', 'sourcehub'); ?></option>
+                    <option value="listDay"><?php _e('List', 'sourcehub'); ?></option>
                 </select>
+            </div>
+
+            <div class="filter-group" id="list-date-picker-group" style="display: none;">
+                <label for="list-date-picker"><?php _e('List Date:', 'sourcehub'); ?></label>
+                <input type="date" id="list-date-picker" class="calendar-filter" value="<?php echo date('Y-m-d'); ?>">
             </div>
 
             <div class="filter-group">

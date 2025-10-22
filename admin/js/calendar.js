@@ -49,7 +49,14 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    right: 'dayGridMonth,listDay'
+                },
+                views: {
+                    listDay: {
+                        type: 'list',
+                        duration: { days: 1 },
+                        buttonText: 'List'
+                    }
                 },
                 height: 'auto',
                 slotMinTime: '00:00:00',
@@ -496,8 +503,25 @@
     function bindEvents() {
         // View selector
         $('#calendar-view-select').on('change', function() {
+            const selectedView = $(this).val();
+            
+            // Show/hide date picker based on view
+            if (selectedView === 'listDay') {
+                $('#list-date-picker-group').show();
+            } else {
+                $('#list-date-picker-group').hide();
+            }
+            
             if (calendar) {
-                calendar.changeView($(this).val());
+                calendar.changeView(selectedView);
+            }
+        });
+
+        // Date picker for list view
+        $('#list-date-picker').on('change', function() {
+            const selectedDate = $(this).val();
+            if (calendar && selectedDate) {
+                calendar.gotoDate(selectedDate);
             }
         });
 

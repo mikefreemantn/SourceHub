@@ -103,13 +103,27 @@ class SourceHub_Shortcodes {
     /**
      * Process shortcodes before syndication
      * This ensures shortcodes are converted to spans before Smart Links processing
+     * BUT preserves gallery shortcodes for spoke-side processing
      *
      * @param string $content Post content
      * @return string Processed content
      */
     public static function process_shortcodes_for_syndication($content) {
-        // Process shortcodes to convert them to the span format
-        return do_shortcode($content);
+        // Temporarily remove gallery shortcode handler to prevent it from being processed
+        $gallery_shortcode = $GLOBALS['shortcode_tags']['gallery'] ?? null;
+        if ($gallery_shortcode) {
+            remove_shortcode('gallery');
+        }
+        
+        // Process other shortcodes (smart-link, custom-smart-link, etc.)
+        $processed_content = do_shortcode($content);
+        
+        // Restore gallery shortcode handler
+        if ($gallery_shortcode) {
+            add_shortcode('gallery', $gallery_shortcode);
+        }
+        
+        return $processed_content;
     }
 
     /**

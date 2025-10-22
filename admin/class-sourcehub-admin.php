@@ -16,9 +16,20 @@ if (!defined('ABSPATH')) {
 class SourceHub_Admin {
 
     /**
+     * Track if admin has been initialized
+     */
+    private static $initialized = false;
+
+    /**
      * Initialize admin functionality
      */
     public function init() {
+        // Prevent multiple initializations
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));

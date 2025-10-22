@@ -36,8 +36,11 @@ class SourceHub_Validation {
         
         // Skip validation entirely on spoke sites
         if ($is_spoke) {
+            error_log('SourceHub Validation: Skipping validation - site is in spoke mode');
             return;
         }
+        
+        error_log('SourceHub Validation: Initializing validation hooks - site is in hub mode');
         
         // Safe validation approach - halt syndication if validation fails
         add_action('transition_post_status', array(__CLASS__, 'check_post_validation'), 10, 3);
@@ -437,23 +440,15 @@ class SourceHub_Validation {
      * @return bool True if spoke site, false if hub site
      */
     public static function is_spoke_site() {
-        // Check if this site has a spoke API key (indicates it's a spoke)
-        $spoke_api_key = get_option('sourcehub_spoke_api_key');
-        
-        // If there's a spoke API key, this is a spoke site
-        if (!empty($spoke_api_key)) {
-            return true;
+        // Use the actual mode setting from SourceHub
+        if (function_exists('sourcehub')) {
+            $mode = sourcehub()->get_mode();
+            return ($mode === 'spoke');
         }
         
-        // Additional check: if there are no spoke connections but there are hub connections
-        $spoke_connections = get_option('sourcehub_spoke_connections', array());
-        $hub_connections = get_option('sourcehub_hub_connections', array());
-        
-        $has_hub_connections = !empty($hub_connections);
-        $has_no_spoke_connections = empty($spoke_connections);
-        
-        // If no spoke connections but has hub connections, likely a spoke
-        return ($has_no_spoke_connections && $has_hub_connections);
+        // Fallback: Check if this site has a spoke API key (indicates it's a spoke)
+        $spoke_api_key = get_option('sourcehub_spoke_api_key');
+        return !empty($spoke_api_key);
     }
 }
 

@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ A powerful content syndication plugin that enables centralized editorial teams t
 
 == Description ==
 
-SourceHub transforms your WordPress network into a centralized content distribution system. Create content once on your hub site and automatically syndicate it to multiple spoke sites with intelligent processing, SEO optimization, and custom linking.
+ SourceHub transforms your WordPress network into a centralized content distribution system. Create content once on your hub site and automatically syndicate it to multiple spoke sites with intelligent processing, SEO optimization, and custom linking.
 
 = Key Features =
 
@@ -20,6 +20,7 @@ SourceHub transforms your WordPress network into a centralized content distribut
 * **AI-Powered Content Rewriting** - OpenAI integration with GPT-4 support
 * **Smart Linking System** - Automatic URL adaptation for spoke sites
 * **Full Yoast SEO Integration** - All meta fields sync automatically
+* **Gallery Syndication** - Automatic image gallery download and ID remapping
 * **Featured Image Sync** - Complete media handling with metadata
 * **Real-time Monitoring** - Live syndication status and comprehensive logs
 * **Modern Admin Interface** - Beautiful, responsive dashboard
@@ -39,6 +40,15 @@ SourceHub transforms your WordPress network into a centralized content distribut
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.6 - 2025-10-22 =
+* Feature: Gallery syndication - automatically downloads gallery images and remaps IDs
+* Feature: Preserves gallery shortcodes during syndication for spoke-side processing
+* Feature: Supports both classic WordPress galleries and Gutenberg gallery blocks
+* Feature: Complete image metadata preservation (title, alt, caption, description)
+* Fix: Yoast SEO auto-sync now uses delayed scheduling (3-second delay) to ensure meta is ready
+* Enhancement: Improved debug logging for gallery image processing
+* Enhancement: Added comprehensive error handling for image downloads
 
 = 1.2.5 - 2025-10-21 =
 * Test: Git Updater functionality test release
