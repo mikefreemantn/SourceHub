@@ -30,7 +30,7 @@
 
         // Smart Link Modal
         function openSmartLinkModal() {
-            editor.windowManager.open({
+            var dialogInstance = editor.windowManager.open({
                 title: 'Insert Smart Link',
                 width: 600,
                 height: 350,
@@ -81,8 +81,10 @@
                     {
                         text: 'Copy Shortcode',
                         onclick: function() {
-                            var linkText = this.find('#linkText')[0].value();
-                            var path = this.find('#path')[0].value();
+                            console.log('Copy Shortcode button clicked');
+                            var formData = dialogInstance.toJSON();
+                            var linkText = formData.linkText || '';
+                            var path = formData.path || '';
                             
                             if (!linkText || !path) {
                                 alert('Please fill in both link text and path.');
@@ -97,8 +99,10 @@
                     {
                         text: 'Insert',
                         onclick: function() {
-                            var linkText = this.find('#linkText')[0].value();
-                            var path = this.find('#path')[0].value();
+                            console.log('Insert button clicked');
+                            var formData = dialogInstance.toJSON();
+                            var linkText = formData.linkText || '';
+                            var path = formData.path || '';
                             
                             if (!linkText || !path) {
                                 alert('Please fill in both link text and path.');
@@ -107,14 +111,14 @@
                             
                             var shortcode = '[smart-link path="' + path + '"]' + linkText + '[/smart-link]';
                             editor.insertContent(shortcode);
-                            this.close();
+                            dialogInstance.close();
                         }
                     },
                     {
                         text: 'Cancel',
                         onclick: function() {
                             console.log('Smart Link Cancel button clicked');
-                            this.close();
+                            dialogInstance.close();
                         }
                     }
                 ]
