@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,11 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.8 - 2025-10-22 =
+* Fix: Smart Link modal buttons (Insert, Copy, Cancel) now work correctly
+* Fix: Resolved TinyMCE dialog context issue causing button clicks to fail
+* Enhancement: Added console logging for Smart Link button debugging
 
 = 1.2.7 - 2025-10-22 =
 * Enhancement: Added activity log entries for gallery syndication debugging
