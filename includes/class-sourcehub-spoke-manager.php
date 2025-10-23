@@ -467,6 +467,11 @@ class SourceHub_Spoke_Manager {
             $this->set_post_tags($post_id, $data['tags']);
         }
 
+        // Handle post format
+        if (isset($data['post_format'])) {
+            $this->set_post_format($post_id, $data['post_format']);
+        }
+
         // Handle featured image
         if (isset($data['featured_image'])) {
             $this->set_featured_image($post_id, $data['featured_image']);
@@ -600,6 +605,11 @@ class SourceHub_Spoke_Manager {
         // Update tags
         if (isset($data['tags']) && is_array($data['tags'])) {
             $this->set_post_tags($post_id, $data['tags']);
+        }
+
+        // Update post format
+        if (isset($data['post_format'])) {
+            $this->set_post_format($post_id, $data['post_format']);
         }
 
         // Update featured image
@@ -762,6 +772,18 @@ class SourceHub_Spoke_Manager {
 
         if (!empty($tag_names)) {
             wp_set_post_tags($post_id, $tag_names);
+        }
+    }
+
+    /**
+     * Set post format
+     *
+     * @param int $post_id Post ID
+     * @param string $post_format Post format (video, audio, gallery, etc.)
+     */
+    private function set_post_format($post_id, $post_format) {
+        if (!empty($post_format)) {
+            set_post_format($post_id, $post_format);
         }
     }
 

@@ -870,6 +870,12 @@ class SourceHub_Hub_Manager {
             }, $tags);
         }
 
+        // Add post format (standard, video, audio, etc.)
+        $post_format = get_post_format($post->ID);
+        if ($post_format) {
+            $data['post_format'] = $post_format;
+        }
+
         // Add featured image
         $featured_image_id = get_post_thumbnail_id($post->ID);
         

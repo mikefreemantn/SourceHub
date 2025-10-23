@@ -29,8 +29,8 @@ class SourceHub_Newspaper_Integration {
         '_td_featured_image',
         '_td_post_theme_settings',
         'td_post_theme_settings', // Newspaper stores this WITHOUT underscore prefix!
-        '_td_post_video',
-        '_td_post_audio',
+        'td_post_video', // Newspaper stores this WITHOUT underscore prefix!
+        'td_post_audio', // Newspaper stores this WITHOUT underscore prefix!
         '_td_post_gallery',
         '_td_post_quote',
         '_td_post_review',
@@ -121,6 +121,10 @@ class SourceHub_Newspaper_Integration {
             }
         }
         error_log('SourceHub Newspaper: ALL Newspaper meta found: ' . json_encode($newspaper_meta_found));
+        
+        // Specifically check for video field
+        $video_meta = get_post_meta($post_id, '_td_post_video', true);
+        error_log('SourceHub Newspaper: _td_post_video value: ' . ($video_meta ? json_encode($video_meta) : 'EMPTY'));
         
         // Specifically check for post template fields
         $template_fields = array('_td_post_template', '_td_single_template', '_td_article_template', '_td_post_settings', '_td_post_style', '_td_post_layout', 'td_post_theme_settings');
