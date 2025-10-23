@@ -41,6 +41,25 @@ A powerful content syndication plugin that enables centralized editorial teams t
 
 == Changelog ==
 
+= 1.2.11 - 2025-10-23 =
+* Feature: Added post format syndication (video, audio, gallery, standard, etc.)
+* Fix: Corrected featured video field name (td_post_video without underscore)
+* Fix: Corrected featured audio field name (td_post_audio without underscore)
+* Enhancement: Post formats now sync automatically on create and update
+
+= 1.2.10 - 2025-10-23 =
+* Fix: Validation timing issue causing false warnings on direct publish
+* Fix: Changed validation hook from transition_post_status to save_post
+* Enhancement: Validation now runs after spoke selection is saved
+
+= 1.2.9 - 2025-10-23 =
+* Fix: Spoke selection no longer clears when saving drafts
+* Fix: Posts now syndicate immediately on first publish without template
+* Fix: Featured image detection using WordPress _thumbnail_id field
+* Fix: TinyMCE script dependency error
+* Enhancement: Real-time featured image validation with polling
+* Enhancement: Removed template validation requirement (templates optional)
+
 = 1.2.8 - 2025-10-22 =
 * Fix: Smart Link modal buttons (Insert, Copy, Cancel) now work correctly
 * Fix: Resolved TinyMCE dialog context issue causing button clicks to fail
