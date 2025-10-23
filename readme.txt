@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.11
+Stable tag: 1.2.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
@@ -43,6 +43,11 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.12 - 2025-10-23 =
+* Fix: Version constant mismatch resolved for Git Updater compatibility
+* Enhancement: Added Git Updater headers to readme.txt for proper update handling
+* Enhancement: All version references now consistent across plugin files
 
 = 1.2.11 - 2025-10-23 =
 * Feature: Added post format syndication (video, audio, gallery, standard, etc.)
