@@ -28,7 +28,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SOURCEHUB_VERSION', '1.2.8');
+define('SOURCEHUB_VERSION', '1.2.11');
 define('SOURCEHUB_PLUGIN_FILE', __FILE__);
 define('SOURCEHUB_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOURCEHUB_PLUGIN_URL', plugin_dir_url(__FILE__));
