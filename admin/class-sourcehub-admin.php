@@ -199,7 +199,7 @@ class SourceHub_Admin {
             wp_enqueue_script(
                 'sourcehub-tinymce-shortcodes',
                 SOURCEHUB_PLUGIN_URL . 'assets/js/tinymce-shortcodes.js',
-                array('jquery'),
+                array('jquery', 'editor'),
                 SOURCEHUB_VERSION,
                 true
             );

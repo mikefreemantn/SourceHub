@@ -34,11 +34,40 @@
 
             // Validation when featured image is set/removed
             $(document).on('click', '#set-post-thumbnail, #remove-post-thumbnail', function() {
-                console.log('Featured image changed, updating validation...');
+                console.log('Featured image button clicked, updating validation...');
                 setTimeout(function() {
                     self.performRealTimeValidation();
                 }, 500);
             });
+
+            // Watch for changes to the _thumbnail_id field (WordPress updates this when featured image is set)
+            if ($('#_thumbnail_id').length) {
+                // Use MutationObserver to watch for attribute changes
+                var thumbnailInput = document.getElementById('_thumbnail_id');
+                if (thumbnailInput) {
+                    var observer = new MutationObserver(function(mutations) {
+                        console.log('Featured image _thumbnail_id changed, updating validation...');
+                        self.performRealTimeValidation();
+                    });
+                    observer.observe(thumbnailInput, { attributes: true, attributeFilter: ['value'] });
+                    
+                    // Also listen for direct value changes
+                    $(thumbnailInput).on('change', function() {
+                        console.log('Featured image _thumbnail_id change event, updating validation...');
+                        self.performRealTimeValidation();
+                    });
+                }
+            }
+            
+            // Fallback: Poll for _thumbnail_id changes every 2 seconds
+            setInterval(function() {
+                var currentThumbnailId = $('#_thumbnail_id').val();
+                if (self.lastThumbnailId !== currentThumbnailId) {
+                    console.log('Featured image changed (polling detected), updating validation...');
+                    self.lastThumbnailId = currentThumbnailId;
+                    self.performRealTimeValidation();
+                }
+            }, 2000);
 
             // Additional listeners for better coverage
             $(document).on('change', '#categorydiv input[type="checkbox"]', function() {
@@ -89,11 +118,14 @@
             var formData = {
                 // Collect spoke selections
                 sourcehub_selected_spokes: [],
-                // Check if featured image is set
-                has_featured_image: $('#set-post-thumbnail').length > 0 ? 'true' : 'false',
+                // Check if featured image is set using WordPress _thumbnail_id field
+                // WordPress sets this to -1 when no image, or a positive number when set
+                has_featured_image: ($('#_thumbnail_id').val() && $('#_thumbnail_id').val() !== '-1') ? 'true' : 'false',
                 // Collect selected categories
                 post_categories: []
             };
+            
+            console.log('Featured image detection: thumbnail_id =', $('#_thumbnail_id').val(), 'has_featured_image =', formData.has_featured_image);
 
             // Get spoke selections
             $('input[name="sourcehub_selected_spokes[]"]:checked, .sourcehub-spoke-checkbox:checked').each(function() {

@@ -207,36 +207,9 @@ class SourceHub_Validation {
             $errors[] = 'select at least one category for the post (other than "Uncategorized")';
         }
 
-        // Check if post template is selected
-        $has_template = false;
-        
-        // Check WordPress page template
-        $page_template = get_page_template_slug($post_id);
-        if (!empty($page_template) && $page_template !== 'default') {
-            $has_template = true;
-        }
-        
-        // Check Newspaper theme templates
-        if (!$has_template) {
-            $newspaper_templates = array(
-                '_td_post_template',
-                '_td_single_template', 
-                '_td_article_template',
-                'td_post_theme_settings'
-            );
-            
-            foreach ($newspaper_templates as $template_field) {
-                $template_value = get_post_meta($post_id, $template_field, true);
-                if (!empty($template_value)) {
-                    $has_template = true;
-                    break;
-                }
-            }
-        }
-        
-        if (!$has_template) {
-            $errors[] = 'select a post template to use';
-        }
+        // Template validation removed - templates are optional
+        // If a template is selected, it will still be synced to spoke sites
+        // "FROM PANEL" in Newspaper theme means use theme panel default (no specific template meta)
 
         return $errors;
     }
@@ -389,36 +362,9 @@ class SourceHub_Validation {
             $errors[] = 'select at least one category for the post (other than "Uncategorized")';
         }
 
-        // Check if post template is selected (use saved data for now)
-        $has_template = false;
-        
-        // Check WordPress page template
-        $page_template = get_page_template_slug($post_id);
-        if (!empty($page_template) && $page_template !== 'default') {
-            $has_template = true;
-        }
-        
-        // Check Newspaper theme templates
-        if (!$has_template) {
-            $newspaper_templates = array(
-                '_td_post_template',
-                '_td_single_template', 
-                '_td_article_template',
-                'td_post_theme_settings'
-            );
-            
-            foreach ($newspaper_templates as $template_field) {
-                $template_value = get_post_meta($post_id, $template_field, true);
-                if (!empty($template_value)) {
-                    $has_template = true;
-                    break;
-                }
-            }
-        }
-        
-        if (!$has_template) {
-            $errors[] = 'select a post template to use';
-        }
+        // Template validation removed - templates are optional
+        // If a template is selected, it will still be synced to spoke sites
+        // "FROM PANEL" in Newspaper theme means use theme panel default (no specific template meta)
 
         return $errors;
     }

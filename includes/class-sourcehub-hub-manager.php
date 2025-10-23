@@ -392,52 +392,29 @@ class SourceHub_Hub_Manager {
 
         // Check nonce
         if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
+            error_log('SourceHub: Nonce check failed or not present for post ' . $post_id);
             return;
         }
-
-        // Check if this is a Newspaper theme post that might need delayed syncing
-        $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
-        $has_newspaper_meta = !empty($newspaper_meta);
-        $is_newspaper_theme = (wp_get_theme()->get('Name') === 'Newspaper' || wp_get_theme()->get_template() === 'Newspaper');
         
-        error_log('SourceHub: save_post_meta called for post ' . $post_id . ', Newspaper theme: ' . ($is_newspaper_theme ? 'YES' : 'NO') . ', has meta: ' . ($has_newspaper_meta ? 'YES' : 'NO'));
+        error_log('SourceHub: Nonce verified, processing meta save for post ' . $post_id);
+        error_log('SourceHub: Full $_POST data: ' . print_r($_POST, true));
 
-        // Only delay syncing if this is a Newspaper theme post that doesn't have meta yet
-        if ($is_newspaper_theme && !$has_newspaper_meta) {
-            // Add to pending syncs - we'll check again later
-            $this->pending_syncs[$post_id] = true;
-            error_log('SourceHub: Added post ' . $post_id . ' to pending syncs');
-            
-            // Also schedule a delayed sync as backup
-            error_log('SourceHub: Scheduling delayed sync for post ' . $post_id . ' in 3 seconds');
-            wp_schedule_single_event(time() + 3, 'sourcehub_delayed_sync', array($post_id));
-            
-            // For local development, also trigger cron manually after a short delay
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('SourceHub: Setting up manual cron trigger for local development');
-                // Output JavaScript directly to trigger cron after page load
-                echo '<script>
-                console.log("SourceHub: Setting up delayed sync for post ' . $post_id . '");
-                setTimeout(function() {
-                    console.log("SourceHub: Triggering manual cron for post ' . $post_id . '");
-                    fetch("' . admin_url('admin-ajax.php') . '", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                        body: "action=sourcehub_manual_cron&post_id=' . $post_id . '&nonce=' . wp_create_nonce('sourcehub_manual_cron') . '"
-                    }).then(response => response.text()).then(data => {
-                        console.log("SourceHub: Manual cron response:", data);
-                    });
-                }, 3000);
-                </script>';
-            }
-            return;
-        }
-
-        // Save selected spokes
+        // Save selected spokes FIRST (before any early returns)
+        // This ensures spoke selection is always saved, even if we return early for Newspaper theme
+        // Only update if the form was submitted (nonce verified above)
+        // If checkboxes are unchecked, $_POST['sourcehub_selected_spokes'] won't exist,
+        // but we still want to save empty array to clear previous selections
         $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
             array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
         
+        error_log('SourceHub: Saving spoke selection for post ' . $post_id . ': ' . print_r($selected_spokes, true));
+        error_log('SourceHub: POST data sourcehub_selected_spokes: ' . (isset($_POST['sourcehub_selected_spokes']) ? print_r($_POST['sourcehub_selected_spokes'], true) : 'NOT SET'));
+        
         update_post_meta($post_id, '_sourcehub_selected_spokes', $selected_spokes);
+        
+        // Verify it was saved
+        $saved_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        error_log('SourceHub: Verified saved spokes: ' . print_r($saved_spokes, true));
 
         // Save AI overrides
         $ai_overrides = array();
@@ -448,6 +425,10 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
+        // Continue with syndication logic
+        // Note: We used to delay syndication for Newspaper theme posts without meta,
+        // but this caused issues where posts wouldn't syndicate at all.
+        // Now we syndicate immediately and let updates handle any Newspaper meta that comes later.
         // If this is a published post, trigger syndication (only for NEW posts)
         if ($post->post_status === 'publish' && !empty($selected_spokes)) {
             // Check if this post has already been syndicated
