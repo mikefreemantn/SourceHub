@@ -475,6 +475,7 @@ class SourceHub_Spoke_Manager {
         // Handle gallery images
         if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
             error_log('SourceHub Gallery: Received ' . count($data['gallery_images']) . ' gallery images for post ' . $post_id);
+            SourceHub_Logger::info('Received ' . count($data['gallery_images']) . ' gallery images for processing', array(), $post_id, null, 'gallery_sync');
             error_log('SourceHub Gallery: Content before remap: ' . substr($data['content'], 0, 500));
             
             $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
@@ -483,6 +484,8 @@ class SourceHub_Spoke_Manager {
             
             // Remap gallery IDs in post content
             if (!empty($image_id_map)) {
+                SourceHub_Logger::success('Downloaded ' . count($image_id_map) . ' gallery images', array('image_map' => $image_id_map), $post_id, null, 'gallery_sync');
+                
                 $updated_content = SourceHub_Gallery_Handler::process_galleries(
                     $data['content'],
                     $data['hub_id'],
@@ -499,11 +502,14 @@ class SourceHub_Spoke_Manager {
                 ));
                 
                 error_log('SourceHub: Remapped gallery IDs for post ' . $post_id);
+                SourceHub_Logger::success('Remapped gallery IDs in post content', array(), $post_id, null, 'gallery_sync');
             } else {
                 error_log('SourceHub Gallery: WARNING - No images were downloaded, image_id_map is empty!');
+                SourceHub_Logger::warning('No gallery images were downloaded - image_id_map is empty', array(), $post_id, null, 'gallery_sync');
             }
         } else {
             error_log('SourceHub Gallery: No gallery_images found in data for post ' . $post_id);
+            SourceHub_Logger::info('No gallery_images found in syndication data', array(), $post_id, null, 'gallery_sync');
         }
 
         // Handle Yoast SEO meta

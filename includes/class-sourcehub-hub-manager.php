@@ -911,6 +911,8 @@ class SourceHub_Hub_Manager {
         if (!empty($gallery_image_ids)) {
             $data['gallery_images'] = array();
             error_log('SourceHub Gallery: Extracting data for ' . count($gallery_image_ids) . ' image IDs: ' . implode(', ', $gallery_image_ids));
+            SourceHub_Logger::info('Extracting ' . count($gallery_image_ids) . ' gallery images from post', array('image_ids' => $gallery_image_ids), $post->ID, null, 'gallery_sync');
+            
             foreach ($gallery_image_ids as $image_id) {
                 $image_data = SourceHub_Gallery_Handler::get_image_data($image_id);
                 if ($image_data) {
@@ -918,9 +920,13 @@ class SourceHub_Hub_Manager {
                     error_log('SourceHub Gallery: Successfully got data for image ' . $image_id . ' - URL: ' . $image_data['url']);
                 } else {
                     error_log('SourceHub Gallery: WARNING - Failed to get data for image ID ' . $image_id);
+                    SourceHub_Logger::warning('Failed to get data for gallery image ID ' . $image_id, array(), $post->ID, null, 'gallery_sync');
                 }
             }
             error_log('SourceHub: Found ' . count($data['gallery_images']) . ' gallery images for post ' . $post->ID);
+            SourceHub_Logger::success('Prepared ' . count($data['gallery_images']) . ' gallery images for syndication', array(), $post->ID, null, 'gallery_sync');
+        } else {
+            SourceHub_Logger::info('No gallery images found in post content', array(), $post->ID, null, 'gallery_sync');
         }
 
         // Add Yoast SEO data
