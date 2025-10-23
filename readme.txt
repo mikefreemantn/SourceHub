@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,12 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.7 - 2025-10-22 =
+* Enhancement: Added activity log entries for gallery syndication debugging
+* Enhancement: Gallery processing now logs to activity log for easier troubleshooting
+* Enhancement: Hub logs gallery image extraction and preparation
+* Enhancement: Spoke logs gallery image download and remapping status
 
 = 1.2.6 - 2025-10-22 =
 * Feature: Gallery syndication - automatically downloads gallery images and remaps IDs
