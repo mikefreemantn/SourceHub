@@ -43,7 +43,8 @@ class SourceHub_Validation {
         error_log('SourceHub Validation: Initializing validation hooks - site is in hub mode');
         
         // Safe validation approach - halt syndication if validation fails
-        add_action('transition_post_status', array(__CLASS__, 'check_post_validation'), 10, 3);
+        // Use save_post at priority 999 to run AFTER spoke selection is saved (priority 99)
+        add_action('save_post', array(__CLASS__, 'check_post_validation_on_save'), 999, 3);
         add_action('admin_notices', array(__CLASS__, 'show_validation_notices'));
         add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue_validation_scripts'));
         add_action('wp_ajax_sourcehub_validate_post', array(__CLASS__, 'ajax_validate_post'));
@@ -108,7 +109,45 @@ class SourceHub_Validation {
     }
 
     /**
+     * Check post validation on save (runs after meta is saved)
+     *
+     * @param int $post_id Post ID
+     * @param WP_Post $post Post object
+     * @param bool $update Whether this is an update
+     */
+    public static function check_post_validation_on_save($post_id, $post, $update) {
+        // Only check when publishing
+        if ($post->post_status !== 'publish') {
+            return;
+        }
+
+        // Only validate posts (not pages or other post types)
+        if ($post->post_type !== 'post') {
+            return;
+        }
+
+        // Only validate in admin interface
+        if (!is_admin()) {
+            return;
+        }
+
+        // Skip if this is an auto-save or revision
+        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        $validation_errors = self::get_validation_errors($post_id);
+        
+        if (!empty($validation_errors)) {
+            // Store validation errors for display as warning (not blocking)
+            set_transient('sourcehub_validation_warning_' . $post_id, $validation_errors, 300);
+            set_transient('sourcehub_validation_warning_user_' . get_current_user_id(), $post_id, 300);
+        }
+    }
+
+    /**
      * Check post validation on status transition (safe, non-blocking)
+     * DEPRECATED: Kept for backwards compatibility
      *
      * @param string $new_status New post status
      * @param string $old_status Old post status  
