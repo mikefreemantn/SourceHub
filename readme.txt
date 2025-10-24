@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.12
+Stable tag: 1.2.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
@@ -42,6 +42,11 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.2.13 - 2025-10-23 =
+* Fix: Calendar now displays actual post publish times instead of fake test times
+* Fix: Removed "Release Asset: true" flag for better Git Updater compatibility
+* Enhancement: Calendar respects WordPress timezone settings
 
 = 1.2.12 - 2025-10-23 =
 * Fix: Version constant mismatch resolved for Git Updater compatibility
