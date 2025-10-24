@@ -311,29 +311,9 @@ class SourceHub_Calendar {
             // Determine event color based on post status
             $color = $this->get_status_color($post->post_status);
 
-            // Get the actual scheduled date/time for this post
-            // Check if this is a scheduled post with a future date
-            if ($post->post_status === 'future') {
-                // For scheduled posts, use the scheduled date
-                $post_timestamp = strtotime($post->post_date);
-                $formatted_date = date('Y-m-d\TH:i:s', $post_timestamp);
-            } else {
-                // For published posts, check if they have a custom scheduled time
-                $custom_time = get_post_meta($post->ID, '_sourcehub_scheduled_time', true);
-                if ($custom_time) {
-                    // Use custom scheduled time
-                    $post_timestamp = strtotime($custom_time);
-                    $formatted_date = date('Y-m-d\TH:i:s', $post_timestamp);
-                } else {
-                    // Use post publication date but with a different time for testing
-                    $post_timestamp = strtotime($post->post_date);
-                    // Add some variation based on post ID to spread them out for testing
-                    $hour_offset = ($post->ID % 12) + 6; // Hours 6-17 (6 AM to 5 PM)
-                    $minute_offset = ($post->ID % 4) * 15; // 0, 15, 30, 45 minutes
-                    $test_timestamp = strtotime(date('Y-m-d', $post_timestamp) . ' ' . $hour_offset . ':' . $minute_offset . ':00');
-                    $formatted_date = date('Y-m-d\TH:i:s', $test_timestamp);
-                }
-            }
+            // Get the actual post date/time using WordPress timezone
+            // WordPress stores post_date in site's local timezone
+            $formatted_date = get_the_date('Y-m-d\TH:i:s', $post->ID);
             
             // Debug logging
             error_log('SourceHub Calendar: Post "' . $post->post_title . '" (ID: ' . $post->ID . ', Status: ' . $post->post_status . ') - Original: ' . $post->post_date . ', Formatted: ' . $formatted_date);
