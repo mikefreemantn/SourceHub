@@ -9,7 +9,6 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
 Primary Branch: main
-Release Asset: true
 
 A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
 
