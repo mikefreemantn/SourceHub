@@ -30,6 +30,7 @@ class SourceHub_Admin {
         }
         self::$initialized = true;
 
+        add_action('admin_init', array($this, 'handle_bug_submission'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
@@ -40,6 +41,66 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
+    }
+
+    /**
+     * Handle bug submission, archive, and unarchive before any output
+     */
+    public function handle_bug_submission() {
+        // Only process on bug tracker pages
+        if (!isset($_GET['page']) || $_GET['page'] !== 'sourcehub-bugs') {
+            return;
+        }
+        
+        // Check if form was submitted
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
+        }
+        
+        // Handle bug submission
+        if (isset($_GET['action']) && $_GET['action'] === 'submit' && isset($_POST['submit_bug'])) {
+            // Verify nonce
+            if (!isset($_POST['sourcehub_bug_nonce']) || !wp_verify_nonce($_POST['sourcehub_bug_nonce'], 'submit_bug')) {
+                return;
+            }
+            
+            // Submit bug
+            $bug_id = SourceHub_Bug_Tracker::submit_bug($_POST);
+            
+            if ($bug_id) {
+                // Redirect to bug detail page with success message
+                wp_safe_redirect(admin_url('admin.php?page=sourcehub-bugs&action=view&bug_id=' . $bug_id . '&submitted=1'));
+                exit;
+            }
+        }
+        
+        // Handle bug archiving
+        if (isset($_POST['delete_bug']) && isset($_GET['bug_id'])) {
+            $bug_id = intval($_GET['bug_id']);
+            
+            // Verify nonce
+            if (!isset($_POST['sourcehub_bug_nonce']) || !wp_verify_nonce($_POST['sourcehub_bug_nonce'], 'update_bug_' . $bug_id)) {
+                return;
+            }
+            
+            SourceHub_Bug_Tracker::delete_bug($bug_id);
+            wp_safe_redirect(admin_url('admin.php?page=sourcehub-bugs&archived=1'));
+            exit;
+        }
+        
+        // Handle bug unarchiving
+        if (isset($_POST['unarchive_bug']) && isset($_GET['bug_id'])) {
+            $bug_id = intval($_GET['bug_id']);
+            
+            // Verify nonce
+            if (!isset($_POST['sourcehub_bug_nonce']) || !wp_verify_nonce($_POST['sourcehub_bug_nonce'], 'update_bug_' . $bug_id)) {
+                return;
+            }
+            
+            SourceHub_Bug_Tracker::unarchive_bug($bug_id);
+            wp_safe_redirect(admin_url('admin.php?page=sourcehub-bugs&unarchived=1'));
+            exit;
+        }
     }
 
     /**
@@ -143,6 +204,16 @@ class SourceHub_Admin {
             $dashboard_capability,
             'sourcehub-logs',
             array($this, 'render_logs')
+        );
+
+        // Bug Tracker - accessible to editors and above
+        add_submenu_page(
+            'sourcehub',
+            __('Bug Tracker', 'sourcehub'),
+            __('Bug Tracker', 'sourcehub'),
+            $dashboard_capability,
+            'sourcehub-bugs',
+            array($this, 'render_bug_tracker')
         );
 
         // Smart Links Documentation (only for hub mode) - accessible to editors and above
@@ -842,6 +913,18 @@ class SourceHub_Admin {
                 'message' => __('Failed to load connection: ', 'sourcehub') . $e->getMessage()
             ));
         }
+    }
+
+    /**
+     * Render Bug Tracker page
+     */
+    public function render_bug_tracker() {
+        // Check permissions
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        include SOURCEHUB_PLUGIN_DIR . 'admin/views/bug-tracker.php';
     }
 
     /**

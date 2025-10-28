@@ -137,6 +137,7 @@ final class SourceHub {
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-shortcodes.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-validation.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-gallery-handler.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-bug-tracker.php';
 
         // Load admin classes
         if (is_admin()) {
@@ -202,6 +203,7 @@ final class SourceHub {
     public function activate() {
         // Create database tables
         SourceHub_Database::create_tables();
+        SourceHub_Bug_Tracker::create_tables();
         
         // Verify tables were created
         global $wpdb;
