@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
@@ -42,6 +42,13 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.4.1 - 2025-10-28 =
+* Fixed: Activity Logs pagination now works via page reloads instead of AJAX
+* Fixed: Activity Logs filters (level, action, date) now work properly
+* Fixed: Export logs functionality now respects all filters
+* Fixed: Removed CORS issues that prevented logs features from working in some environments
+* Improved: More reliable Activity Logs interface using standard WordPress patterns
 
 = 1.3.0 - 2025-10-23 =
 * Fix: Calendar now displays actual post publish times instead of fake test times

@@ -280,4 +280,42 @@ class SourceHub_Logger {
             'warning_percentage' => $total > 0 ? ($stats['warning'] / $total) * 100 : 0
         );
     }
+
+    /**
+     * Clear all logs
+     */
+    public static function clear_logs() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'sourcehub_logs';
+        
+        $result = $wpdb->query("TRUNCATE TABLE {$table_name}");
+        
+        if ($result === false) {
+            throw new Exception('Failed to clear logs');
+        }
+        
+        return true;
+    }
+
+    /**
+     * Delete a single log entry
+     *
+     * @param int $log_id Log ID to delete
+     */
+    public static function delete_log($log_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'sourcehub_logs';
+        
+        $result = $wpdb->delete(
+            $table_name,
+            array('id' => $log_id),
+            array('%d')
+        );
+        
+        if ($result === false) {
+            throw new Exception('Failed to delete log');
+        }
+        
+        return true;
+    }
 }

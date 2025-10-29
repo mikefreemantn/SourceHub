@@ -3,7 +3,7 @@
  * Plugin Name: SourceHub - Hub & Spoke Publisher
  * Plugin URI: https://github.com/mikefreemantn/SourceHub
  * Description: A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Mike Freeman
  * Author URI: https://manovermachine.com
  * License: GPL v2 or later
@@ -181,12 +181,10 @@ final class SourceHub {
         // Initialize the API handler for REST endpoints
         $this->api_handler->init();
 
-        // Initialize admin if in admin area
-        if (is_admin() && isset($this->admin)) {
-            $this->admin->init();
-            if (isset($this->calendar)) {
-                $this->calendar->init();
-            }
+        // Admin is initialized via constructor, no init() method needed
+        // Calendar init if it exists
+        if (is_admin() && isset($this->calendar)) {
+            $this->calendar->init();
         }
     }
 

@@ -20,44 +20,52 @@ if (!defined('ABSPATH')) {
     </h1>
 
     <div class="logs-header">
-        <div class="logs-filters">
-            <select id="log-level-filter" class="form-select">
+        <form method="get" action="" class="logs-filters">
+            <input type="hidden" name="page" value="sourcehub-logs">
+            
+            <select name="log_level" class="form-select">
                 <option value=""><?php echo __('All Levels', 'sourcehub'); ?></option>
-                <option value="success"><?php echo __('Success', 'sourcehub'); ?></option>
-                <option value="error"><?php echo __('Error', 'sourcehub'); ?></option>
-                <option value="warning"><?php echo __('Warning', 'sourcehub'); ?></option>
-                <option value="info"><?php echo __('Info', 'sourcehub'); ?></option>
+                <option value="SUCCESS" <?php selected(isset($_GET['log_level']) ? $_GET['log_level'] : '', 'SUCCESS'); ?>><?php echo __('Success', 'sourcehub'); ?></option>
+                <option value="ERROR" <?php selected(isset($_GET['log_level']) ? $_GET['log_level'] : '', 'ERROR'); ?>><?php echo __('Error', 'sourcehub'); ?></option>
+                <option value="WARNING" <?php selected(isset($_GET['log_level']) ? $_GET['log_level'] : '', 'WARNING'); ?>><?php echo __('Warning', 'sourcehub'); ?></option>
+                <option value="INFO" <?php selected(isset($_GET['log_level']) ? $_GET['log_level'] : '', 'INFO'); ?>><?php echo __('Info', 'sourcehub'); ?></option>
             </select>
 
-            <select id="log-action-filter" class="form-select">
+            <select name="log_action" class="form-select">
                 <option value=""><?php echo __('All Actions', 'sourcehub'); ?></option>
-                <option value="sync"><?php echo __('Sync', 'sourcehub'); ?></option>
-                <option value="connection"><?php echo __('Connection', 'sourcehub'); ?></option>
-                <option value="ai_rewrite"><?php echo __('AI Rewrite', 'sourcehub'); ?></option>
-                <option value="api"><?php echo __('API', 'sourcehub'); ?></option>
+                <option value="sync" <?php selected(isset($_GET['log_action']) ? $_GET['log_action'] : '', 'sync'); ?>><?php echo __('Sync', 'sourcehub'); ?></option>
+                <option value="connection" <?php selected(isset($_GET['log_action']) ? $_GET['log_action'] : '', 'connection'); ?>><?php echo __('Connection', 'sourcehub'); ?></option>
+                <option value="ai_rewrite" <?php selected(isset($_GET['log_action']) ? $_GET['log_action'] : '', 'ai_rewrite'); ?>><?php echo __('AI Rewrite', 'sourcehub'); ?></option>
+                <option value="api" <?php selected(isset($_GET['log_action']) ? $_GET['log_action'] : '', 'api'); ?>><?php echo __('API', 'sourcehub'); ?></option>
             </select>
 
-            <input type="date" id="log-date-filter" class="form-input">
+            <input type="date" name="log_date" class="form-input" value="<?php echo isset($_GET['log_date']) ? esc_attr($_GET['log_date']) : ''; ?>">
 
-            <button type="button" id="apply-filters" class="button button-secondary">
+            <button type="submit" class="button button-secondary">
                 <?php echo __('Apply Filters', 'sourcehub'); ?>
             </button>
 
-            <button type="button" id="clear-filters" class="button button-secondary">
+            <a href="<?php echo admin_url('admin.php?page=sourcehub-logs'); ?>" class="button button-secondary">
                 <?php echo __('Clear', 'sourcehub'); ?>
-            </button>
-        </div>
+            </a>
+        </form>
 
         <div class="logs-actions">
-            <button type="button" id="refresh-logs" class="button button-secondary">
+            <a href="<?php echo admin_url('admin.php?page=sourcehub-logs' . (isset($_GET['log_level']) ? '&log_level=' . urlencode($_GET['log_level']) : '') . (isset($_GET['log_action']) ? '&log_action=' . urlencode($_GET['log_action']) : '') . (isset($_GET['log_date']) ? '&log_date=' . urlencode($_GET['log_date']) : '')); ?>" class="button button-secondary">
                 <span class="dashicons dashicons-update"></span>
                 <?php echo __('Refresh', 'sourcehub'); ?>
-            </button>
+            </a>
 
-            <button type="button" id="export-logs" class="button button-secondary">
+            <a href="<?php 
+                $export_args = array('action' => 'sourcehub_export_logs');
+                if (isset($_GET['log_level']) && $_GET['log_level']) $export_args['level'] = $_GET['log_level'];
+                if (isset($_GET['log_action']) && $_GET['log_action']) $export_args['log_action_filter'] = $_GET['log_action'];
+                if (isset($_GET['log_date']) && $_GET['log_date']) $export_args['date'] = $_GET['log_date'];
+                echo wp_nonce_url(add_query_arg($export_args, admin_url('admin-ajax.php')), 'sourcehub_admin_nonce', 'nonce'); 
+            ?>" class="button button-secondary">
                 <span class="dashicons dashicons-download"></span>
                 <?php echo __('Export', 'sourcehub'); ?>
-            </button>
+            </a>
 
             <button type="button" id="clear-logs" class="button button-link-delete">
                 <span class="dashicons dashicons-trash"></span>
@@ -176,7 +184,13 @@ if (!defined('ABSPATH')) {
                 </tbody>
             </table>
 
-            <?php if ($total_pages > 1): ?>
+            <?php if ($total_pages > 1): 
+                // Build query string with filters
+                $query_args = array('page' => 'sourcehub-logs');
+                if (isset($_GET['log_level']) && $_GET['log_level']) $query_args['log_level'] = $_GET['log_level'];
+                if (isset($_GET['log_action']) && $_GET['log_action']) $query_args['log_action'] = $_GET['log_action'];
+                if (isset($_GET['log_date']) && $_GET['log_date']) $query_args['log_date'] = $_GET['log_date'];
+            ?>
                 <div class="logs-pagination">
                     <div class="pagination-info">
                         <?php
@@ -187,8 +201,8 @@ if (!defined('ABSPATH')) {
                     </div>
                     <div class="pagination-links">
                         <?php if ($current_page > 1): ?>
-                            <a href="#" class="button" data-page="1"><?php echo __('First', 'sourcehub'); ?></a>
-                            <a href="#" class="button" data-page="<?php echo $current_page - 1; ?>"><?php echo __('Previous', 'sourcehub'); ?></a>
+                            <a href="<?php echo add_query_arg(array_merge($query_args, array('paged' => 1)), admin_url('admin.php')); ?>" class="button"><?php echo __('First', 'sourcehub'); ?></a>
+                            <a href="<?php echo add_query_arg(array_merge($query_args, array('paged' => $current_page - 1)), admin_url('admin.php')); ?>" class="button"><?php echo __('Previous', 'sourcehub'); ?></a>
                         <?php endif; ?>
 
                         <?php
@@ -197,14 +211,14 @@ if (!defined('ABSPATH')) {
                         
                         for ($i = $start_page; $i <= $end_page; $i++):
                         ?>
-                            <a href="#" class="button <?php echo $i === $current_page ? 'button-primary' : ''; ?>" data-page="<?php echo $i; ?>">
+                            <a href="<?php echo add_query_arg(array_merge($query_args, array('paged' => $i)), admin_url('admin.php')); ?>" class="button <?php echo $i === $current_page ? 'button-primary' : ''; ?>">
                                 <?php echo $i; ?>
                             </a>
                         <?php endfor; ?>
 
                         <?php if ($current_page < $total_pages): ?>
-                            <a href="#" class="button" data-page="<?php echo $current_page + 1; ?>"><?php echo __('Next', 'sourcehub'); ?></a>
-                            <a href="#" class="button" data-page="<?php echo $total_pages; ?>"><?php echo __('Last', 'sourcehub'); ?></a>
+                            <a href="<?php echo add_query_arg(array_merge($query_args, array('paged' => $current_page + 1)), admin_url('admin.php')); ?>" class="button"><?php echo __('Next', 'sourcehub'); ?></a>
+                            <a href="<?php echo add_query_arg(array_merge($query_args, array('paged' => $total_pages)), admin_url('admin.php')); ?>" class="button"><?php echo __('Last', 'sourcehub'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -395,6 +409,34 @@ tr:hover .row-actions {
     color: #005177;
 }
 
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.status-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
 @media (max-width: 768px) {
     .logs-header {
         flex-direction: column;
@@ -425,8 +467,10 @@ jQuery(document).ready(function($) {
     var currentPage = 1;
     var currentFilters = {};
 
-    // Toggle log details
-    $('.toggle-details').on('click', function() {
+    // Bind event handlers for log rows (called initially and after AJAX loads)
+    function bindLogEventHandlers() {
+        // Toggle log details
+        $('.toggle-details').off('click').on('click', function() {
         var logId = $(this).data('log-id');
         var $details = $('#details-' + logId);
         var $button = $(this);
@@ -452,74 +496,40 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Delete individual log
-    $('.delete-log').on('click', function() {
-        if (!confirm('<?php echo esc_js(__('Are you sure you want to delete this log entry?', 'sourcehub')); ?>')) {
-            return;
-        }
-
-        var logId = $(this).data('log-id');
-        var $row = $(this).closest('tr');
-
-        $.post(sourcehub_admin.ajax_url, {
-            action: 'sourcehub_delete_log',
-            log_id: logId,
-            nonce: sourcehub_admin.nonce
-        }, function(response) {
-            if (response.success) {
-                $row.fadeOut(300, function() {
-                    $(this).remove();
-                });
-                SourceHubAdmin.showNotice('success', response.data.message);
-            } else {
-                SourceHubAdmin.showNotice('error', response.data.message);
+        // Delete individual log
+        $('.delete-log').off('click').on('click', function() {
+            if (!confirm('<?php echo esc_js(__('Are you sure you want to delete this log entry?', 'sourcehub')); ?>')) {
+                return;
             }
+
+            var logId = $(this).data('log-id');
+            var $row = $(this).closest('tr');
+
+            $.post(sourcehub_admin.ajax_url, {
+                action: 'sourcehub_delete_log',
+                log_id: logId,
+                nonce: sourcehub_admin.ajax_nonce
+            }, function(response) {
+                if (response.success) {
+                    $row.fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                    if (typeof SourceHubAdmin !== 'undefined') {
+                        SourceHubAdmin.showNotice('success', response.data.message);
+                    }
+                } else {
+                    if (typeof SourceHubAdmin !== 'undefined') {
+                        SourceHubAdmin.showNotice('error', response.data.message);
+                    }
+                }
+            });
         });
-    });
+    }
+    
+    // Call on page load to bind initial handlers
+    bindLogEventHandlers();
 
-    // Apply filters
-    $('#apply-filters').on('click', function() {
-        currentFilters = {
-            level: $('#log-level-filter').val(),
-            action: $('#log-action-filter').val(),
-            date: $('#log-date-filter').val()
-        };
-        currentPage = 1;
-        loadLogs();
-    });
-
-    // Clear filters
-    $('#clear-filters').on('click', function() {
-        $('#log-level-filter').val('');
-        $('#log-action-filter').val('');
-        $('#log-date-filter').val('');
-        currentFilters = {};
-        currentPage = 1;
-        loadLogs();
-    });
-
-    // Refresh logs
-    $('#refresh-logs').on('click', function() {
-        loadLogs();
-    });
-
-    // Pagination
-    $(document).on('click', '.pagination-links .button', function(e) {
-        e.preventDefault();
-        currentPage = parseInt($(this).data('page'));
-        loadLogs();
-    });
-
-    // Export logs
-    $('#export-logs').on('click', function() {
-        var params = new URLSearchParams(currentFilters);
-        params.append('action', 'sourcehub_export_logs');
-        params.append('nonce', sourcehub_admin.nonce);
-        
-        window.open(sourcehub_admin.ajax_url + '?' + params.toString());
-    });
-
-    // Clear all logs
+    // Clear all logs (only AJAX action we keep)
     $('#clear-logs').on('click', function() {
         if (!confirm('<?php echo esc_js(__('Are you sure you want to clear all logs? This action cannot be undone.', 'sourcehub')); ?>')) {
             return;
@@ -527,7 +537,7 @@ jQuery(document).ready(function($) {
 
         $.post(sourcehub_admin.ajax_url, {
             action: 'sourcehub_clear_logs',
-            nonce: sourcehub_admin.nonce
+            nonce: sourcehub_admin.ajax_nonce
         }, function(response) {
             if (response.success) {
                 location.reload();
@@ -536,46 +546,25 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
-    // Load logs via AJAX
-    function loadLogs() {
-        var $table = $('#sourcehub-logs-table tbody');
-        var $loading = $('<tr><td colspan="6" style="text-align: center; padding: 40px;"><span class="spinner is-active"></span> Loading...</td></tr>');
-        
-        $table.html($loading);
-
-        var data = $.extend({}, currentFilters, {
-            page: currentPage,
-            per_page: 20
-        });
-
-        $.get(sourcehub_admin.rest_url + 'logs', data)
-            .done(function(response) {
-                if (response.logs && response.logs.length > 0) {
-                    var html = '';
-                    response.logs.forEach(function(log) {
-                        html += buildLogRow(log);
-                    });
-                    $table.html(html);
-                    updatePagination(response.pagination);
-                } else {
-                    $table.html('<tr><td colspan="6" style="text-align: center; padding: 40px;">No logs found</td></tr>');
-                }
-            })
-            .fail(function() {
-                $table.html('<tr><td colspan="6" style="text-align: center; padding: 40px; color: #d63638;">Error loading logs</td></tr>');
-            });
-    }
-
-    function buildLogRow(log) {
-        // This would mirror the PHP template logic
-        // Implementation depends on the exact log structure returned by the API
-        return '<tr>...</tr>'; // Simplified for brevity
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
     function updatePagination(pagination) {
-        // Update pagination based on response
-        // Implementation would update the pagination HTML
+        // For now, just reload the page to show updated pagination
+        // A full implementation would rebuild the pagination HTML
+        if (pagination && pagination.total_pages > 1) {
+            console.log('Pagination:', pagination);
+        }
     }
 });
 </script>

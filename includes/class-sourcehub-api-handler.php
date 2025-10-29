@@ -117,6 +117,8 @@ class SourceHub_API_Handler {
             'permission_callback' => '__return_true'
         ));
 
+        // Logs route disabled - using AJAX instead to avoid CORS issues
+        /*
         register_rest_route('sourcehub/v1', '/logs', array(
             'methods' => 'GET',
             'callback' => array($this, 'get_logs'),
@@ -139,6 +141,7 @@ class SourceHub_API_Handler {
                 )
             )
         ));
+        */
     }
 
     /**
@@ -155,7 +158,8 @@ class SourceHub_API_Handler {
         if (strpos($route, '/sourcehub/') === 0) {
             header('Access-Control-Allow-Origin: *');
             header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-SourceHub-API-Key');
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-SourceHub-API-Key, X-WP-Nonce, X-Requested-With');
+            header('Access-Control-Allow-Credentials: true');
             
             if ($request->get_method() === 'OPTIONS') {
                 exit;
@@ -173,6 +177,17 @@ class SourceHub_API_Handler {
      */
     public function check_admin_permission($request) {
         return current_user_can('manage_options');
+    }
+
+    /**
+     * Check if user has permission to view logs
+     * Allows editors and above to view activity logs
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function check_logs_permission($request) {
+        return current_user_can('edit_posts');
     }
 
     /**
@@ -552,27 +567,58 @@ class SourceHub_API_Handler {
      * @return WP_REST_Response
      */
     public function get_logs($request) {
-        $page = (int) $request->get_param('page');
-        $per_page = (int) $request->get_param('per_page');
-        $status = $request->get_param('status');
+        try {
+            $page = max(1, (int) $request->get_param('page'));
+            $per_page = min(100, max(1, (int) $request->get_param('per_page')));
+            $status = $request->get_param('level'); // JavaScript sends 'level'
+            $action = $request->get_param('action');
 
-        $args = array(
-            'limit' => $per_page,
-            'offset' => ($page - 1) * $per_page,
-            'order' => 'DESC'
-        );
+            $args = array(
+                'limit' => $per_page ?: 20,
+                'offset' => ($page - 1) * ($per_page ?: 20),
+                'order' => 'DESC'
+            );
 
-        if ($status) {
-            $args['status'] = $status;
+            if ($status) {
+                $args['status'] = sanitize_text_field($status);
+            }
+            
+            if ($action) {
+                $args['action'] = sanitize_text_field($action);
+            }
+
+            $logs = SourceHub_Logger::get_formatted_logs($args);
+            
+            // Get total count for pagination (cached for 1 minute)
+            $cache_key = 'sourcehub_logs_count_' . md5(serialize($args));
+            $total = get_transient($cache_key);
+            
+            if ($total === false) {
+                $total = SourceHub_Database::count_logs($args);
+                set_transient($cache_key, $total, 60); // Cache for 1 minute
+            }
+
+            return new WP_REST_Response(array(
+                'logs' => $logs,
+                'pagination' => array(
+                    'page' => $page,
+                    'per_page' => $per_page,
+                    'total' => $total,
+                    'total_pages' => ceil($total / $per_page)
+                )
+            ), 200);
+            
+        } catch (Exception $e) {
+            return new WP_REST_Response(array(
+                'error' => $e->getMessage(),
+                'logs' => array(),
+                'pagination' => array(
+                    'page' => 1,
+                    'per_page' => 20,
+                    'total' => 0,
+                    'total_pages' => 0
+                )
+            ), 500);
         }
-
-        $logs = SourceHub_Logger::get_formatted_logs($args);
-
-        return new WP_REST_Response(array(
-            'logs' => $logs,
-            'page' => $page,
-            'per_page' => $per_page,
-            'total' => count($logs)
-        ), 200);
     }
 }

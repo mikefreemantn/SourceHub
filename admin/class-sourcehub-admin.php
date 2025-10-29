@@ -23,7 +23,7 @@ class SourceHub_Admin {
     /**
      * Initialize admin functionality
      */
-    public function init() {
+    public function __construct() {
         // Prevent multiple initializations
         if (self::$initialized) {
             return;
@@ -38,6 +38,9 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_test_api', array($this, 'test_api_connection'));
         add_action('wp_ajax_sourcehub_regenerate_spoke_key', array($this, 'regenerate_spoke_key'));
         add_action('wp_ajax_sourcehub_clear_logs', array($this, 'clear_logs'));
+        add_action('wp_ajax_sourcehub_delete_log', array($this, 'delete_log'));
+        add_action('wp_ajax_sourcehub_export_logs', array($this, 'export_logs'));
+        add_action('wp_ajax_sourcehub_get_logs', array($this, 'ajax_get_logs'));
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
@@ -306,11 +309,14 @@ class SourceHub_Admin {
             SOURCEHUB_VERSION
         );
 
+        // Enqueue WordPress REST API script for nonce
+        wp_enqueue_script('wp-api');
+        
         // Enqueue admin scripts
         wp_enqueue_script(
             'sourcehub-admin',
             SOURCEHUB_PLUGIN_URL . 'admin/js/admin.js',
-            array('jquery', 'wp-util'),
+            array('jquery', 'wp-util', 'wp-api'),
             SOURCEHUB_VERSION,
             true
         );
@@ -522,7 +528,11 @@ class SourceHub_Admin {
 
         $page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
         $per_page = 20;
-        $status_filter = isset($_GET['status']) ? sanitize_text_field($_GET['status']) : '';
+        
+        // Get filters from GET parameters
+        $status_filter = isset($_GET['log_level']) ? sanitize_text_field($_GET['log_level']) : '';
+        $action_filter = isset($_GET['log_action']) ? sanitize_text_field($_GET['log_action']) : '';
+        $date_filter = isset($_GET['log_date']) ? sanitize_text_field($_GET['log_date']) : '';
 
         $args = array(
             'limit' => $per_page,
@@ -532,6 +542,14 @@ class SourceHub_Admin {
 
         if ($status_filter) {
             $args['status'] = $status_filter;
+        }
+        
+        if ($action_filter) {
+            $args['action'] = $action_filter;
+        }
+        
+        if ($date_filter) {
+            $args['date'] = $date_filter;
         }
 
         // Start profiling
@@ -938,5 +956,194 @@ class SourceHub_Admin {
 
         $documentation = SourceHub_Shortcodes::get_documentation();
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/smart-links-guide.php';
+    }
+
+    /**
+     * Clear all logs via AJAX
+     */
+    public function clear_logs() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array(
+                'message' => __('Permission denied', 'sourcehub')
+            ));
+            return;
+        }
+
+        try {
+            SourceHub_Logger::clear_logs();
+            
+            wp_send_json_success(array(
+                'message' => __('All logs have been cleared', 'sourcehub')
+            ));
+        } catch (Exception $e) {
+            wp_send_json_error(array(
+                'message' => __('Failed to clear logs: ', 'sourcehub') . $e->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Delete individual log via AJAX
+     */
+    public function delete_log() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array(
+                'message' => __('Permission denied', 'sourcehub')
+            ));
+            return;
+        }
+
+        $log_id = isset($_POST['log_id']) ? intval($_POST['log_id']) : 0;
+
+        if (!$log_id) {
+            wp_send_json_error(array(
+                'message' => __('Invalid log ID', 'sourcehub')
+            ));
+            return;
+        }
+
+        try {
+            SourceHub_Logger::delete_log($log_id);
+            
+            wp_send_json_success(array(
+                'message' => __('Log entry deleted', 'sourcehub')
+            ));
+        } catch (Exception $e) {
+            wp_send_json_error(array(
+                'message' => __('Failed to delete log: ', 'sourcehub') . $e->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Get logs via AJAX
+     */
+    public function ajax_get_logs() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array(
+                'message' => __('Permission denied', 'sourcehub')
+            ));
+            return;
+        }
+
+        try {
+            $page = max(1, intval($_POST['page']));
+            $per_page = min(100, max(1, intval($_POST['per_page'])));
+            
+            $args = array(
+                'limit' => $per_page,
+                'offset' => ($page - 1) * $per_page,
+                'order' => 'DESC'
+            );
+
+            // Add filters if provided
+            if (!empty($_POST['level'])) {
+                $args['status'] = sanitize_text_field($_POST['level']);
+            }
+            if (!empty($_POST['action'])) {
+                $args['action'] = sanitize_text_field($_POST['action']);
+            }
+
+            $logs = SourceHub_Logger::get_formatted_logs($args);
+            $total = SourceHub_Database::count_logs($args);
+
+            wp_send_json_success(array(
+                'logs' => $logs,
+                'pagination' => array(
+                    'page' => $page,
+                    'per_page' => $per_page,
+                    'total' => $total,
+                    'total_pages' => ceil($total / $per_page)
+                )
+            ));
+        } catch (Exception $e) {
+            wp_send_json_error(array(
+                'message' => __('Failed to load logs: ', 'sourcehub') . $e->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Export logs via AJAX
+     */
+    public function export_logs() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permission denied', 'sourcehub'));
+        }
+
+        try {
+            // Get filters - map 'level' to 'status' for database query
+            $filters = array(
+                'limit' => 1000, // Limit export to 1000 most recent logs
+                'order' => 'DESC'
+            );
+            
+            if (!empty($_GET['level'])) {
+                $filters['status'] = sanitize_text_field($_GET['level']);
+            }
+            if (!empty($_GET['log_action_filter'])) {
+                $filters['action'] = sanitize_text_field($_GET['log_action_filter']);
+            }
+            if (!empty($_GET['date'])) {
+                $filters['date'] = sanitize_text_field($_GET['date']);
+            }
+
+            // Get logs
+            $logs = SourceHub_Logger::get_formatted_logs($filters);
+            
+            // Debug: Log the count
+            error_log('SourceHub Export: Retrieved ' . count($logs) . ' logs with filters: ' . print_r($filters, true));
+            
+            if (empty($logs)) {
+                wp_die('No logs found to export. Try adjusting your filters or check if logs exist in the database.');
+            }
+
+            // Generate CSV
+            $filename = 'sourcehub-logs-' . date('Y-m-d-His') . '.csv';
+            
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            $output = fopen('php://output', 'w');
+            
+            // Add CSV headers
+            fputcsv($output, array('Date', 'Status', 'Action', 'Message', 'Connection', 'Details'));
+            
+            // Add log rows
+            foreach ($logs as $log) {
+                // Handle details/data field - could be in either property
+                $details = '';
+                if (!empty($log->details)) {
+                    $details = is_string($log->details) ? $log->details : json_encode($log->details);
+                } elseif (!empty($log->data)) {
+                    $details = is_string($log->data) ? $log->data : json_encode($log->data);
+                }
+                
+                fputcsv($output, array(
+                    !empty($log->created_at) ? $log->created_at : '',
+                    !empty($log->status) ? $log->status : '',
+                    !empty($log->action) ? $log->action : '',
+                    !empty($log->message) ? $log->message : '',
+                    !empty($log->connection_name) ? $log->connection_name : '-',
+                    $details
+                ));
+            }
+            
+            fclose($output);
+            exit;
+
+        } catch (Exception $e) {
+            wp_die(__('Failed to export logs: ', 'sourcehub') . $e->getMessage());
+        }
     }
 }
