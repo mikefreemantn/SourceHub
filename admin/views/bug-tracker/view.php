@@ -386,10 +386,11 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                         mentionStart = lastAtSymbol;
                         const searchTerm = textAfterAt.toLowerCase();
                         
-                        // Filter users
+                        // Filter users by login, name, or email
                         const filteredUsers = users.filter(user => 
                             user.login.toLowerCase().includes(searchTerm) || 
-                            user.name.toLowerCase().includes(searchTerm)
+                            user.name.toLowerCase().includes(searchTerm) ||
+                            user.email.toLowerCase().includes(searchTerm)
                         );
                         
                         if (filteredUsers.length > 0) {
@@ -430,8 +431,13 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                 filteredUsers.forEach((user, index) => {
                     const item = document.createElement('div');
                     item.className = 'mention-item';
-                    item.style.cssText = 'padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;';
-                    item.innerHTML = '<strong>' + user.login + '</strong><br><small style="color: #666;">' + user.name + '</small>';
+                    item.style.cssText = 'padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px;';
+                    item.innerHTML = '<img src="' + user.avatar + '" style="width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;">' +
+                                    '<div style="flex: 1; min-width: 0;">' +
+                                    '<strong style="display: block;">' + user.name + '</strong>' +
+                                    '<small style="color: #666; display: block;">@' + user.login + '</small>' +
+                                    '<small style="color: #999; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + user.email + '</small>' +
+                                    '</div>';
                     
                     item.addEventListener('mouseenter', function() {
                         selectedIndex = index;
@@ -439,7 +445,8 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                     });
                     
                     item.addEventListener('click', function() {
-                        insertMention(user.login);
+                        // Insert display name
+                        insertMention(user.name);
                     });
                     
                     autocomplete.appendChild(item);
@@ -485,7 +492,89 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                 }
             });
         })();
+        
+        // Delete note function
+        function deleteNote(noteId, bugId) {
+            if (!confirm('Are you sure you want to delete this note? This cannot be undone.')) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('action', 'sourcehub_delete_note');
+            formData.append('note_id', noteId);
+            formData.append('bug_id', bugId);
+            formData.append('nonce', '<?php echo wp_create_nonce('sourcehub_delete_note'); ?>');
+            
+            fetch(ajaxurl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const noteElement = document.getElementById('note-' + noteId);
+                    if (noteElement) {
+                        noteElement.style.transition = 'opacity 0.3s';
+                        noteElement.style.opacity = '0';
+                        setTimeout(() => noteElement.remove(), 300);
+                    }
+                } else {
+                    alert('Error deleting note: ' + (data.data || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                alert('Error deleting note: ' + error);
+            });
+        }
         </script>
+        
+        <style>
+        .sourcehub-note {
+            position: relative;
+        }
+        
+        .sourcehub-note-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .sourcehub-note-header > div {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .sourcehub-note-author {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .sourcehub-note-delete {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #b32d2e;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .sourcehub-note:hover .sourcehub-note-delete {
+            opacity: 1;
+        }
+        
+        .sourcehub-note-delete:hover {
+            background: #f8d7da;
+            border-color: #b32d2e;
+        }
+        </style>
         
         <!-- Notes List -->
         <?php if (empty($notes)): ?>
@@ -496,11 +585,17 @@ $categories = SourceHub_Bug_Tracker::get_categories();
             <?php foreach ($notes as $note): 
                 $author = get_userdata($note->author_id);
                 $author_name = $author ? $author->display_name : __('Unknown User', 'sourcehub');
+                $author_avatar = $author ? get_avatar_url($author->ID, array('size' => 40)) : '';
             ?>
-                <div class="sourcehub-note">
+                <div class="sourcehub-note" id="note-<?php echo esc_attr($note->id); ?>">
                     <div class="sourcehub-note-header">
-                        <span class="sourcehub-note-author"><?php echo esc_html($author_name); ?></span>
-                        <span><?php echo esc_html(date('M j, Y g:i a', strtotime($note->created_at))); ?></span>
+                        <?php if ($author_avatar): ?>
+                            <img src="<?php echo esc_url($author_avatar); ?>" alt="<?php echo esc_attr($author_name); ?>" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                        <?php endif; ?>
+                        <div>
+                            <span class="sourcehub-note-author"><?php echo esc_html($author_name); ?></span>
+                            <span style="color: #666; font-size: 13px;"><?php echo esc_html(date('M j, Y g:i a', strtotime($note->created_at))); ?></span>
+                        </div>
                     </div>
                     <div class="sourcehub-note-content">
                         <?php echo wp_kses_post($note->note); ?>
@@ -547,6 +642,12 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                         endif;
                     endif; 
                     ?>
+                    
+                    <?php if (current_user_can('manage_options') || get_current_user_id() == $note->author_id): ?>
+                        <button type="button" class="sourcehub-note-delete" onclick="deleteNote(<?php echo esc_js($note->id); ?>, <?php echo esc_js($bug_id); ?>)">
+                            🗑️ Delete
+                        </button>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

@@ -15,6 +15,50 @@ class SourceHub_Bug_Tracker {
     private static $zapier_webhook = 'https://hooks.zapier.com/hooks/catch/4353386/uimt1jx/';
 
     /**
+     * Initialize hooks
+     */
+    public static function init() {
+        add_action('wp_ajax_sourcehub_delete_note', array(__CLASS__, 'ajax_delete_note'));
+    }
+
+    /**
+     * AJAX handler to delete a note
+     */
+    public static function ajax_delete_note() {
+        check_ajax_referer('sourcehub_delete_note', 'nonce');
+        
+        $note_id = isset($_POST['note_id']) ? intval($_POST['note_id']) : 0;
+        $bug_id = isset($_POST['bug_id']) ? intval($_POST['bug_id']) : 0;
+        
+        if (!$note_id || !$bug_id) {
+            wp_send_json_error('Invalid note or bug ID');
+        }
+        
+        // Get the note to check permissions
+        global $wpdb;
+        $notes_table = $wpdb->prefix . 'sourcehub_bug_notes';
+        $note = $wpdb->get_row($wpdb->prepare("SELECT * FROM $notes_table WHERE id = %d AND bug_id = %d", $note_id, $bug_id));
+        
+        if (!$note) {
+            wp_send_json_error('Note not found');
+        }
+        
+        // Check if user can delete (admin or note author)
+        if (!current_user_can('manage_options') && get_current_user_id() != $note->author_id) {
+            wp_send_json_error('Permission denied');
+        }
+        
+        // Delete the note
+        $result = $wpdb->delete($notes_table, array('id' => $note_id), array('%d'));
+        
+        if ($result === false) {
+            wp_send_json_error('Failed to delete note');
+        }
+        
+        wp_send_json_success('Note deleted successfully');
+    }
+
+    /**
      * Create bug tracker tables
      */
     public static function create_tables() {
@@ -939,14 +983,35 @@ class SourceHub_Bug_Tracker {
     private static function parse_mentions($text) {
         $mentioned_users = array();
         
-        // Match @username patterns
-        preg_match_all('/@(\w+)/', $text, $matches);
+        // Match @Name patterns (can include spaces and special characters)
+        // Matches until comma, period at end, or newline
+        preg_match_all('/@([^,\n]+?)(?=[,.\n]|$)/', $text, $matches);
         
         if (!empty($matches[1])) {
-            foreach ($matches[1] as $username) {
-                $user = get_user_by('login', $username);
-                if ($user) {
-                    $mentioned_users[] = $user->ID;
+            foreach ($matches[1] as $name) {
+                $name = trim($name);
+                
+                // Try to find user by display name
+                $users = get_users(array(
+                    'search' => $name,
+                    'search_columns' => array('display_name'),
+                    'number' => 1
+                ));
+                
+                if (!empty($users)) {
+                    $mentioned_users[] = $users[0]->ID;
+                } else {
+                    // Fallback: try by login
+                    $user = get_user_by('login', $name);
+                    if ($user) {
+                        $mentioned_users[] = $user->ID;
+                    } else if (strpos($name, '@') !== false) {
+                        // Last resort: try by email
+                        $user = get_user_by('email', $name);
+                        if ($user) {
+                            $mentioned_users[] = $user->ID;
+                        }
+                    }
                 }
             }
         }
@@ -971,7 +1036,8 @@ class SourceHub_Bug_Tracker {
                 'id' => $user->ID,
                 'login' => $user->user_login,
                 'name' => $user->display_name,
-                'email' => $user->user_email
+                'email' => $user->user_email,
+                'avatar' => get_avatar_url($user->ID, array('size' => 32))
             );
         }
         
