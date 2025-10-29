@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Handle note addition
     if (isset($_POST['add_note']) && !empty($_POST['note'])) {
-        SourceHub_Bug_Tracker::add_note($bug_id, $_POST['note']);
+        SourceHub_Bug_Tracker::add_note($bug_id, wp_unslash($_POST['note']));
         $success_message = __('Note added successfully', 'sourcehub');
     }
     
@@ -323,7 +323,10 @@ $categories = SourceHub_Bug_Tracker::get_categories();
         <form method="post" action="" enctype="multipart/form-data" style="margin-bottom: 20px;">
             <?php wp_nonce_field('update_bug_' . $bug_id, 'sourcehub_bug_nonce'); ?>
             
-            <textarea name="note" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="<?php echo esc_attr__('Add a note or comment...', 'sourcehub'); ?>"></textarea>
+            <div style="position: relative;">
+                <textarea id="bug-note-textarea" name="note" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="<?php echo esc_attr__('Add a note or comment... (use @ to mention users)', 'sourcehub'); ?>"></textarea>
+                <div id="mention-autocomplete" style="display: none; position: absolute; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 2px;"></div>
+            </div>
             
             <div style="margin-top: 10px; display: flex; align-items: center; gap: 15px;">
                 <button type="submit" name="add_note" class="button button-primary">
@@ -361,6 +364,127 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                 }
             }
         }
+
+        // @mention autocomplete
+        (function() {
+            const textarea = document.getElementById('bug-note-textarea');
+            const autocomplete = document.getElementById('mention-autocomplete');
+            let users = <?php echo json_encode(SourceHub_Bug_Tracker::get_users_for_mentions()); ?>;
+            let selectedIndex = -1;
+            let mentionStart = -1;
+            
+            textarea.addEventListener('input', function(e) {
+                const cursorPos = this.selectionStart;
+                const textBeforeCursor = this.value.substring(0, cursorPos);
+                const lastAtSymbol = textBeforeCursor.lastIndexOf('@');
+                
+                if (lastAtSymbol !== -1) {
+                    const textAfterAt = textBeforeCursor.substring(lastAtSymbol + 1);
+                    
+                    // Check if there's a space after @ (which would end the mention)
+                    if (textAfterAt.indexOf(' ') === -1) {
+                        mentionStart = lastAtSymbol;
+                        const searchTerm = textAfterAt.toLowerCase();
+                        
+                        // Filter users
+                        const filteredUsers = users.filter(user => 
+                            user.login.toLowerCase().includes(searchTerm) || 
+                            user.name.toLowerCase().includes(searchTerm)
+                        );
+                        
+                        if (filteredUsers.length > 0) {
+                            showAutocomplete(filteredUsers);
+                            return;
+                        }
+                    }
+                }
+                
+                hideAutocomplete();
+            });
+            
+            textarea.addEventListener('keydown', function(e) {
+                if (autocomplete.style.display === 'block') {
+                    const items = autocomplete.querySelectorAll('.mention-item');
+                    
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                        updateSelection(items);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, 0);
+                        updateSelection(items);
+                    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                        e.preventDefault();
+                        items[selectedIndex].click();
+                    } else if (e.key === 'Escape') {
+                        hideAutocomplete();
+                    }
+                }
+            });
+            
+            function showAutocomplete(filteredUsers) {
+                autocomplete.innerHTML = '';
+                selectedIndex = -1;
+                
+                filteredUsers.forEach((user, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'mention-item';
+                    item.style.cssText = 'padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;';
+                    item.innerHTML = '<strong>' + user.login + '</strong><br><small style="color: #666;">' + user.name + '</small>';
+                    
+                    item.addEventListener('mouseenter', function() {
+                        selectedIndex = index;
+                        updateSelection(autocomplete.querySelectorAll('.mention-item'));
+                    });
+                    
+                    item.addEventListener('click', function() {
+                        insertMention(user.login);
+                    });
+                    
+                    autocomplete.appendChild(item);
+                });
+                
+                // Position autocomplete below textarea (using relative positioning from wrapper)
+                autocomplete.style.display = 'block';
+                autocomplete.style.width = '100%';
+            }
+            
+            function hideAutocomplete() {
+                autocomplete.style.display = 'none';
+                selectedIndex = -1;
+                mentionStart = -1;
+            }
+            
+            function updateSelection(items) {
+                items.forEach((item, index) => {
+                    if (index === selectedIndex) {
+                        item.style.backgroundColor = '#f0f0f0';
+                    } else {
+                        item.style.backgroundColor = 'white';
+                    }
+                });
+            }
+            
+            function insertMention(username) {
+                const cursorPos = textarea.selectionStart;
+                const textBefore = textarea.value.substring(0, mentionStart);
+                const textAfter = textarea.value.substring(cursorPos);
+                
+                textarea.value = textBefore + '@' + username + ' ' + textAfter;
+                textarea.selectionStart = textarea.selectionEnd = mentionStart + username.length + 2;
+                textarea.focus();
+                
+                hideAutocomplete();
+            }
+            
+            // Hide autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target !== textarea && e.target !== autocomplete && !autocomplete.contains(e.target)) {
+                    hideAutocomplete();
+                }
+            });
+        })();
         </script>
         
         <!-- Notes List -->
@@ -381,6 +505,30 @@ $categories = SourceHub_Bug_Tracker::get_categories();
                     <div class="sourcehub-note-content">
                         <?php echo wp_kses_post($note->note); ?>
                     </div>
+                    
+                    <?php if (!empty($note->mentions)): 
+                        $mentioned_user_ids = json_decode($note->mentions, true);
+                        if (!empty($mentioned_user_ids)):
+                    ?>
+                        <div style="margin-top: 8px; padding: 6px 10px; background: #f0f6fc; border-left: 3px solid #0969da; border-radius: 3px;">
+                            <small style="color: #0969da;">
+                                <strong>👤 Mentioned:</strong>
+                                <?php 
+                                $mentioned_names = array();
+                                foreach ($mentioned_user_ids as $user_id) {
+                                    $mentioned_user = get_userdata($user_id);
+                                    if ($mentioned_user) {
+                                        $mentioned_names[] = $mentioned_user->display_name;
+                                    }
+                                }
+                                echo esc_html(implode(', ', $mentioned_names));
+                                ?>
+                            </small>
+                        </div>
+                    <?php 
+                        endif;
+                    endif; 
+                    ?>
                     
                     <?php if (!empty($note->images)): 
                         $note_images = json_decode($note->images, true);

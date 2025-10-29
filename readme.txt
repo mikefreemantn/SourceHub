@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
@@ -42,6 +42,15 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 1.4.2 - 2025-10-29 =
+* Feature: Added @mention functionality in bug tracker comments
+* Feature: @mentioned users are automatically subscribed to bugs
+* Feature: @mentioned users receive immediate email notifications
+* Feature: Autocomplete dropdown when typing @ in bug tracker notes
+* Feature: Visual display of mentioned users in bug notes
+* Fixed: Bug tracker comment escaping issue (backslashes in apostrophes)
+* Improved: Bug tracker collaboration with user mentions
 
 = 1.4.1 - 2025-10-28 =
 * Fixed: Activity Logs pagination now works via page reloads instead of AJAX

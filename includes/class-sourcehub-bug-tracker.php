@@ -57,6 +57,7 @@ class SourceHub_Bug_Tracker {
             bug_id bigint(20) NOT NULL,
             note longtext NOT NULL,
             images longtext DEFAULT NULL,
+            mentions longtext DEFAULT NULL,
             author_id bigint(20) NOT NULL,
             created_at datetime NOT NULL,
             PRIMARY KEY (id),
@@ -87,6 +88,13 @@ class SourceHub_Bug_Tracker {
         if (empty($column_exists)) {
             $wpdb->query("ALTER TABLE $notes_table ADD COLUMN images longtext DEFAULT NULL AFTER note");
             error_log('SourceHub Bug Tracker: Added images column to bug notes table');
+        }
+        
+        // Add mentions column to notes table if it doesn't exist
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $notes_table LIKE 'mentions'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE $notes_table ADD COLUMN mentions longtext DEFAULT NULL AFTER images");
+            error_log('SourceHub Bug Tracker: Added mentions column to bug notes table');
         }
         
         // Log table creation
@@ -411,6 +419,9 @@ class SourceHub_Bug_Tracker {
         
         $table = $wpdb->prefix . 'sourcehub_bug_notes';
         
+        // Parse @mentions from note
+        $mentioned_users = self::parse_mentions($note);
+        
         // Handle image uploads
         $images = array();
         if (isset($_FILES['note_images']) && !empty($_FILES['note_images']['name'][0])) {
@@ -456,6 +467,19 @@ class SourceHub_Bug_Tracker {
             $note_data['images'] = json_encode($images);
         }
         
+        // Add mentions if any were found
+        if (!empty($mentioned_users)) {
+            $note_data['mentions'] = json_encode($mentioned_users);
+            
+            // Subscribe mentioned users to the bug
+            foreach ($mentioned_users as $user_id) {
+                $user = get_userdata($user_id);
+                if ($user && $user->user_email) {
+                    self::subscribe($bug_id, $user->user_email);
+                }
+            }
+        }
+        
         $result = $wpdb->insert($table, $note_data);
         
         if ($result === false) {
@@ -467,13 +491,26 @@ class SourceHub_Bug_Tracker {
         // Update bug's updated_at timestamp
         self::update_bug($bug_id, array());
         
-        // Send notification to subscribers
+        // Send notification to subscribers and mentioned users
         $author = get_userdata($author_id);
         $author_name = $author ? $author->display_name : 'Someone';
         
         $bug = self::get_bug($bug_id);
         $subject = $author_name . ' commented on "' . $bug->title . '"';
         $message = $author_name . ' added a comment:' . "\n\n" . wp_strip_all_tags($note);
+        
+        // Send immediate notification to mentioned users
+        if (!empty($mentioned_users)) {
+            foreach ($mentioned_users as $user_id) {
+                $mentioned_user = get_userdata($user_id);
+                if ($mentioned_user && $mentioned_user->user_email) {
+                    $mention_subject = $author_name . ' mentioned you in "' . $bug->title . '"';
+                    $mention_message = $author_name . ' mentioned you in a comment:' . "\n\n" . wp_strip_all_tags($note);
+                    $mention_message .= "\n\nView bug: " . admin_url('admin.php?page=sourcehub-bug-tracker&action=view&id=' . $bug_id);
+                    wp_mail($mentioned_user->user_email, $mention_subject, $mention_message);
+                }
+            }
+        }
         self::notify_subscribers($bug_id, $subject, $message, $images);
         
         return $note_id;
@@ -891,5 +928,53 @@ class SourceHub_Bug_Tracker {
         }
         
         error_log('SourceHub Bug Tracker: Email summary for bug #' . $bug_id . ' - Sent: ' . $sent_count . ', Failed: ' . $failed_count);
+    }
+
+    /**
+     * Parse @mentions from text and return array of user IDs
+     *
+     * @param string $text Text to parse
+     * @return array Array of user IDs
+     */
+    private static function parse_mentions($text) {
+        $mentioned_users = array();
+        
+        // Match @username patterns
+        preg_match_all('/@(\w+)/', $text, $matches);
+        
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $username) {
+                $user = get_user_by('login', $username);
+                if ($user) {
+                    $mentioned_users[] = $user->ID;
+                }
+            }
+        }
+        
+        return array_unique($mentioned_users);
+    }
+
+    /**
+     * Get all WordPress users for mention autocomplete
+     *
+     * @return array Array of users with id, login, and display_name
+     */
+    public static function get_users_for_mentions() {
+        $users = get_users(array(
+            'orderby' => 'display_name',
+            'order' => 'ASC'
+        ));
+        
+        $user_list = array();
+        foreach ($users as $user) {
+            $user_list[] = array(
+                'id' => $user->ID,
+                'login' => $user->user_login,
+                'name' => $user->display_name,
+                'email' => $user->user_email
+            );
+        }
+        
+        return $user_list;
     }
 }
