@@ -43,10 +43,96 @@ class SourceHub_Hub_Manager {
         // Hook into Yoast SEO save to trigger sync when Yoast meta is updated
         add_action('wpseo_saved_postdata', array($this, 'handle_yoast_meta_save'));
         
+        // REST API for async callbacks
+        add_action('rest_api_init', array($this, 'register_rest_routes'));
+        
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
         add_action('wp_ajax_sourcehub_send_to_spoke', array($this, 'ajax_send_to_spoke'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
+    }
+
+    /**
+     * Register REST API routes
+     */
+    public function register_rest_routes() {
+        register_rest_route('sourcehub/v1', '/sync-complete', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_sync_complete'),
+            'permission_callback' => '__return_true' // Spokes will authenticate via data
+        ));
+    }
+
+    /**
+     * Handle sync completion callback from spoke
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function handle_sync_complete($request) {
+        $data = $request->get_json_params();
+        
+        error_log('SourceHub Hub: Received sync completion callback: ' . print_r($data, true));
+        
+        $job_id = $data['job_id'] ?? null;
+        $hub_post_id = $data['hub_post_id'] ?? null;
+        $spoke_post_id = $data['spoke_post_id'] ?? null;
+        $status = $data['status'] ?? 'failed';
+        $error_message = $data['error_message'] ?? null;
+        $spoke_url = $data['spoke_url'] ?? null;
+        
+        if (!$hub_post_id) {
+            return new WP_REST_Response(array('success' => false, 'message' => 'Missing hub_post_id'), 400);
+        }
+        
+        // Find the connection by spoke URL
+        $connection = null;
+        if ($spoke_url) {
+            $connections = SourceHub_Database::get_connections();
+            foreach ($connections as $conn) {
+                if (trailingslashit($conn->url) === trailingslashit($spoke_url)) {
+                    $connection = $conn;
+                    break;
+                }
+            }
+        }
+        
+        if (!$connection) {
+            error_log('SourceHub Hub: Could not find connection for spoke URL: ' . $spoke_url);
+            return new WP_REST_Response(array('success' => false, 'message' => 'Connection not found'), 404);
+        }
+        
+        // Update sync status
+        $sync_status = get_post_meta($hub_post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
+        
+        if ($status === 'completed') {
+            $sync_status[$connection->id] = array(
+                'status' => 'success',
+                'last_sync' => current_time('mysql'),
+                'action' => $sync_status[$connection->id]['action'] ?? 'create',
+                'spoke_post_id' => $spoke_post_id
+            );
+            
+            error_log(sprintf('SourceHub Hub: Post %d synced successfully to %s (spoke post ID: %d)', 
+                $hub_post_id, $connection->name, $spoke_post_id));
+        } else {
+            $sync_status[$connection->id] = array(
+                'status' => 'failed',
+                'last_sync' => current_time('mysql'),
+                'action' => $sync_status[$connection->id]['action'] ?? 'create',
+                'error' => $error_message ?? 'Unknown error'
+            );
+            
+            error_log(sprintf('SourceHub Hub: Post %d failed to sync to %s: %s', 
+                $hub_post_id, $connection->name, $error_message));
+        }
+        
+        update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
+        
+        return new WP_REST_Response(array('success' => true, 'message' => 'Status updated'), 200);
     }
 
     /**
@@ -154,9 +240,15 @@ class SourceHub_Hub_Manager {
                                 $has_status = $status_info && isset($status_info['status']);
                                 $is_success = $has_status && $status_info['status'] === 'success';
                                 $is_failed = $has_status && $status_info['status'] === 'failed';
+                                $is_processing = $has_status && $status_info['status'] === 'processing';
                                 ?>
                                 
-                                <?php if ($is_success): ?>
+                                <?php if ($is_processing): ?>
+                                    <span class="sync-status-badge sync-processing">
+                                        <span class="dashicons dashicons-update"></span>
+                                        <small><?php _e('Processing...', 'sourcehub'); ?></small>
+                                    </span>
+                                <?php elseif ($is_success): ?>
                                     <span class="sync-status-badge sync-success">
                                         <span class="dashicons dashicons-yes-alt"></span>
                                         <small><?php _e('Synced', 'sourcehub'); ?></small>
@@ -312,6 +404,20 @@ class SourceHub_Hub_Manager {
         .sync-success {
             background: #d4edda;
             color: #155724;
+        }
+        
+        .sync-processing {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .sync-processing .dashicons {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .sync-failed {
@@ -797,20 +903,39 @@ class SourceHub_Hub_Manager {
             if ($result['success']) {
                 $syndicated_spokes[] = $spoke_id;
                 
-                // Store success status
-                $sync_status[$spoke_id] = array(
-                    'status' => 'success',
-                    'last_sync' => current_time('mysql'),
-                    'action' => 'create'
-                );
-                
-                SourceHub_Logger::success(
-                    sprintf(__('Post "%s" successfully syndicated to %s', 'sourcehub'), $post->post_title, $connection->name),
-                    $result,
-                    $post_id,
-                    $spoke_id,
-                    'syndicate'
-                );
+                // Check if async processing
+                if (!empty($result['async'])) {
+                    // Store processing status
+                    $sync_status[$spoke_id] = array(
+                        'status' => 'processing',
+                        'last_sync' => current_time('mysql'),
+                        'action' => 'create',
+                        'job_id' => $result['job_id'] ?? null
+                    );
+                    
+                    SourceHub_Logger::info(
+                        sprintf(__('Post "%s" queued for syndication to %s', 'sourcehub'), $post->post_title, $connection->name),
+                        $result,
+                        $post_id,
+                        $spoke_id,
+                        'syndicate_queued'
+                    );
+                } else {
+                    // Store success status
+                    $sync_status[$spoke_id] = array(
+                        'status' => 'success',
+                        'last_sync' => current_time('mysql'),
+                        'action' => 'create'
+                    );
+                    
+                    SourceHub_Logger::success(
+                        sprintf(__('Post "%s" successfully syndicated to %s', 'sourcehub'), $post->post_title, $connection->name),
+                        $result,
+                        $post_id,
+                        $spoke_id,
+                        'syndicate'
+                    );
+                }
             } else {
                 // Store failure status
                 $sync_status[$spoke_id] = array(
@@ -902,20 +1027,39 @@ class SourceHub_Hub_Manager {
             $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, true);
             
             if ($result['success']) {
-                // Store success status
-                $sync_status[$spoke_id] = array(
-                    'status' => 'success',
-                    'last_sync' => current_time('mysql'),
-                    'action' => 'update'
-                );
-                
-                SourceHub_Logger::success(
-                    sprintf(__('Post "%s" successfully updated on %s', 'sourcehub'), $post->post_title, $connection->name),
-                    $result,
-                    $post_id,
-                    $spoke_id,
-                    'update'
-                );
+                // Check if async processing
+                if (!empty($result['async'])) {
+                    // Store processing status
+                    $sync_status[$spoke_id] = array(
+                        'status' => 'processing',
+                        'last_sync' => current_time('mysql'),
+                        'action' => 'update',
+                        'job_id' => $result['job_id'] ?? null
+                    );
+                    
+                    SourceHub_Logger::info(
+                        sprintf(__('Post "%s" update queued for %s', 'sourcehub'), $post->post_title, $connection->name),
+                        $result,
+                        $post_id,
+                        $spoke_id,
+                        'update_queued'
+                    );
+                } else {
+                    // Store success status
+                    $sync_status[$spoke_id] = array(
+                        'status' => 'success',
+                        'last_sync' => current_time('mysql'),
+                        'action' => 'update'
+                    );
+                    
+                    SourceHub_Logger::success(
+                        sprintf(__('Post "%s" successfully updated on %s', 'sourcehub'), $post->post_title, $connection->name),
+                        $result,
+                        $post_id,
+                        $spoke_id,
+                        'update'
+                    );
+                }
             } else {
                 // Store failure status
                 $sync_status[$spoke_id] = array(
@@ -1025,6 +1169,20 @@ class SourceHub_Hub_Manager {
 
         $response_code = wp_remote_retrieve_response_code($response);
         $response_body = wp_remote_retrieve_body($response);
+        
+        // Handle 202 Accepted (async processing)
+        if ($response_code === 202) {
+            $body_data = json_decode($response_body, true);
+            error_log(sprintf('SourceHub: Spoke returned 202 Accepted, job queued: %s', $body_data['job_id'] ?? 'unknown'));
+            
+            return array(
+                'success' => true,
+                'message' => __('Post queued for processing', 'sourcehub'),
+                'data' => $body_data,
+                'async' => true,
+                'job_id' => $body_data['job_id'] ?? null
+            );
+        }
 
         if (!in_array($response_code, [200, 201])) {
             // Clean up error message - strip HTML and extract meaningful text

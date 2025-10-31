@@ -93,6 +93,28 @@ class SourceHub_Database {
             KEY status (status),
             KEY next_attempt (next_attempt)
         ) $charset_collate;";
+        
+        // Sync jobs table for async processing
+        $sync_jobs_table = $wpdb->prefix . 'sourcehub_sync_jobs';
+        $sync_jobs_sql = "CREATE TABLE $sync_jobs_table (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            job_id varchar(64) NOT NULL,
+            hub_post_id bigint(20) NOT NULL,
+            hub_url varchar(255) NOT NULL,
+            action enum('create','update') NOT NULL,
+            payload longtext NOT NULL,
+            status enum('pending','processing','completed','failed') NOT NULL DEFAULT 'pending',
+            result longtext,
+            error_message text,
+            started_at datetime DEFAULT NULL,
+            completed_at datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY job_id (job_id),
+            KEY hub_post_id (hub_post_id),
+            KEY status (status),
+            KEY created_at (created_at)
+        ) $charset_collate;";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
@@ -100,6 +122,7 @@ class SourceHub_Database {
         $results['connections'] = dbDelta($connections_sql);
         $results['logs'] = dbDelta($logs_sql);
         $results['queue'] = dbDelta($queue_sql);
+        $results['sync_jobs'] = dbDelta($sync_jobs_sql);
         
         // Check for errors
         if ($wpdb->last_error) {
@@ -111,6 +134,7 @@ class SourceHub_Database {
         $tables_created['connections'] = ($wpdb->get_var("SHOW TABLES LIKE '$connections_table'") == $connections_table);
         $tables_created['logs'] = ($wpdb->get_var("SHOW TABLES LIKE '$logs_table'") == $logs_table);
         $tables_created['queue'] = ($wpdb->get_var("SHOW TABLES LIKE '$queue_table'") == $queue_table);
+        $tables_created['sync_jobs'] = ($wpdb->get_var("SHOW TABLES LIKE '$sync_jobs_table'") == $sync_jobs_table);
         
         foreach ($tables_created as $table => $created) {
             if (!$created) {

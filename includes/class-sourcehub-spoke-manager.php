@@ -22,6 +22,7 @@ class SourceHub_Spoke_Manager {
         add_action('wp_head', array($this, 'add_canonical_tags'));
         add_filter('the_content', array($this, 'maybe_add_attribution'), 999);
         add_action('rest_api_init', array($this, 'register_rest_routes'));
+        add_action('sourcehub_process_sync_job', array($this, 'process_sync_job'));
     }
 
     /**
@@ -128,44 +129,28 @@ class SourceHub_Spoke_Manager {
                 ), 400);
             }
 
-            // Create the post
-            $create_start = microtime(true);
-            error_log('SourceHub Spoke: Starting create_post_from_data');
-            $post_id = $this->create_post_from_data($data);
-            error_log(sprintf('SourceHub Spoke: create_post_from_data took %.2f seconds', microtime(true) - $create_start));
+            // Queue job for async processing
+            $job_id = $this->queue_sync_job($data, 'create');
             
-            if (is_wp_error($post_id)) {
-                SourceHub_Logger::error(
-                    'Failed to create post from hub data: ' . $post_id->get_error_message(),
-                    $data,
-                    null,
-                    null,
-                    'receive_post'
-                );
-
+            if (is_wp_error($job_id)) {
                 return new WP_REST_Response(array(
                     'success' => false,
-                    'message' => $post_id->get_error_message()
+                    'message' => $job_id->get_error_message()
                 ), 500);
             }
-
-            $total_time = microtime(true) - $start_time;
-            error_log(sprintf('SourceHub Spoke: TOTAL receive_post took %.2f seconds', $total_time));
             
-            SourceHub_Logger::success(
-                sprintf('Successfully received post "%s" from hub (%.2fs)', $data['title'], $total_time),
-                array('hub_id' => $data['hub_id'], 'local_id' => $post_id, 'processing_time' => $total_time),
-                $post_id,
-                null,
-                'receive_post'
-            );
-
+            // Schedule immediate processing
+            wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
+            
+            // Return 202 Accepted immediately
+            error_log(sprintf('SourceHub Spoke: Job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
+            
             return new WP_REST_Response(array(
                 'success' => true,
-                'message' => __('Post created successfully', 'sourcehub'),
-                'post_id' => $post_id,
-                'post_url' => get_permalink($post_id)
-            ), 201);
+                'message' => __('Post queued for processing', 'sourcehub'),
+                'job_id' => $job_id,
+                'status' => 'processing'
+            ), 202);
 
         } catch (Exception $e) {
             SourceHub_Logger::error(
@@ -191,6 +176,7 @@ class SourceHub_Spoke_Manager {
      */
     public function update_post($request) {
         try {
+            $start_time = microtime(true);
             $data = $request->get_json_params();
             
             // Find existing post
@@ -210,38 +196,28 @@ class SourceHub_Spoke_Manager {
                 ), 400);
             }
 
-            // Update the post
-            $result = $this->update_post_from_data($existing_post->ID, $data);
+            // Queue job for async processing
+            $job_id = $this->queue_sync_job($data, 'update');
             
-            if (is_wp_error($result)) {
-                SourceHub_Logger::error(
-                    'Failed to update post from hub data: ' . $result->get_error_message(),
-                    $data,
-                    $existing_post->ID,
-                    null,
-                    'update_post'
-                );
-
+            if (is_wp_error($job_id)) {
                 return new WP_REST_Response(array(
                     'success' => false,
-                    'message' => $result->get_error_message()
+                    'message' => $job_id->get_error_message()
                 ), 500);
             }
-
-            SourceHub_Logger::success(
-                sprintf('Successfully updated post "%s" from hub', $data['title']),
-                array('hub_id' => $data['hub_id'], 'local_id' => $existing_post->ID),
-                $existing_post->ID,
-                null,
-                'update_post'
-            );
-
+            
+            // Schedule immediate processing
+            wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
+            
+            // Return 202 Accepted immediately
+            error_log(sprintf('SourceHub Spoke: Update job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
+            
             return new WP_REST_Response(array(
                 'success' => true,
-                'message' => __('Post updated successfully', 'sourcehub'),
-                'post_id' => $existing_post->ID,
-                'post_url' => get_permalink($existing_post->ID)
-            ), 200);
+                'message' => __('Post update queued for processing', 'sourcehub'),
+                'job_id' => $job_id,
+                'status' => 'processing'
+            ), 202);
 
         } catch (Exception $e) {
             SourceHub_Logger::error(
@@ -1113,6 +1089,182 @@ class SourceHub_Spoke_Manager {
         ));
 
         return !empty($logs) ? $logs[0]->created_at : null;
+    }
+
+    /**
+     * Queue a sync job for async processing
+     *
+     * @param array $data Post data
+     * @param string $action 'create' or 'update'
+     * @return string|WP_Error Job ID or error
+     */
+    private function queue_sync_job($data, $action) {
+        global $wpdb;
+        
+        $table = $wpdb->prefix . 'sourcehub_sync_jobs';
+        $job_id = wp_generate_password(32, false);
+        
+        $result = $wpdb->insert(
+            $table,
+            array(
+                'job_id' => $job_id,
+                'hub_post_id' => $data['hub_id'],
+                'hub_url' => $data['hub_url'],
+                'action' => $action,
+                'payload' => json_encode($data),
+                'status' => 'pending',
+                'created_at' => current_time('mysql')
+            ),
+            array('%s', '%d', '%s', '%s', '%s', '%s', '%s')
+        );
+        
+        if ($result === false) {
+            return new WP_Error('queue_failed', 'Failed to queue sync job: ' . $wpdb->last_error);
+        }
+        
+        return $job_id;
+    }
+
+    /**
+     * Process a queued sync job
+     *
+     * @param string $job_id Job ID
+     */
+    public function process_sync_job($job_id) {
+        global $wpdb;
+        
+        $table = $wpdb->prefix . 'sourcehub_sync_jobs';
+        $start_time = microtime(true);
+        
+        // Get job
+        $job = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table WHERE job_id = %s AND status = 'pending'",
+            $job_id
+        ));
+        
+        if (!$job) {
+            error_log("SourceHub: Job $job_id not found or already processed");
+            return;
+        }
+        
+        // Mark as processing
+        $wpdb->update(
+            $table,
+            array('status' => 'processing', 'started_at' => current_time('mysql')),
+            array('job_id' => $job_id),
+            array('%s', '%s'),
+            array('%s')
+        );
+        
+        error_log("SourceHub: Processing job $job_id ({$job->action})");
+        
+        // Decode payload
+        $data = json_decode($job->payload, true);
+        
+        // Process based on action
+        try {
+            if ($job->action === 'create') {
+                $post_id = $this->create_post_from_data($data);
+            } else {
+                $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
+                if ($existing_post) {
+                    $post_id = $this->update_post_from_data($existing_post->ID, $data);
+                } else {
+                    $post_id = $this->create_post_from_data($data);
+                }
+            }
+            
+            if (is_wp_error($post_id)) {
+                throw new Exception($post_id->get_error_message());
+            }
+            
+            $processing_time = microtime(true) - $start_time;
+            
+            // Mark as completed
+            $wpdb->update(
+                $table,
+                array(
+                    'status' => 'completed',
+                    'result' => json_encode(array('post_id' => $post_id)),
+                    'completed_at' => current_time('mysql')
+                ),
+                array('job_id' => $job_id),
+                array('%s', '%s', '%s'),
+                array('%s')
+            );
+            
+            error_log(sprintf("SourceHub: Job $job_id completed in %.2f seconds (post_id: $post_id)", $processing_time));
+            
+            SourceHub_Logger::success(
+                sprintf('Async %s completed for "%s" (%.2fs)', $job->action, $data['title'], $processing_time),
+                array('hub_id' => $data['hub_id'], 'local_id' => $post_id, 'processing_time' => $processing_time, 'job_id' => $job_id),
+                $post_id,
+                null,
+                'async_' . $job->action
+            );
+            
+            // Notify hub of completion
+            $this->notify_hub_completion($job_id, $data['hub_url'], $data['hub_id'], $post_id);
+            
+        } catch (Exception $e) {
+            $processing_time = microtime(true) - $start_time;
+            
+            // Mark as failed
+            $wpdb->update(
+                $table,
+                array(
+                    'status' => 'failed',
+                    'error_message' => $e->getMessage(),
+                    'completed_at' => current_time('mysql')
+                ),
+                array('job_id' => $job_id),
+                array('%s', '%s', '%s'),
+                array('%s')
+            );
+            
+            error_log(sprintf("SourceHub: Job $job_id failed after %.2f seconds: %s", $processing_time, $e->getMessage()));
+            
+            SourceHub_Logger::error(
+                sprintf('Async %s failed for "%s": %s', $job->action, $data['title'], $e->getMessage()),
+                array('hub_id' => $data['hub_id'], 'error' => $e->getMessage(), 'job_id' => $job_id),
+                null,
+                null,
+                'async_' . $job->action
+            );
+            
+            // Notify hub of failure
+            $this->notify_hub_completion($job_id, $data['hub_url'], $data['hub_id'], null, $e->getMessage());
+        }
+    }
+
+    /**
+     * Notify hub of job completion
+     *
+     * @param string $job_id Job ID
+     * @param string $hub_url Hub URL
+     * @param int $hub_post_id Hub post ID
+     * @param int|null $spoke_post_id Spoke post ID (null if failed)
+     * @param string|null $error_message Error message (if failed)
+     */
+    private function notify_hub_completion($job_id, $hub_url, $hub_post_id, $spoke_post_id = null, $error_message = null) {
+        $callback_url = trailingslashit($hub_url) . 'wp-json/sourcehub/v1/sync-complete';
+        
+        $response = wp_remote_post($callback_url, array(
+            'headers' => array('Content-Type' => 'application/json'),
+            'body' => json_encode(array(
+                'job_id' => $job_id,
+                'hub_post_id' => $hub_post_id,
+                'spoke_post_id' => $spoke_post_id,
+                'status' => $spoke_post_id ? 'completed' : 'failed',
+                'error_message' => $error_message,
+                'spoke_url' => home_url()
+            )),
+            'timeout' => 10
+        ));
+        
+        if (is_wp_error($response)) {
+            error_log("SourceHub: Failed to notify hub: " . $response->get_error_message());
+        }
     }
 
 }
