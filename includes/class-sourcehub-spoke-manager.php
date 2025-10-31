@@ -409,17 +409,22 @@ class SourceHub_Spoke_Manager {
         // Temporarily disable content filtering to preserve iframes and embeds
         add_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10, 2);
         
-        // Prepare post data
+        // Store the intended status for later
+        $intended_status = isset($data['status']) ? sanitize_text_field($data['status']) : 'publish';
+        
+        // Prepare post data - CREATE AS DRAFT initially to prevent publishing with broken images
         $post_data = array(
             'post_title' => sanitize_text_field($data['title']),
             'post_content' => $data['content'],
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
-            'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
+            'post_status' => 'draft', // Always draft initially
             'post_type' => isset($data['post_type']) ? sanitize_text_field($data['post_type']) : 'post',
             'post_name' => isset($data['slug']) ? sanitize_title($data['slug']) : '',
             'post_date' => isset($data['date']) ? sanitize_text_field($data['date']) : current_time('mysql'),
             'post_date_gmt' => isset($data['date_gmt']) ? sanitize_text_field($data['date_gmt']) : current_time('mysql', 1)
         );
+        
+        error_log("SourceHub: Creating post as draft, will publish as '{$intended_status}' after processing");
 
         // Handle author
         if (isset($data['author'])) {
@@ -540,6 +545,15 @@ class SourceHub_Spoke_Manager {
             foreach ($data['custom_fields'] as $key => $value) {
                 update_post_meta($post_id, sanitize_key($key), sanitize_text_field($value));
             }
+        }
+
+        // NOW publish the post with all images and content properly processed
+        if ($intended_status !== 'draft') {
+            wp_update_post(array(
+                'ID' => $post_id,
+                'post_status' => $intended_status
+            ));
+            error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after all processing complete");
         }
 
         return $post_id;
