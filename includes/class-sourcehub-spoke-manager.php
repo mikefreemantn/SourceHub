@@ -86,11 +86,21 @@ class SourceHub_Spoke_Manager {
         $api_key = $request->get_header('X-SourceHub-API-Key');
         $stored_key = get_option('sourcehub_spoke_api_key');
 
+        // Debug logging
+        error_log(sprintf('SourceHub Spoke: Received API key: %s... | Stored key: %s...', 
+            substr($api_key, 0, 8), 
+            substr($stored_key, 0, 8)
+        ));
+
         if (empty($api_key) || empty($stored_key)) {
+            error_log('SourceHub Spoke: API key check failed - one or both keys are empty');
             return false;
         }
 
-        return hash_equals($stored_key, $api_key);
+        $matches = hash_equals($stored_key, $api_key);
+        error_log('SourceHub Spoke: API key match: ' . ($matches ? 'YES' : 'NO'));
+        
+        return $matches;
     }
 
     /**

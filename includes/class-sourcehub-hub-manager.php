@@ -30,7 +30,10 @@ class SourceHub_Hub_Manager {
     public function init() {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
-        add_action('post_updated', array($this, 'handle_post_update'), 99, 3); // Handle updates properly
+        add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
+        
+        // Handle scheduled posts when they publish
+        add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
         
         // Multiple hooks to catch Newspaper meta at different points
         add_action('updated_post_meta', array($this, 'meta_updated_check'), 10, 4);
@@ -42,6 +45,7 @@ class SourceHub_Hub_Manager {
         
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
+        add_action('wp_ajax_sourcehub_send_to_spoke', array($this, 'ajax_send_to_spoke'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
     }
 
@@ -74,6 +78,7 @@ class SourceHub_Hub_Manager {
         $connections = SourceHub_Database::get_connections(array('mode' => 'spoke'));
         $selected_connections = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
         $syndicated_connections = get_post_meta($post->ID, '_sourcehub_syndicated_spokes', true);
+        $sync_status = get_post_meta($post->ID, '_sourcehub_sync_status', true);
         $ai_overrides = get_post_meta($post->ID, '_sourcehub_ai_overrides', true);
         $last_sync = get_post_meta($post->ID, '_sourcehub_last_sync', true);
 
@@ -83,6 +88,10 @@ class SourceHub_Hub_Manager {
 
         if (!is_array($syndicated_connections)) {
             $syndicated_connections = array();
+        }
+        
+        if (!is_array($sync_status)) {
+            $sync_status = array();
         }
 
         if (!is_array($ai_overrides)) {
@@ -139,18 +148,52 @@ class SourceHub_Hub_Manager {
                                 </div>
                             <?php endif; ?>
                             
-                            <?php if (in_array($connection->id, $syndicated_connections)): ?>
-                                <div class="syndication-info">
-                                    <span class="dashicons dashicons-yes-alt"></span>
-                                    <small><?php _e('Previously syndicated', 'sourcehub'); ?></small>
+                            <div class="syndication-info">
+                                <?php 
+                                $status_info = isset($sync_status[$connection->id]) ? $sync_status[$connection->id] : null;
+                                $has_status = $status_info && isset($status_info['status']);
+                                $is_success = $has_status && $status_info['status'] === 'success';
+                                $is_failed = $has_status && $status_info['status'] === 'failed';
+                                ?>
+                                
+                                <?php if ($is_success): ?>
+                                    <span class="sync-status-badge sync-success">
+                                        <span class="dashicons dashicons-yes-alt"></span>
+                                        <small><?php _e('Synced', 'sourcehub'); ?></small>
+                                    </span>
                                     <button type="button" 
                                             class="button button-small sourcehub-resync-btn" 
                                             data-connection-id="<?php echo esc_attr($connection->id); ?>"
                                             data-post-id="<?php echo esc_attr($post->ID); ?>">
                                         <?php _e('Re-sync', 'sourcehub'); ?>
                                     </button>
-                                </div>
-                            <?php endif; ?>
+                                <?php elseif ($is_failed): ?>
+                                    <span class="sync-status-badge sync-failed" title="<?php echo esc_attr($status_info['error']); ?>">
+                                        <span class="dashicons dashicons-warning"></span>
+                                        <small><?php _e('Failed', 'sourcehub'); ?></small>
+                                    </span>
+                                    <button type="button" 
+                                            class="button button-small button-primary sourcehub-send-now-btn" 
+                                            data-connection-id="<?php echo esc_attr($connection->id); ?>"
+                                            data-post-id="<?php echo esc_attr($post->ID); ?>">
+                                        <?php _e('Retry', 'sourcehub'); ?>
+                                    </button>
+                                    <small class="sync-error-message" style="color: #d63638; display: block; margin-top: 4px;">
+                                        <?php echo esc_html($status_info['error']); ?>
+                                    </small>
+                                <?php else: ?>
+                                    <span class="sync-status-badge sync-never">
+                                        <span class="dashicons dashicons-minus"></span>
+                                        <small style="color: #666;"><?php _e('Not synced', 'sourcehub'); ?></small>
+                                    </span>
+                                    <button type="button" 
+                                            class="button button-small button-primary sourcehub-send-now-btn" 
+                                            data-connection-id="<?php echo esc_attr($connection->id); ?>"
+                                            data-post-id="<?php echo esc_attr($post->ID); ?>">
+                                        <?php _e('Send Now', 'sourcehub'); ?>
+                                    </button>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -246,12 +289,50 @@ class SourceHub_Hub_Manager {
         .syndication-info {
             display: flex;
             align-items: center;
-            gap: 5px;
-            margin-top: 5px;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .sync-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .sync-status-badge .dashicons {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .sync-success {
+            background: #d4edda;
             color: #155724;
         }
         
-        .sourcehub-resync-btn {
+        .sync-failed {
+            background: #f8d7da;
+            color: #721c24;
+            cursor: help;
+        }
+        
+        .sync-never {
+            background: #e2e3e5;
+            color: #6c757d;
+        }
+        
+        .sync-error-message {
+            width: 100%;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .sourcehub-resync-btn,
+        .sourcehub-send-now-btn {
             margin-left: auto;
         }
         
@@ -363,6 +444,42 @@ class SourceHub_Hub_Manager {
                     }
                 });
             });
+            
+            // Send Now - create post on new spoke
+            $('.sourcehub-send-now-btn').on('click', function() {
+                var $button = $(this);
+                var connectionId = $button.data('connection-id');
+                var postId = $button.data('post-id');
+                
+                $button.prop('disabled', true).text('<?php _e('Sending...', 'sourcehub'); ?>');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'sourcehub_send_to_spoke',
+                        connection_id: connectionId,
+                        post_id: postId,
+                        nonce: '<?php echo wp_create_nonce('sourcehub_send_to_spoke'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $button.text('<?php _e('Sent!', 'sourcehub'); ?>');
+                            // Reload page after 1 second to show updated UI
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            alert('<?php _e('Send failed:', 'sourcehub'); ?> ' + response.data);
+                            $button.prop('disabled', false).text('<?php _e('Send Now', 'sourcehub'); ?>');
+                        }
+                    },
+                    error: function() {
+                        alert('<?php _e('Send failed due to connection error.', 'sourcehub'); ?>');
+                        $button.prop('disabled', false).text('<?php _e('Send Now', 'sourcehub'); ?>');
+                    }
+                });
+            });
         });
         </script>
         <?php
@@ -426,20 +543,24 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
         // Continue with syndication logic
-        // Note: We used to delay syndication for Newspaper theme posts without meta,
-        // but this caused issues where posts wouldn't syndicate at all.
-        // Now we syndicate immediately and let updates handle any Newspaper meta that comes later.
-        // If this is a published post, trigger syndication (only for NEW posts)
-        if ($post->post_status === 'publish' && !empty($selected_spokes)) {
-            // Check if this post has already been syndicated
+        // Handle both 'publish' and 'future' (scheduled) posts
+        if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
             $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-            if (empty($syndicated_spokes)) {
-                // This is a new post - syndicate it
-                error_log('SourceHub: New post detected, syndicating for first time');
-                $this->syndicate_post($post_id, $selected_spokes);
-            } else {
-                // This is an existing post - let handle_post_update handle it
-                error_log('SourceHub: Existing post detected, letting handle_post_update handle it');
+            if (!is_array($syndicated_spokes)) {
+                $syndicated_spokes = array();
+            }
+            
+            // Find NEW spokes (selected but not yet syndicated)
+            $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+            
+            if (!empty($new_spokes)) {
+                // Only syndicate if post is published NOW (not scheduled for future)
+                if ($post->post_status === 'publish') {
+                    error_log('SourceHub: Syndicating to ' . count($new_spokes) . ' new spoke(s)');
+                    $this->syndicate_post($post_id, $new_spokes);
+                } else {
+                    error_log('SourceHub: Post scheduled for future, will syndicate when published');
+                }
             }
         }
     }
@@ -452,29 +573,95 @@ class SourceHub_Hub_Manager {
      * @param WP_Post $post_before Post object before update
      */
     public function handle_post_update($post_id, $post_after, $post_before) {
+        error_log('SourceHub: handle_post_update called for post ' . $post_id);
+        
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
+            error_log('SourceHub: Skipping - post status is ' . $post_after->post_status);
             return;
         }
 
         // Skip if this is an autosave or revision
         if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            error_log('SourceHub: Skipping - autosave or revision');
             return;
         }
 
-        // Get previously syndicated spokes
+        // Get selected and syndicated spokes
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-        if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-            // Always sync updates for posts that have been previously syndicated
+        
+        error_log('SourceHub: Selected spokes: ' . print_r($selected_spokes, true));
+        error_log('SourceHub: Syndicated spokes: ' . print_r($syndicated_spokes, true));
+        
+        if (!is_array($selected_spokes)) {
+            $selected_spokes = array();
+        }
+        if (!is_array($syndicated_spokes)) {
+            $syndicated_spokes = array();
+        }
+        
+        // Find NEW spokes (selected but not yet syndicated)
+        $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+        
+        // Find EXISTING spokes (already syndicated and still selected)
+        $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
+        
+        error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
+        error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
+        
+        // Create posts on NEW spokes
+        if (!empty($new_spokes)) {
+            error_log('SourceHub: Creating posts on ' . count($new_spokes) . ' new spoke(s)');
+            $this->syndicate_post($post_id, $new_spokes);
+        }
+        
+        // Update posts on EXISTING spokes
+        if (!empty($existing_spokes)) {
             SourceHub_Logger::info(
-                sprintf('Syncing updates for post "%s" to %d spoke sites', $post_after->post_title, count($syndicated_spokes)),
-                array('spoke_ids' => $syndicated_spokes),
+                sprintf('Syncing updates for post "%s" to %d existing spoke sites', $post_after->post_title, count($existing_spokes)),
+                array('spoke_ids' => $existing_spokes),
                 $post_id,
                 null,
                 'update'
             );
             
-            $this->update_syndicated_post($post_id, $syndicated_spokes);
+            $this->update_syndicated_post($post_id, $existing_spokes);
+        }
+    }
+
+    /**
+     * Handle scheduled post publishing
+     * Triggered when a scheduled post transitions to published
+     *
+     * @param WP_Post $post Post object
+     */
+    public function handle_scheduled_post_publish($post) {
+        $post_id = $post->ID;
+        
+        error_log('SourceHub: Scheduled post ' . $post_id . ' is now publishing');
+        
+        // Get selected spokes
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        if (empty($selected_spokes) || !is_array($selected_spokes)) {
+            error_log('SourceHub: No spokes selected for scheduled post ' . $post_id);
+            return;
+        }
+        
+        // Get already syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes)) {
+            $syndicated_spokes = array();
+        }
+        
+        // Find NEW spokes that need posts created
+        $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+        
+        if (!empty($new_spokes)) {
+            error_log('SourceHub: Syndicating scheduled post ' . $post_id . ' to ' . count($new_spokes) . ' spoke(s)');
+            $this->syndicate_post($post_id, $new_spokes);
+        } else {
+            error_log('SourceHub: Scheduled post ' . $post_id . ' already syndicated to all selected spokes');
         }
     }
 
@@ -588,6 +775,12 @@ class SourceHub_Hub_Manager {
         if (!is_array($ai_overrides)) {
             $ai_overrides = array();
         }
+        
+        // Get current sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
 
         foreach ($spoke_ids as $spoke_id) {
             $connection = SourceHub_Database::get_connection($spoke_id);
@@ -603,6 +796,14 @@ class SourceHub_Hub_Manager {
             
             if ($result['success']) {
                 $syndicated_spokes[] = $spoke_id;
+                
+                // Store success status
+                $sync_status[$spoke_id] = array(
+                    'status' => 'success',
+                    'last_sync' => current_time('mysql'),
+                    'action' => 'create'
+                );
+                
                 SourceHub_Logger::success(
                     sprintf(__('Post "%s" successfully syndicated to %s', 'sourcehub'), $post->post_title, $connection->name),
                     $result,
@@ -611,6 +812,14 @@ class SourceHub_Hub_Manager {
                     'syndicate'
                 );
             } else {
+                // Store failure status
+                $sync_status[$spoke_id] = array(
+                    'status' => 'failed',
+                    'last_sync' => current_time('mysql'),
+                    'error' => $result['message'],
+                    'action' => 'create'
+                );
+                
                 SourceHub_Logger::error(
                     sprintf(__('Failed to syndicate post "%s" to %s: %s', 'sourcehub'), $post->post_title, $connection->name, $result['message']),
                     $result,
@@ -621,8 +830,9 @@ class SourceHub_Hub_Manager {
             }
         }
 
-        // Update syndicated spokes list
+        // Update syndicated spokes list and sync status
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
+        update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
         // Release sync lock
@@ -672,6 +882,12 @@ class SourceHub_Hub_Manager {
         if (!is_array($ai_overrides)) {
             $ai_overrides = array();
         }
+        
+        // Get current sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
 
         foreach ($spokes_to_update as $spoke_id) {
             $connection = SourceHub_Database::get_connection($spoke_id);
@@ -686,6 +902,13 @@ class SourceHub_Hub_Manager {
             $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, true);
             
             if ($result['success']) {
+                // Store success status
+                $sync_status[$spoke_id] = array(
+                    'status' => 'success',
+                    'last_sync' => current_time('mysql'),
+                    'action' => 'update'
+                );
+                
                 SourceHub_Logger::success(
                     sprintf(__('Post "%s" successfully updated on %s', 'sourcehub'), $post->post_title, $connection->name),
                     $result,
@@ -694,6 +917,14 @@ class SourceHub_Hub_Manager {
                     'update'
                 );
             } else {
+                // Store failure status
+                $sync_status[$spoke_id] = array(
+                    'status' => 'failed',
+                    'last_sync' => current_time('mysql'),
+                    'error' => $result['message'],
+                    'action' => 'update'
+                );
+                
                 SourceHub_Logger::error(
                     sprintf(__('Failed to update post "%s" on %s: %s', 'sourcehub'), $post->post_title, $connection->name, $result['message']),
                     $result,
@@ -704,6 +935,7 @@ class SourceHub_Hub_Manager {
             }
         }
 
+        update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
         // Release sync lock
@@ -711,15 +943,18 @@ class SourceHub_Hub_Manager {
     }
 
     /**
-     * Send post to spoke site
+     * Send post to spoke site with retry logic
      *
      * @param WP_Post $post Post object
      * @param object $connection Connection object
      * @param bool $use_ai Whether to use AI rewriting
      * @param bool $is_update Whether this is an update
+     * @param int $attempt Current attempt number (internal use)
      * @return array Result array
      */
-    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false) {
+    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1) {
+        $max_attempts = 3;
+        
         // Prepare post data
         $post_data = $this->prepare_post_data($post, $connection, $use_ai);
         
@@ -748,6 +983,9 @@ class SourceHub_Hub_Manager {
         $endpoint = $is_update ? 'update-post' : 'receive-post';
         $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/' . $endpoint;
         
+        // Debug: Log API key being sent (first 8 chars only for security)
+        error_log(sprintf('SourceHub: Sending to %s with API key: %s...', $url, substr($connection->api_key, 0, 8)));
+        
         // Send request with longer timeout after wake-up
         $response = wp_remote_post($url, array(
             'headers' => array(
@@ -759,9 +997,23 @@ class SourceHub_Hub_Manager {
         ));
 
         if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            
+            // Retry logic
+            if ($attempt < $max_attempts) {
+                $wait_seconds = $attempt * 5; // 5s, 10s
+                error_log(sprintf('SourceHub: Attempt %d/%d failed for %s: %s. Retrying in %d seconds...', 
+                    $attempt, $max_attempts, $connection->name, $error_message, $wait_seconds));
+                
+                sleep($wait_seconds);
+                return $this->send_post_to_spoke($post, $connection, $use_ai, $is_update, $attempt + 1);
+            }
+            
+            // All retries exhausted
+            error_log(sprintf('SourceHub: All %d attempts failed for %s: %s', $max_attempts, $connection->name, $error_message));
             return array(
                 'success' => false,
-                'message' => $response->get_error_message(),
+                'message' => sprintf(__('Failed after %d attempts: %s', 'sourcehub'), $max_attempts, $error_message),
                 'data' => $post_data
             );
         }
@@ -770,13 +1022,47 @@ class SourceHub_Hub_Manager {
         $response_body = wp_remote_retrieve_body($response);
 
         if (!in_array($response_code, [200, 201])) {
+            // Clean up error message - strip HTML and extract meaningful text
+            $clean_body = strip_tags($response_body);
+            $clean_body = trim(preg_replace('/\s+/', ' ', $clean_body)); // Remove extra whitespace
+            
+            // If body is too long or is HTML garbage, just use the status code
+            if (strlen($clean_body) > 100 || empty($clean_body)) {
+                $status_text = wp_remote_retrieve_response_message($response);
+                $error_message = sprintf(__('HTTP %d: %s', 'sourcehub'), $response_code, $status_text);
+            } else {
+                $error_message = sprintf(__('HTTP %d: %s', 'sourcehub'), $response_code, $clean_body);
+            }
+            
+            // Retry logic for HTTP errors (except 401/403 which are auth issues)
+            if ($attempt < $max_attempts && !in_array($response_code, [401, 403])) {
+                $wait_seconds = $attempt * 5; // 5s, 10s
+                error_log(sprintf('SourceHub: Attempt %d/%d failed for %s: %s. Retrying in %d seconds...', 
+                    $attempt, $max_attempts, $connection->name, $error_message, $wait_seconds));
+                
+                sleep($wait_seconds);
+                return $this->send_post_to_spoke($post, $connection, $use_ai, $is_update, $attempt + 1);
+            }
+            
+            // All retries exhausted or auth error (don't retry auth failures)
+            if (in_array($response_code, [401, 403])) {
+                error_log(sprintf('SourceHub: Authentication error for %s, not retrying: %s', $connection->name, $error_message));
+            } else {
+                error_log(sprintf('SourceHub: All %d attempts failed for %s: %s', $max_attempts, $connection->name, $error_message));
+            }
+            
             return array(
                 'success' => false,
-                'message' => sprintf(__('HTTP %d: %s', 'sourcehub'), $response_code, $response_body),
+                'message' => $attempt > 1 ? sprintf(__('Failed after %d attempts: %s', 'sourcehub'), $attempt, $error_message) : $error_message,
                 'data' => $post_data
             );
         }
 
+        // Success!
+        if ($attempt > 1) {
+            error_log(sprintf('SourceHub: Succeeded on attempt %d/%d for %s', $attempt, $max_attempts, $connection->name));
+        }
+        
         return array(
             'success' => true,
             'message' => __('Post sent successfully', 'sourcehub'),
@@ -1311,7 +1597,7 @@ class SourceHub_Hub_Manager {
     }
 
     /**
-     * Handle AJAX sync post request
+     * Handle AJAX sync post request (update existing)
      */
     public function ajax_sync_post() {
         check_ajax_referer('sourcehub_sync_post', 'nonce');
@@ -1345,6 +1631,78 @@ class SourceHub_Hub_Manager {
             update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
             wp_send_json_success($result['message']);
         } else {
+            wp_send_json_error($result['message']);
+        }
+    }
+
+    /**
+     * Handle AJAX send to spoke request (create new)
+     */
+    public function ajax_send_to_spoke() {
+        check_ajax_referer('sourcehub_send_to_spoke', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(__('Insufficient permissions', 'sourcehub'));
+            return;
+        }
+
+        $connection_id = intval($_POST['connection_id']);
+        $post_id = intval($_POST['post_id']);
+
+        $post = get_post($post_id);
+        if (!$post) {
+            wp_send_json_error(__('Post not found', 'sourcehub'));
+        }
+
+        $connection = SourceHub_Database::get_connection($connection_id);
+        if (!$connection) {
+            wp_send_json_error(__('Connection not found', 'sourcehub'));
+        }
+
+        // Get AI settings
+        $ai_settings = json_decode($connection->ai_settings, true);
+        $has_ai_enabled = !empty($ai_settings['enabled']);
+        $ai_disabled_for_post = get_post_meta($post_id, '_sourcehub_ai_overrides', true);
+        $ai_disabled_for_post = isset($ai_disabled_for_post['disable_ai_' . $connection_id]) ? $ai_disabled_for_post['disable_ai_' . $connection_id] : false;
+
+        // Send post to spoke (create new)
+        $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, false);
+
+        // Get current sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
+
+        if ($result['success']) {
+            // Add this spoke to the syndicated list
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            if (!is_array($syndicated_spokes)) {
+                $syndicated_spokes = array();
+            }
+            $syndicated_spokes[] = $connection_id;
+            update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
+            
+            // Store success status
+            $sync_status[$connection_id] = array(
+                'status' => 'success',
+                'last_sync' => current_time('mysql'),
+                'action' => 'create'
+            );
+            update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+            update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
+            
+            wp_send_json_success($result['message']);
+        } else {
+            // Store failure status
+            $sync_status[$connection_id] = array(
+                'status' => 'failed',
+                'last_sync' => current_time('mysql'),
+                'error' => $result['message'],
+                'action' => 'create'
+            );
+            update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+            
             wp_send_json_error($result['message']);
         }
     }
