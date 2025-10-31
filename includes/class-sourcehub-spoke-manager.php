@@ -111,10 +111,16 @@ class SourceHub_Spoke_Manager {
      */
     public function receive_post($request) {
         try {
+            $start_time = microtime(true);
+            error_log('SourceHub Spoke: receive_post started');
+            
             $data = $request->get_json_params();
             
             // Validate required data
+            $validation_start = microtime(true);
             $validation = $this->validate_post_data($data);
+            error_log(sprintf('SourceHub Spoke: Validation took %.2f seconds', microtime(true) - $validation_start));
+            
             if (!$validation['valid']) {
                 return new WP_REST_Response(array(
                     'success' => false,
@@ -123,7 +129,10 @@ class SourceHub_Spoke_Manager {
             }
 
             // Create the post
+            $create_start = microtime(true);
+            error_log('SourceHub Spoke: Starting create_post_from_data');
             $post_id = $this->create_post_from_data($data);
+            error_log(sprintf('SourceHub Spoke: create_post_from_data took %.2f seconds', microtime(true) - $create_start));
             
             if (is_wp_error($post_id)) {
                 SourceHub_Logger::error(
@@ -140,9 +149,12 @@ class SourceHub_Spoke_Manager {
                 ), 500);
             }
 
+            $total_time = microtime(true) - $start_time;
+            error_log(sprintf('SourceHub Spoke: TOTAL receive_post took %.2f seconds', $total_time));
+            
             SourceHub_Logger::success(
-                sprintf('Successfully received post "%s" from hub', $data['title']),
-                array('hub_id' => $data['hub_id'], 'local_id' => $post_id),
+                sprintf('Successfully received post "%s" from hub (%.2fs)', $data['title'], $total_time),
+                array('hub_id' => $data['hub_id'], 'local_id' => $post_id, 'processing_time' => $total_time),
                 $post_id,
                 null,
                 'receive_post'
@@ -484,16 +496,20 @@ class SourceHub_Spoke_Manager {
 
         // Handle featured image
         if (isset($data['featured_image'])) {
+            $image_start = microtime(true);
             $this->set_featured_image($post_id, $data['featured_image']);
+            error_log(sprintf('SourceHub Spoke: Featured image processing took %.2f seconds', microtime(true) - $image_start));
         }
 
         // Handle gallery images
         if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
+            $gallery_start = microtime(true);
             error_log('SourceHub Gallery: Received ' . count($data['gallery_images']) . ' gallery images for post ' . $post_id);
             SourceHub_Logger::info('Received ' . count($data['gallery_images']) . ' gallery images for processing', array(), $post_id, null, 'gallery_sync');
             error_log('SourceHub Gallery: Content before remap: ' . substr($data['content'], 0, 500));
             
             $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
+            error_log(sprintf('SourceHub Spoke: Gallery images download took %.2f seconds', microtime(true) - $gallery_start));
             
             error_log('SourceHub Gallery: Image ID map: ' . print_r($image_id_map, true));
             
