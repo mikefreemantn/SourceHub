@@ -999,14 +999,19 @@ class SourceHub_Hub_Manager {
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
             
-            // Retry logic
-            if ($attempt < $max_attempts) {
-                $wait_seconds = $attempt * 5; // 5s, 10s
+            // Retry logic - ONLY retry for updates, not creates (to prevent duplicates)
+            if ($attempt < $max_attempts && $is_update) {
+                $wait_seconds = $attempt * 2; // 2s, 4s (reduced to prevent gateway timeouts)
                 error_log(sprintf('SourceHub: Attempt %d/%d failed for %s: %s. Retrying in %d seconds...', 
                     $attempt, $max_attempts, $connection->name, $error_message, $wait_seconds));
                 
                 sleep($wait_seconds);
                 return $this->send_post_to_spoke($post, $connection, $use_ai, $is_update, $attempt + 1);
+            }
+            
+            // Don't retry creates to prevent duplicate posts
+            if (!$is_update && $attempt < $max_attempts) {
+                error_log(sprintf('SourceHub: Not retrying create operation for %s to prevent duplicates', $connection->name));
             }
             
             // All retries exhausted
@@ -1035,13 +1040,19 @@ class SourceHub_Hub_Manager {
             }
             
             // Retry logic for HTTP errors (except 401/403 which are auth issues)
-            if ($attempt < $max_attempts && !in_array($response_code, [401, 403])) {
-                $wait_seconds = $attempt * 5; // 5s, 10s
+            // ONLY retry for updates, not creates (to prevent duplicates)
+            if ($attempt < $max_attempts && !in_array($response_code, [401, 403]) && $is_update) {
+                $wait_seconds = $attempt * 2; // 2s, 4s (reduced to prevent gateway timeouts)
                 error_log(sprintf('SourceHub: Attempt %d/%d failed for %s: %s. Retrying in %d seconds...', 
                     $attempt, $max_attempts, $connection->name, $error_message, $wait_seconds));
                 
                 sleep($wait_seconds);
                 return $this->send_post_to_spoke($post, $connection, $use_ai, $is_update, $attempt + 1);
+            }
+            
+            // Don't retry creates to prevent duplicate posts
+            if (!$is_update && $attempt < $max_attempts && !in_array($response_code, [401, 403])) {
+                error_log(sprintf('SourceHub: Not retrying create operation for %s to prevent duplicates', $connection->name));
             }
             
             // All retries exhausted or auth error (don't retry auth failures)
