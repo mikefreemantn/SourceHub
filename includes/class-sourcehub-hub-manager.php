@@ -953,7 +953,7 @@ class SourceHub_Hub_Manager {
      * @return array Result array
      */
     private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1) {
-        $max_attempts = 3;
+        $max_attempts = 1; // Disabled auto-retry to prevent duplicates from timeouts
         
         // Prepare post data
         $post_data = $this->prepare_post_data($post, $connection, $use_ai);
@@ -986,14 +986,14 @@ class SourceHub_Hub_Manager {
         // Debug: Log API key being sent (first 8 chars only for security)
         error_log(sprintf('SourceHub: Sending to %s with API key: %s...', $url, substr($connection->api_key, 0, 8)));
         
-        // Send request with longer timeout after wake-up
+        // Send request with timeout
         $response = wp_remote_post($url, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
                 'X-SourceHub-API-Key' => $connection->api_key,
             ),
             'body' => json_encode($post_data),
-            'timeout' => 45, // Increased from 30 to 45 seconds
+            'timeout' => 30, // 30 seconds to stay under WP Engine/Cloudflare 60s limit
         ));
 
         if (is_wp_error($response)) {
