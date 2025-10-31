@@ -621,7 +621,11 @@ class SourceHub_Spoke_Manager {
 
         // Update gallery images
         if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
+            error_log('SourceHub Update: Processing ' . count($data['gallery_images']) . ' gallery images for post ' . $post_id);
+            error_log('SourceHub Update: Content before gallery processing: ' . substr($data['content'], 0, 500));
+            
             $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
+            error_log('SourceHub Update: Image ID map: ' . print_r($image_id_map, true));
             
             // Remap gallery IDs in post content
             if (!empty($image_id_map)) {
@@ -632,6 +636,8 @@ class SourceHub_Spoke_Manager {
                     $image_id_map
                 );
                 
+                error_log('SourceHub Update: Content after gallery processing: ' . substr($updated_content, 0, 500));
+                
                 // Update post content with remapped gallery IDs
                 wp_update_post(array(
                     'ID' => $post_id,
@@ -639,7 +645,11 @@ class SourceHub_Spoke_Manager {
                 ));
                 
                 error_log('SourceHub: Remapped gallery IDs for updated post ' . $post_id);
+            } else {
+                error_log('SourceHub Update: No image ID map generated - galleries may not be remapped!');
             }
+        } else {
+            error_log('SourceHub Update: No gallery_images in payload for post ' . $post_id);
         }
 
         // Update Yoast SEO meta
