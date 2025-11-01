@@ -662,8 +662,12 @@ class SourceHub_Hub_Manager {
             if (!empty($new_spokes)) {
                 // Only syndicate if post is published NOW (not scheduled for future)
                 if ($post->post_status === 'publish') {
-                    error_log('SourceHub: Syndicating to ' . count($new_spokes) . ' new spoke(s)');
-                    $this->syndicate_post($post_id, $new_spokes);
+                    // Delay syndication to allow Yoast SEO time to save its meta
+                    // Yoast has a timing issue where focus keyword and other meta isn't available on first save
+                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) to allow Yoast meta to save');
+                    
+                    // Mark as pending so shutdown hook can pick it up
+                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
                 } else {
                     error_log('SourceHub: Post scheduled for future, will syndicate when published');
                 }
@@ -1730,6 +1734,25 @@ class SourceHub_Hub_Manager {
      * Check for pending syncs at shutdown
      */
     public function check_pending_syncs() {
+        // Check for pending first syncs (for Yoast meta)
+        global $wpdb;
+        $transients = $wpdb->get_results(
+            "SELECT option_name, option_value FROM $wpdb->options 
+            WHERE option_name LIKE '_transient_sourcehub_pending_first_sync_%'"
+        );
+        
+        foreach ($transients as $transient) {
+            $post_id = str_replace('_transient_sourcehub_pending_first_sync_', '', $transient->option_name);
+            $new_spokes = maybe_unserialize($transient->option_value);
+            
+            if (!empty($new_spokes) && is_array($new_spokes)) {
+                error_log('SourceHub: Processing delayed first syndication for post ' . $post_id . ' to ' . count($new_spokes) . ' spokes (Yoast meta should be ready now)');
+                $this->syndicate_post($post_id, $new_spokes);
+                delete_transient('sourcehub_pending_first_sync_' . $post_id);
+            }
+        }
+        
+        // Check for pending Newspaper syncs
         if (empty($this->pending_syncs)) {
             return;
         }
