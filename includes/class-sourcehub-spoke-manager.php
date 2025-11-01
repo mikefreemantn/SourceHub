@@ -524,23 +524,13 @@ class SourceHub_Spoke_Manager {
             SourceHub_Logger::info('No gallery_images found in syndication data', array(), $post_id, null, 'gallery_sync');
         }
 
-        // Handle Yoast SEO meta
-        if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
-            $allow_override = get_option('sourcehub_allow_yoast_override', true);
-            SourceHub_Yoast_Integration::set_post_meta($post_id, $data['yoast_meta'], $allow_override);
-            
-            // Set canonical URL
-            $canonical_url = SourceHub_Yoast_Integration::generate_canonical_url($post_id, $data['hub_url'], $data['hub_id']);
-            SourceHub_Yoast_Integration::set_canonical_url($post_id, $canonical_url);
-        }
-
-        // Handle Newspaper theme meta
+        // Handle Newspaper theme meta (before publish)
         if (isset($data['newspaper_meta']) && !empty($data['newspaper_meta'])) {
             $allow_override = get_option('sourcehub_allow_newspaper_override', true);
             SourceHub_Newspaper_Integration::set_post_meta($post_id, $data['newspaper_meta'], $allow_override);
         }
 
-        // Handle custom fields
+        // Handle custom fields (before publish)
         if (isset($data['custom_fields']) && is_array($data['custom_fields'])) {
             foreach ($data['custom_fields'] as $key => $value) {
                 update_post_meta($post_id, sanitize_key($key), sanitize_text_field($value));
@@ -554,6 +544,18 @@ class SourceHub_Spoke_Manager {
                 'post_status' => $intended_status
             ));
             error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after all processing complete");
+        }
+
+        // Handle Yoast SEO meta AFTER publish (Yoast can clear meta on status change)
+        if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
+            $allow_override = get_option('sourcehub_allow_yoast_override', true);
+            SourceHub_Yoast_Integration::set_post_meta($post_id, $data['yoast_meta'], $allow_override);
+            
+            // Set canonical URL
+            $canonical_url = SourceHub_Yoast_Integration::generate_canonical_url($post_id, $data['hub_url'], $data['hub_id']);
+            SourceHub_Yoast_Integration::set_canonical_url($post_id, $canonical_url);
+            
+            error_log("SourceHub: Set Yoast meta after publish for post {$post_id}");
         }
 
         return $post_id;
