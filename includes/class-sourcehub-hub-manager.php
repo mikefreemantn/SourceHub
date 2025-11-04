@@ -1257,22 +1257,30 @@ class SourceHub_Hub_Manager {
         error_log('SourceHub: Collecting page template for post ' . $post->ID . ': ' . ($page_template ? $page_template : 'DEFAULT'));
 
         // Basic post data
+        // Get RAW content directly from database to preserve ALL shortcodes
+        // Using $post->post_content can have filters applied that process shortcodes
+        global $wpdb;
+        $raw_content = $wpdb->get_var($wpdb->prepare(
+            "SELECT post_content FROM $wpdb->posts WHERE ID = %d",
+            $post->ID
+        ));
+        
         // Debug: Log original content
         SourceHub_Logger::info(
-            'DEBUG: Original post content: ' . substr($post->post_content, 0, 500),
-            array('full_content_length' => strlen($post->post_content)),
+            'DEBUG: Original post content: ' . substr($raw_content, 0, 500),
+            array('full_content_length' => strlen($raw_content)),
             $post->ID,
             null,
             'debug_content'
         );
         
         // Extract gallery images from RAW content BEFORE processing shortcodes
-        $gallery_image_ids = SourceHub_Gallery_Handler::extract_image_ids($post->post_content);
+        $gallery_image_ids = SourceHub_Gallery_Handler::extract_image_ids($raw_content);
         
-        // For syndication, we want to preserve gallery shortcodes as-is
+        // For syndication, we want to preserve ALL shortcodes as-is
         // So we DON'T process shortcodes - just send raw content
-        // The spoke site will handle gallery remapping
-        $processed_content = $post->post_content;
+        // The spoke site will handle gallery remapping and shortcode processing
+        $processed_content = $raw_content;
         
         // Apply any custom filters but NOT do_shortcode
         $processed_content = apply_filters('sourcehub_before_syndication', $processed_content);
