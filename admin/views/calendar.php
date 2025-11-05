@@ -101,6 +101,9 @@ if (!defined('ABSPATH')) {
 
     <!-- Calendar Legend -->
     <div class="sourcehub-calendar-legend">
+        <div style="margin-bottom: 10px;">
+            <strong><?php _e('Post Status:', 'sourcehub'); ?></strong>
+        </div>
         <div class="legend-item">
             <span class="legend-color" style="background-color: #28a745;"></span>
             <span class="legend-label"><?php _e('Published', 'sourcehub'); ?></span>
@@ -120,6 +123,22 @@ if (!defined('ABSPATH')) {
         <div class="legend-item">
             <span class="legend-color" style="background-color: #dc3545;"></span>
             <span class="legend-label"><?php _e('Private', 'sourcehub'); ?></span>
+        </div>
+        
+        <div style="margin: 15px 0 10px 0; padding-top: 10px; border-top: 1px solid #ddd;">
+            <strong><?php _e('Spoke Syndication:', 'sourcehub'); ?></strong>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #00a32a;"></span>
+            <span class="legend-label">✓ <?php _e('Syndicated', 'sourcehub'); ?></span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #007cba;"></span>
+            <span class="legend-label">📅 <?php _e('Will Sync on Publish', 'sourcehub'); ?></span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #dba617;"></span>
+            <span class="legend-label">⏳ <?php _e('Pending Syndication', 'sourcehub'); ?></span>
         </div>
     </div>
 

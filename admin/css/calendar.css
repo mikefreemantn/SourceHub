@@ -253,6 +253,11 @@
     color: #fff;
 }
 
+.spoke-badge-card.scheduled {
+    background: #007cba;
+    color: #fff;
+}
+
 .spoke-badge-card.pending {
     background: #dba617;
     color: #fff;

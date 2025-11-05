@@ -352,8 +352,18 @@
             html += '<span class="event-meta-icon">🌐</span>';
             html += '<div class="event-spokes-container">';
             spokes.forEach(function(spoke) {
-                const statusClass = spoke.syndicated ? 'syndicated' : 'pending';
-                const statusIcon = spoke.syndicated ? '✓' : '⏳';
+                // For scheduled posts, show 'scheduled' badge instead of 'pending'
+                let statusClass, statusIcon;
+                if (spoke.syndicated) {
+                    statusClass = 'syndicated';
+                    statusIcon = '✓';
+                } else if (props.post_status === 'future') {
+                    statusClass = 'scheduled';
+                    statusIcon = '📅';
+                } else {
+                    statusClass = 'pending';
+                    statusIcon = '⏳';
+                }
                 html += '<span class="spoke-badge-card ' + statusClass + '">' + statusIcon + ' ' + spoke.name + '</span>';
             });
             html += '</div>';
