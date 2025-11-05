@@ -19,12 +19,12 @@ $recent_logs = isset($recent_logs) ? $recent_logs : array();
 ?>
 
 <div class="wrap sourcehub-admin">
-    <h1 class="wp-heading-inline">
-        <?php echo esc_html__('SourceHub Dashboard', 'sourcehub'); ?>
+    <div class="sourcehub-dashboard-header">
+        <img src="<?php echo SOURCEHUB_PLUGIN_URL . 'assets/source_hub_logo.png'; ?>" alt="SourceHub" class="sourcehub-logo" />
         <span class="mode-badge mode-<?php echo esc_attr($mode); ?>">
             <?php echo esc_html(ucfirst($mode)); ?> Mode
         </span>
-    </h1>
+    </div>
 
     <div class="sourcehub-dashboard">
         <!-- Stats Overview -->

@@ -318,9 +318,8 @@ class SourceHub_Calendar {
             // Determine event color based on post status
             $color = $this->get_status_color($post->post_status);
 
-            // Get the actual post date/time using WordPress timezone
-            // WordPress stores post_date in site's local timezone
-            $formatted_date = get_the_date('Y-m-d\TH:i:s', $post->ID);
+            // Get the post date (date only, no time) to prevent multi-day spanning
+            $formatted_date = get_the_date('Y-m-d', $post->ID);
             
             // Debug logging
             error_log('SourceHub Calendar: Post "' . $post->post_title . '" (ID: ' . $post->ID . ', Status: ' . $post->post_status . ') - Original: ' . $post->post_date . ', Formatted: ' . $formatted_date);
@@ -334,7 +333,7 @@ class SourceHub_Calendar {
                 'backgroundColor' => $color,
                 'borderColor' => $color,
                 'textColor' => '#ffffff',
-                'allDay' => false, // Important: specify this is not an all-day event
+                'allDay' => true, // Display as all-day event to prevent multi-day spanning
                 'extendedProps' => array(
                     'post_id' => $post->ID,
                     'post_status' => $post->post_status,

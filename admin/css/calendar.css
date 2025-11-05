@@ -44,8 +44,8 @@
 }
 
 .calendar-filter:focus {
-    border-color: #2271b1;
-    box-shadow: 0 0 0 1px #2271b1;
+    border-color: #1dad4b;
+    box-shadow: 0 0 0 1px #1dad4b;
     outline: 2px solid transparent;
 }
 
@@ -226,7 +226,7 @@
 }
 
 .status-badge.status-scheduled {
-    background: #0073aa;
+    background: #007cba;
     color: #fff;
 }
 
@@ -301,8 +301,8 @@
 }
 
 .fc-button-primary {
-    background: #2271b1;
-    border-color: #2271b1;
+    background: #1dad4b;
+    border-color: #1dad4b;
     color: #fff;
 }
 
@@ -312,8 +312,8 @@
 }
 
 .fc-button-active {
-    background: #2271b1 !important;
-    border-color: #2271b1 !important;
+    background: #1dad4b !important;
+    border-color: #1dad4b !important;
     color: #fff !important;
 }
 
@@ -798,7 +798,7 @@
 .stat-number {
     font-size: 2em;
     font-weight: 700;
-    color: #2271b1;
+    color: #1dad4b;
     margin-bottom: 5px;
 }
 

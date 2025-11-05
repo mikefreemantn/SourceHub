@@ -44,7 +44,22 @@
    Dashboard Styles
    ========================================================================== */
 
+.sourcehub-dashboard-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.sourcehub-logo {
+    height: 112px;
+    width: auto;
+    display: block;
+}
+
 .sourcehub-dashboard {
+    margin-top: 20px;
     max-width: 1200px;
 }
 
@@ -85,7 +100,7 @@
 
 .stat-icon .dashicons {
     font-size: 24px;
-    color: #2271b1;
+    color: #1dad4b;
 }
 
 .stat-content h3 {
@@ -156,10 +171,51 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    background: transparent;
+    border: 1px solid #1dad4b;
+    color: #1dad4b;
+}
+
+.quick-actions .button:hover,
+.quick-actions .button:focus {
+    background: #1dad4b;
+    border-color: #1dad4b;
+    color: #fff;
+}
+
+.quick-actions .button-primary {
+    background: transparent;
+    border: 1px solid #1dad4b;
+    color: #1dad4b;
+}
+
+.quick-actions .button-primary:hover,
+.quick-actions .button-primary:focus {
+    background: #1dad4b;
+    border-color: #1dad4b;
+    color: #fff;
+}
+
+.quick-actions .button-secondary {
+    background: transparent;
+    border: 1px solid #1dad4b;
+    color: #1dad4b;
+}
+
+.quick-actions .button-secondary:hover,
+.quick-actions .button-secondary:focus {
+    background: #1dad4b;
+    border-color: #1dad4b;
+    color: #fff;
 }
 
 .quick-actions .dashicons {
     font-size: 16px;
+    color: inherit;
+}
+
+.quick-actions .button:hover .dashicons {
+    color: #fff;
 }
 
 /* Empty State */
@@ -515,8 +571,8 @@
 .form-select:focus,
 .form-textarea:focus {
     outline: none;
-    border-color: #2271b1;
-    box-shadow: 0 0 0 1px #2271b1;
+    border-color: #1dad4b;
+    box-shadow: 0 0 0 1px #1dad4b;
 }
 
 .form-help {
@@ -661,7 +717,7 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid #2271b1;
+    border: 2px solid #1dad4b;
     border-top-color: transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -708,7 +764,7 @@
 
 .sourcehub-notice.notice-info {
     background: #d1ecf1;
-    border-color: #0073aa;
+    border-color: #1dad4b;
     color: #0c5460;
 }
 
