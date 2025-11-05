@@ -65,13 +65,25 @@
 
 /* Calendar Legend */
 .sourcehub-calendar-legend {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
     margin-bottom: 20px;
     padding: 15px;
     background: #f6f7f7;
     border-radius: 4px;
     border: 1px solid #c3c4c7;
+}
+
+.sourcehub-calendar-legend > div[style*="margin-bottom"] {
+    grid-column: 1 / -1;
+    margin-bottom: 5px !important;
+}
+
+.sourcehub-calendar-legend > div[style*="border-top"] {
+    grid-column: 1 / -1;
+    margin: 10px 0 5px 0 !important;
+    padding-top: 10px !important;
 }
 
 .legend-item {

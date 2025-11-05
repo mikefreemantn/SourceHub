@@ -117,6 +117,13 @@ class SourceHub_Calendar {
      * Render calendar page
      */
     public function render_calendar() {
+        // Prevent double rendering
+        static $rendered = false;
+        if ($rendered) {
+            return;
+        }
+        $rendered = true;
+        
         // Get spoke connections for filtering
         $spoke_connections = SourceHub_Database::get_connections(array('mode' => 'spoke'));
         

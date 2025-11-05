@@ -117,10 +117,6 @@ if (!defined('ABSPATH')) {
             <span class="legend-label"><?php _e('Draft', 'sourcehub'); ?></span>
         </div>
         <div class="legend-item">
-            <span class="legend-color" style="background-color: #ffc107;"></span>
-            <span class="legend-label"><?php _e('Pending Review', 'sourcehub'); ?></span>
-        </div>
-        <div class="legend-item">
             <span class="legend-color" style="background-color: #dc3545;"></span>
             <span class="legend-label"><?php _e('Private', 'sourcehub'); ?></span>
         </div>
