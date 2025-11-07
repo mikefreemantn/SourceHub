@@ -627,11 +627,30 @@ class SourceHub_Hub_Manager {
         if ($has_sourcehub_data) {
             if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
                 error_log('SourceHub: Nonce check failed for post ' . $post_id);
+                SourceHub_Logger::error(
+                    'Nonce verification failed in save_post_meta',
+                    array('post_id' => $post_id, 'post_title' => $post->post_title),
+                    $post_id,
+                    null,
+                    'nonce_failed'
+                );
                 return;
             }
         } else {
             // No SourceHub data in POST, nothing to save
             error_log('SourceHub: No SourceHub data in POST for post ' . $post_id);
+            SourceHub_Logger::warning(
+                'No SourceHub data in POST - meta box may not have rendered',
+                array(
+                    'post_id' => $post_id,
+                    'post_title' => $post->post_title,
+                    'post_status' => $post->post_status,
+                    'post_type' => $post->post_type
+                ),
+                $post_id,
+                null,
+                'no_metabox_data'
+            );
             return;
         }
         
