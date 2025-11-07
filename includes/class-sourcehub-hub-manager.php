@@ -31,7 +31,6 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
-        add_action('wp_after_insert_post', array($this, 'handle_post_insert'), 100, 4); // Handle NEW posts - fires AFTER save_post and meta
         
         // Handle scheduled posts when they publish
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
@@ -670,52 +669,28 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
-        // Syndication is handled by handle_post_insert (new posts) and handle_post_update (updates)
-        // No need to do anything else here
-    }
-
-    /**
-     * Handle new post insertion (first publish)
-     * Uses wp_after_insert_post which fires AFTER save_post and post meta are saved
-     *
-     * @param int $post_id Post ID
-     * @param WP_Post $post Post object
-     * @param bool $update Whether this is an update
-     * @param WP_Post $post_before Post object before update (null for new posts)
-     */
-    public function handle_post_insert($post_id, $post, $update, $post_before) {
-        // Only handle NEW posts (not updates)
-        if ($update) {
-            return;
-        }
-        
-        error_log('SourceHub: handle_post_insert called for NEW post ' . $post_id);
-        
-        // Only handle published posts
-        if ($post->post_status !== 'publish') {
-            error_log('SourceHub: Skipping - post status is ' . $post->post_status);
-            return;
-        }
-
-        // Skip if this is an autosave or revision
-        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
-            error_log('SourceHub: Skipping - autosave or revision');
-            return;
-        }
-
-        // Get selected spokes
-        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
-        
-        error_log('SourceHub: Selected spokes for NEW post: ' . print_r($selected_spokes, true));
-        
-        if (!is_array($selected_spokes)) {
-            $selected_spokes = array();
-        }
-        
-        // Syndicate to selected spokes
-        if (!empty($selected_spokes)) {
-            error_log('SourceHub: Syndicating NEW post to ' . count($selected_spokes) . ' spoke(s)');
-            $this->syndicate_post($post_id, $selected_spokes);
+        // Handle syndication for NEW posts (post_updated doesn't fire for new posts)
+        // For updates, handle_post_update will handle it
+        if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            if (!is_array($syndicated_spokes)) {
+                $syndicated_spokes = array();
+            }
+            
+            // Find NEW spokes (selected but not yet syndicated)
+            $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+            
+            if (!empty($new_spokes)) {
+                // Only syndicate if post is published NOW (not scheduled for future)
+                if ($post->post_status === 'publish') {
+                    error_log('SourceHub: Scheduling syndication to ' . count($new_spokes) . ' new spoke(s) via shutdown hook');
+                    
+                    // Mark as pending so shutdown hook can pick it up
+                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
+                } else {
+                    error_log('SourceHub: Post scheduled for future, will syndicate when published');
+                }
+            }
         }
     }
 
