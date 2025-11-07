@@ -620,9 +620,18 @@ class SourceHub_Hub_Manager {
             return;
         }
 
-        // Check nonce
-        if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
-            error_log('SourceHub: Nonce check failed or not present for post ' . $post_id);
+        // Check nonce - but only if SourceHub data is being submitted
+        // On brand new posts, the meta box might not be rendered yet, so no nonce
+        $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
+        
+        if ($has_sourcehub_data) {
+            if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
+                error_log('SourceHub: Nonce check failed for post ' . $post_id);
+                return;
+            }
+        } else {
+            // No SourceHub data in POST, nothing to save
+            error_log('SourceHub: No SourceHub data in POST for post ' . $post_id);
             return;
         }
         
