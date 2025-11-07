@@ -31,6 +31,7 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
+        add_action('transition_post_status', array($this, 'handle_status_transition'), 10, 3); // Catch auto-draft → publish
         
         // Handle scheduled posts when they publish
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
@@ -614,6 +615,11 @@ class SourceHub_Hub_Manager {
         if (wp_is_post_revision($post_id)) {
             return;
         }
+        
+        // Skip auto-draft posts - meta box hasn't rendered yet
+        if ($post->post_status === 'auto-draft') {
+            return;
+        }
 
         // Check user permissions
         if (!current_user_can('edit_post', $post_id)) {
@@ -706,6 +712,42 @@ class SourceHub_Hub_Manager {
                 }
             }
         }
+    }
+
+    /**
+     * Handle post status transitions
+     * Specifically catches auto-draft → publish for first-time posts
+     *
+     * @param string $new_status New post status
+     * @param string $old_status Old post status
+     * @param WP_Post $post Post object
+     */
+    public function handle_status_transition($new_status, $old_status, $post) {
+        // Only handle auto-draft → publish transitions
+        if ($old_status !== 'auto-draft' || $new_status !== 'publish') {
+            return;
+        }
+        
+        // Only handle posts
+        if ($post->post_type !== 'post') {
+            return;
+        }
+        
+        SourceHub_Logger::info(
+            'Detected auto-draft → publish transition',
+            array(
+                'post_id' => $post->ID,
+                'post_title' => $post->post_title,
+                'old_status' => $old_status,
+                'new_status' => $new_status
+            ),
+            $post->ID,
+            null,
+            'status_transition'
+        );
+        
+        // Call save_post_meta to save spokes and trigger syndication
+        $this->save_post_meta($post->ID, $post);
     }
 
     /**
