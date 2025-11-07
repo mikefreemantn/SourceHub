@@ -723,31 +723,46 @@ class SourceHub_Hub_Manager {
      * @param WP_Post $post Post object
      */
     public function handle_status_transition($new_status, $old_status, $post) {
-        // Only handle auto-draft → publish transitions
-        if ($old_status !== 'auto-draft' || $new_status !== 'publish') {
-            return;
+        // Log ALL transitions for posts to debug
+        if ($post->post_type === 'post') {
+            SourceHub_Logger::info(
+                sprintf('Status transition: %s → %s', $old_status, $new_status),
+                array(
+                    'post_id' => $post->ID,
+                    'post_title' => $post->post_title,
+                    'old_status' => $old_status,
+                    'new_status' => $new_status,
+                    'post_type' => $post->post_type
+                ),
+                $post->ID,
+                null,
+                'status_transition'
+            );
         }
         
-        // Only handle posts
-        if ($post->post_type !== 'post') {
-            return;
+        // Handle auto-draft → publish OR new → publish transitions
+        if (($old_status === 'auto-draft' || $old_status === 'new') && $new_status === 'publish') {
+            // Only handle posts
+            if ($post->post_type !== 'post') {
+                return;
+            }
+            
+            SourceHub_Logger::info(
+                'Triggering syndication for first publish',
+                array(
+                    'post_id' => $post->ID,
+                    'post_title' => $post->post_title,
+                    'old_status' => $old_status,
+                    'new_status' => $new_status
+                ),
+                $post->ID,
+                null,
+                'first_publish'
+            );
+            
+            // Call save_post_meta to save spokes and trigger syndication
+            $this->save_post_meta($post->ID, $post);
         }
-        
-        SourceHub_Logger::info(
-            'Detected auto-draft → publish transition',
-            array(
-                'post_id' => $post->ID,
-                'post_title' => $post->post_title,
-                'old_status' => $old_status,
-                'new_status' => $new_status
-            ),
-            $post->ID,
-            null,
-            'status_transition'
-        );
-        
-        // Call save_post_meta to save spokes and trigger syndication
-        $this->save_post_meta($post->ID, $post);
     }
 
     /**
