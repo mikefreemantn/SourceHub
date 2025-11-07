@@ -31,7 +31,7 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
-        add_action('wp_insert_post', array($this, 'handle_post_insert'), 100, 3); // Handle NEW posts being created
+        add_action('wp_after_insert_post', array($this, 'handle_post_insert'), 100, 4); // Handle NEW posts - fires AFTER save_post and meta
         
         // Handle scheduled posts when they publish
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
@@ -676,12 +676,14 @@ class SourceHub_Hub_Manager {
 
     /**
      * Handle new post insertion (first publish)
+     * Uses wp_after_insert_post which fires AFTER save_post and post meta are saved
      *
      * @param int $post_id Post ID
      * @param WP_Post $post Post object
      * @param bool $update Whether this is an update
+     * @param WP_Post $post_before Post object before update (null for new posts)
      */
-    public function handle_post_insert($post_id, $post, $update) {
+    public function handle_post_insert($post_id, $post, $update, $post_before) {
         // Only handle NEW posts (not updates)
         if ($update) {
             return;
