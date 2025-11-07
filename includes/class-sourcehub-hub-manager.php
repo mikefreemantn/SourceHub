@@ -44,6 +44,9 @@ class SourceHub_Hub_Manager {
         // Hook into Yoast SEO save to trigger sync when Yoast meta is updated
         add_action('wpseo_saved_postdata', array($this, 'handle_yoast_meta_save'));
         
+        // Handle delayed syncs (for Yoast and Newspaper meta)
+        add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
+        
         // REST API for async callbacks
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         
@@ -872,7 +875,7 @@ class SourceHub_Hub_Manager {
 
     /**
      * Handle Yoast meta save
-     * Triggered after Yoast SEO saves its meta data
+     * Schedules a delayed sync to ensure Yoast data is fully processed
      *
      * @param int $post_id Post ID
      */
@@ -918,6 +921,40 @@ class SourceHub_Hub_Manager {
                     }, 3000);
                     </script>';
                 });
+            }
+        }
+    }
+
+    /**
+     * Handle delayed sync (for Yoast and Newspaper meta)
+     * This is triggered by wp_schedule_single_event after a delay
+     *
+     * @param int $post_id Post ID
+     */
+    public function handle_delayed_sync($post_id) {
+        error_log('SourceHub: Running delayed sync for post ' . $post_id);
+        
+        $post = get_post($post_id);
+        if (!$post || $post->post_status !== 'publish') {
+            error_log('SourceHub: Post ' . $post_id . ' not found or not published, skipping delayed sync');
+            return;
+        }
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (empty($syndicated_spokes) || !is_array($syndicated_spokes)) {
+            error_log('SourceHub: No syndicated spokes for post ' . $post_id . ', skipping delayed sync');
+            return;
+        }
+        
+        error_log('SourceHub: Syncing Yoast/Newspaper meta updates to ' . count($syndicated_spokes) . ' spoke(s) for post ' . $post_id);
+        
+        // Trigger update to all syndicated spokes
+        foreach ($syndicated_spokes as $spoke_id) {
+            $connection = SourceHub_Database::get_connection($spoke_id);
+            if ($connection) {
+                error_log('SourceHub: Sending delayed update to spoke: ' . $connection->name);
+                $this->syndicate_post($post, $connection, false); // false = update, not create
             }
         }
     }
