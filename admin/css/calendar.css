@@ -151,10 +151,28 @@
 
 .event-card-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 6px;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.event-status-row {
+    display: flex;
+    align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
+}
+
+.event-time {
+    font-weight: 600;
+    font-size: 11px;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    white-space: nowrap;
+    color: #1d2327;
 }
 
 .event-title {
@@ -601,6 +619,21 @@
 
 .fc-list-event .event-title {
     font-size: 14px;
+}
+
+/* Event time styling */
+.fc-list-event-time {
+    font-weight: 600;
+    color: #2c3338;
+}
+
+/* Hide the colored dot in list view */
+.fc-list-event-dot {
+    display: none !important;
+}
+
+.fc-list-event-time {
+    font-weight: 500;
 }
 
 /* List View Specific */

@@ -40,6 +40,8 @@ if (!defined('ABSPATH')) {
             </select>
 
             <input type="date" name="log_date" class="form-input" value="<?php echo isset($_GET['log_date']) ? esc_attr($_GET['log_date']) : ''; ?>">
+            
+            <input type="text" name="log_search" class="form-input" placeholder="<?php echo __('Search logs...', 'sourcehub'); ?>" value="<?php echo isset($_GET['log_search']) ? esc_attr($_GET['log_search']) : ''; ?>">
 
             <button type="submit" class="button button-secondary">
                 <?php echo __('Apply Filters', 'sourcehub'); ?>
@@ -51,7 +53,7 @@ if (!defined('ABSPATH')) {
         </form>
 
         <div class="logs-actions">
-            <a href="<?php echo admin_url('admin.php?page=sourcehub-logs' . (isset($_GET['log_level']) ? '&log_level=' . urlencode($_GET['log_level']) : '') . (isset($_GET['log_action']) ? '&log_action=' . urlencode($_GET['log_action']) : '') . (isset($_GET['log_date']) ? '&log_date=' . urlencode($_GET['log_date']) : '')); ?>" class="button button-secondary">
+            <a href="<?php echo admin_url('admin.php?page=sourcehub-logs' . (isset($_GET['log_level']) ? '&log_level=' . urlencode($_GET['log_level']) : '') . (isset($_GET['log_action']) ? '&log_action=' . urlencode($_GET['log_action']) : '') . (isset($_GET['log_date']) ? '&log_date=' . urlencode($_GET['log_date']) : '') . (isset($_GET['log_search']) ? '&log_search=' . urlencode($_GET['log_search']) : '')); ?>" class="button button-secondary">
                 <span class="dashicons dashicons-update"></span>
                 <?php echo __('Refresh', 'sourcehub'); ?>
             </a>
@@ -61,6 +63,7 @@ if (!defined('ABSPATH')) {
                 if (isset($_GET['log_level']) && $_GET['log_level']) $export_args['level'] = $_GET['log_level'];
                 if (isset($_GET['log_action']) && $_GET['log_action']) $export_args['log_action_filter'] = $_GET['log_action'];
                 if (isset($_GET['log_date']) && $_GET['log_date']) $export_args['date'] = $_GET['log_date'];
+                if (isset($_GET['log_search']) && $_GET['log_search']) $export_args['search'] = $_GET['log_search'];
                 echo wp_nonce_url(add_query_arg($export_args, admin_url('admin-ajax.php')), 'sourcehub_admin_nonce', 'nonce'); 
             ?>" class="button button-secondary">
                 <span class="dashicons dashicons-download"></span>
@@ -71,6 +74,13 @@ if (!defined('ABSPATH')) {
                 <span class="dashicons dashicons-trash"></span>
                 <?php echo __('Clear All', 'sourcehub'); ?>
             </button>
+            
+            <?php if ($mode === 'hub'): ?>
+            <button type="button" id="check-timeouts" class="button button-secondary">
+                <span class="dashicons dashicons-clock"></span>
+                <?php echo __('Check Timeouts', 'sourcehub'); ?>
+            </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -190,6 +200,7 @@ if (!defined('ABSPATH')) {
                 if (isset($_GET['log_level']) && $_GET['log_level']) $query_args['log_level'] = $_GET['log_level'];
                 if (isset($_GET['log_action']) && $_GET['log_action']) $query_args['log_action'] = $_GET['log_action'];
                 if (isset($_GET['log_date']) && $_GET['log_date']) $query_args['log_date'] = $_GET['log_date'];
+                if (isset($_GET['log_search']) && $_GET['log_search']) $query_args['log_search'] = $_GET['log_search'];
             ?>
                 <div class="logs-pagination">
                     <div class="pagination-info">
@@ -291,8 +302,8 @@ if (!defined('ABSPATH')) {
     border-left: 4px solid #00a32a;
 }
 
-.stat-card.error {
-    border-left: 4px solid #d63638;
+.stat-card.error .stat-number {
+    color: #dc3232;
 }
 
 .stat-card.warning {
@@ -460,6 +471,15 @@ tr:hover .row-actions {
         display: none;
     }
 }
+
+.dashicons.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 </style>
 
 <script>
@@ -544,6 +564,35 @@ jQuery(document).ready(function($) {
             } else {
                 SourceHubAdmin.showNotice('error', response.data.message);
             }
+        });
+    });
+    
+    // Check for timed-out processing jobs
+    $('#check-timeouts').on('click', function() {
+        var $btn = $(this);
+        var originalText = $btn.html();
+        
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Checking...');
+        
+        $.post(sourcehub_admin.ajax_url, {
+            action: 'sourcehub_check_timeouts',
+            nonce: sourcehub_admin.ajax_nonce
+        }, function(response) {
+            if (response.success) {
+                var message = response.data.found > 0 
+                    ? '<?php echo esc_js(__('Found and marked %d timed-out job(s) as failed.', 'sourcehub')); ?>'.replace('%d', response.data.found)
+                    : '<?php echo esc_js(__('No timed-out jobs found.', 'sourcehub')); ?>';
+                SourceHubAdmin.showNotice('success', message);
+                if (response.data.found > 0) {
+                    setTimeout(function() { location.reload(); }, 1500);
+                }
+            } else {
+                SourceHubAdmin.showNotice('error', response.data.message || '<?php echo esc_js(__('Failed to check timeouts.', 'sourcehub')); ?>');
+            }
+            $btn.prop('disabled', false).html(originalText);
+        }).fail(function() {
+            SourceHubAdmin.showNotice('error', '<?php echo esc_js(__('Failed to check timeouts.', 'sourcehub')); ?>');
+            $btn.prop('disabled', false).html(originalText);
         });
     });
     

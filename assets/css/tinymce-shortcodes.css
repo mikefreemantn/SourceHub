@@ -40,42 +40,25 @@
 }
 
 /* Form field improvements */
-.mce-window .mce-textbox {
-    width: 100% !important;
-    min-width: 400px !important;
-}
-
 .mce-window .mce-label {
     font-weight: 600;
     color: #333;
     margin-bottom: 5px !important;
 }
 
-/* Modal layout improvements */
-.mce-window .mce-form {
-    padding: 15px !important;
-}
-
-.mce-window .mce-formitem {
-    margin-bottom: 15px !important;
-}
-
+/* Modal styling */
 .mce-window.mce-in {
-    border-width: 1px !important;
-    z-index: 100101 !important;
-    left: 635.5px !important;
-    top: 36px !important;
-    width: 968px !important;
-    height: 786px !important;
-    
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+    border-radius: 8px !important;
 }
 
-/* Responsive modal */
-@media (max-width: 768px) {
-    .mce-window {
-        width: 90% !important;
-        max-width: 500px !important;
-    }
+.mce-window .mce-container-body {
+    overflow-y: auto !important;
+}
+
+/* Hide bottom buttons since we have top buttons */
+.mce-window .mce-foot {
+    display: none !important;
 }
 
 

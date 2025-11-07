@@ -324,6 +324,9 @@ class SourceHub_Calendar {
             // Debug logging
             error_log('SourceHub Calendar: Post "' . $post->post_title . '" (ID: ' . $post->ID . ', Status: ' . $post->post_status . ') - Original: ' . $post->post_date . ', Formatted: ' . $formatted_date);
 
+            // Get timestamp for ordering (events on same day will be ordered by time)
+            $timestamp = strtotime($post->post_date);
+            
             // Create event
             $event = array(
                 'id' => $post->ID,
@@ -334,6 +337,7 @@ class SourceHub_Calendar {
                 'borderColor' => $color,
                 'textColor' => '#ffffff',
                 'allDay' => true, // Display as all-day event to prevent multi-day spanning
+                'order' => $timestamp, // Order by timestamp so earlier times appear first
                 'extendedProps' => array(
                     'post_id' => $post->ID,
                     'post_status' => $post->post_status,

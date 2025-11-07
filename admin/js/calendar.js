@@ -46,6 +46,7 @@
             
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                eventOrder: 'order', // Sort by the order property (timestamp)
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -101,11 +102,60 @@
                     }
                 },
                 eventContent: function(arg) {
+                    console.log('eventContent called for:', arg.event.title, 'View:', arg.view.type);
+                    // Force custom HTML for all views
                     return {
-                        html: formatEventContent(arg.event)
+                        html: formatEventContent(arg.event, arg.view),
+                        domNodes: [] // This forces FullCalendar to use our HTML
                     };
                 },
+                eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                },
+                displayEventTime: true,
                 eventDidMount: function(info) {
+                    // Replace "all-day" text with actual time in list view
+                    console.log('Event mounted - View type:', info.view.type, 'Title:', info.event.title);
+                    console.log('Original date:', info.event.extendedProps.original_date);
+                    
+                    // Add time to month view
+                    if (info.view.type === 'dayGridMonth' && info.event.extendedProps.original_date) {
+                        const statusRow = info.el.querySelector('.event-status-row');
+                        if (statusRow && !statusRow.querySelector('.event-time')) {
+                            const date = new Date(info.event.extendedProps.original_date);
+                            const timeStr = date.toLocaleTimeString('en-US', { 
+                                hour: 'numeric', 
+                                minute: '2-digit', 
+                                hour12: true 
+                            });
+                            const timeEl = document.createElement('div');
+                            timeEl.className = 'event-time';
+                            timeEl.textContent = timeStr;
+                            statusRow.appendChild(timeEl);
+                            console.log('Added time to month view:', timeStr);
+                        }
+                    }
+                    
+                    // Replace "all-day" text with actual time in list view
+                    if (info.view.type === 'listDay' && info.event.extendedProps.original_date) {
+                        console.log('In list view, looking for time element...');
+                        const timeEl = info.el.querySelector('.fc-list-event-time');
+                        console.log('Time element found:', timeEl);
+                        
+                        if (timeEl) {
+                            const date = new Date(info.event.extendedProps.original_date);
+                            const timeStr = date.toLocaleTimeString('en-US', { 
+                                hour: 'numeric', 
+                                minute: '2-digit', 
+                                hour12: true 
+                            });
+                            console.log('Setting time to:', timeStr);
+                            timeEl.textContent = timeStr;
+                        }
+                    }
+                    
                     console.log('Event mounted:', info.event.title, 'Start:', info.event.start, 'All Day:', info.event.allDay);
                     console.log('Event element:', info.el);
                     console.log('Event position:', info.el.style.top, info.el.style.left);
@@ -314,17 +364,30 @@
     /**
      * Format event content for display
      */
-    function formatEventContent(event) {
+    function formatEventContent(event, view) {
         const props = event.extendedProps;
         const spokes = props.spokes || [];
         const categories = props.categories || [];
+        const isListView = view && view.type === 'listDay';
         
         let html = '<div class="sourcehub-event-card">';
         
         // Header with title and status
         html += '<div class="event-card-header">';
-        html += '<div class="event-title">' + event.title + '</div>';
+        
+        // Status row with time
+        html += '<div class="event-status-row">';
         html += '<div class="event-status">' + getStatusBadge(props.post_status) + '</div>';
+        
+        // Show time only in month view (list view already shows time on the left)
+        if (!isListView && props.original_date) {
+            const date = new Date(props.original_date);
+            const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            html += '<div class="event-time">' + timeStr + '</div>';
+        }
+        html += '</div>';
+        
+        html += '<div class="event-title">' + event.title + '</div>';
         html += '</div>';
         
         // Content area

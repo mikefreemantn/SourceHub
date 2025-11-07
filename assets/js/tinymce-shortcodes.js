@@ -153,12 +153,16 @@
             // Build body items for the modal
             var bodyItems = [
                 {
+                    type: 'container',
+                    html: '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #ddd; display: flex; gap: 10px;"><button type="button" id="top-copy-btn" style="padding: 8px 16px; background: #0073aa; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Copy Shortcode</button><button type="button" id="top-insert-btn" style="padding: 8px 16px; background: #1dad4b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Insert</button><button type="button" id="top-cancel-btn" style="padding: 8px 16px; background: #ddd; color: #333; border: none; border-radius: 4px; cursor: pointer;">Cancel</button></div>'
+                },
+                {
                     type: 'textbox',
                     name: 'linkText',
                     label: 'Link Text:',
                     value: '',
                     multiline: false,
-                    size: 60
+                    size: 40
                 }
             ];
             
@@ -170,7 +174,7 @@
                     label: connection.name + ' URL:',
                     value: '',
                     multiline: false,
-                    size: 60
+                    size: 40
                 });
             });
             
@@ -180,19 +184,93 @@
                 html: '<div style="margin: 10px 0;"><label style="font-weight: bold; display: block; margin-bottom: 5px;">Preview:</label><div id="custom-smart-link-preview" style="background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: Consolas, Monaco, monospace; font-size: 12px; border: 1px solid #ddd; word-wrap: break-word; min-height: 40px;">Fill in the form to see preview...</div><button type="button" id="update-preview-btn" style="margin-top: 5px; padding: 5px 10px; background: #0073aa; color: white; border: none; border-radius: 3px; cursor: pointer;">Update Preview</button></div>'
             });
 
+            // Calculate responsive dimensions
+            var modalWidth = Math.min(700, window.innerWidth - 40);
+            var modalHeight = Math.min(600, window.innerHeight - 100);
+            
             var dialogInstance = editor.windowManager.open({
                 title: 'Insert Custom Smart Link',
-                width: 800,
-                height: Math.min(700, 400 + (spokeConnections.length * 70)),
+                width: modalWidth,
+                height: modalHeight,
                 body: bodyItems,
                 onPostRender: function() {
                     var dialog = this;
                     
-                    // Set initial preview message and bind update button
+                    // Set initial preview message and bind buttons
                     setTimeout(function() {
                         var previewElement = document.getElementById('custom-smart-link-preview');
                         if (previewElement) {
                             previewElement.innerHTML = 'Fill in the form and click "Update Preview" to see shortcode...';
+                        }
+                        
+                        // Bind top action buttons with actual functionality
+                        var topCopyBtn = document.getElementById('top-copy-btn');
+                        var topInsertBtn = document.getElementById('top-insert-btn');
+                        var topCancelBtn = document.getElementById('top-cancel-btn');
+                        
+                        if (topCopyBtn) {
+                            topCopyBtn.addEventListener('click', function() {
+                                // Copy Shortcode logic
+                                var formData = dialog.toJSON();
+                                var linkText = formData.linkText || '';
+                                var urls = {};
+                                var hasUrls = false;
+                                
+                                spokeConnections.forEach(function(connection) {
+                                    var url = formData['url_' + connection.id] || '';
+                                    if (url) {
+                                        urls[connection.name] = url;
+                                        hasUrls = true;
+                                    }
+                                });
+                                
+                                if (!linkText || !hasUrls) {
+                                    alert('Please fill in link text and at least one URL.');
+                                    return;
+                                }
+                                
+                                var shortcode = '[custom-smart-link urls=\'' + JSON.stringify(urls) + '\']' + linkText + '[/custom-smart-link]';
+                                var previewElement = document.getElementById('custom-smart-link-preview');
+                                if (previewElement) {
+                                    previewElement.innerHTML = shortcode;
+                                }
+                                
+                                copyToClipboard(shortcode);
+                                alert('Shortcode copied to clipboard!');
+                            });
+                        }
+                        
+                        if (topInsertBtn) {
+                            topInsertBtn.addEventListener('click', function() {
+                                // Insert logic
+                                var formData = dialog.toJSON();
+                                var linkText = formData.linkText || '';
+                                var urls = {};
+                                var hasUrls = false;
+                                
+                                spokeConnections.forEach(function(connection) {
+                                    var url = formData['url_' + connection.id] || '';
+                                    if (url) {
+                                        urls[connection.name] = url;
+                                        hasUrls = true;
+                                    }
+                                });
+                                
+                                if (!linkText || !hasUrls) {
+                                    alert('Please fill in link text and at least one URL.');
+                                    return;
+                                }
+                                
+                                var shortcode = '[custom-smart-link urls=\'' + JSON.stringify(urls) + '\']' + linkText + '[/custom-smart-link]';
+                                editor.insertContent(shortcode);
+                                dialog.close();
+                            });
+                        }
+                        
+                        if (topCancelBtn) {
+                            topCancelBtn.addEventListener('click', function() {
+                                dialog.close();
+                            });
                         }
                         
                         // Bind the Update Preview button

@@ -41,6 +41,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_delete_log', array($this, 'delete_log'));
         add_action('wp_ajax_sourcehub_export_logs', array($this, 'export_logs'));
         add_action('wp_ajax_sourcehub_get_logs', array($this, 'ajax_get_logs'));
+        add_action('wp_ajax_sourcehub_check_timeouts', array($this, 'ajax_check_timeouts'));
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
@@ -533,6 +534,7 @@ class SourceHub_Admin {
         $status_filter = isset($_GET['log_level']) ? sanitize_text_field($_GET['log_level']) : '';
         $action_filter = isset($_GET['log_action']) ? sanitize_text_field($_GET['log_action']) : '';
         $date_filter = isset($_GET['log_date']) ? sanitize_text_field($_GET['log_date']) : '';
+        $search_filter = isset($_GET['log_search']) ? sanitize_text_field($_GET['log_search']) : '';
 
         $args = array(
             'limit' => $per_page,
@@ -550,6 +552,10 @@ class SourceHub_Admin {
         
         if ($date_filter) {
             $args['date'] = $date_filter;
+        }
+        
+        if ($search_filter) {
+            $args['search'] = $search_filter;
         }
 
         // Start profiling
@@ -984,6 +990,71 @@ class SourceHub_Admin {
         }
     }
 
+    /**
+     * Check for timed-out processing jobs via AJAX
+     */
+    public function ajax_check_timeouts() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array(
+                'message' => __('Permission denied', 'sourcehub')
+            ));
+            return;
+        }
+
+        // Only available in hub mode
+        if (sourcehub()->get_mode() !== 'hub') {
+            wp_send_json_error(array(
+                'message' => __('This feature is only available in hub mode', 'sourcehub')
+            ));
+            return;
+        }
+
+        try {
+            // Count how many will be found before running
+            global $wpdb;
+            $posts_with_status = $wpdb->get_results(
+                "SELECT post_id, meta_value 
+                FROM {$wpdb->postmeta} 
+                WHERE meta_key = '_sourcehub_sync_status'"
+            );
+            
+            $timeout_count = 0;
+            $timeout_seconds = 5 * 60;
+            $now = current_time('timestamp');
+            
+            foreach ($posts_with_status as $row) {
+                $sync_status = maybe_unserialize($row->meta_value);
+                if (!is_array($sync_status)) continue;
+                
+                foreach ($sync_status as $status_data) {
+                    if (isset($status_data['status']) && $status_data['status'] === 'processing') {
+                        if (isset($status_data['started_at'])) {
+                            $started_timestamp = strtotime($status_data['started_at']);
+                            $elapsed = $now - $started_timestamp;
+                            if ($elapsed > $timeout_seconds) {
+                                $timeout_count++;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Run the timeout check using the global sourcehub instance
+            sourcehub()->hub_manager->check_processing_timeouts();
+            
+            wp_send_json_success(array(
+                'message' => sprintf(__('Checked for timed-out jobs. Found: %d', 'sourcehub'), $timeout_count),
+                'found' => $timeout_count
+            ));
+        } catch (Exception $e) {
+            wp_send_json_error(array(
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+    
     /**
      * Delete individual log via AJAX
      */

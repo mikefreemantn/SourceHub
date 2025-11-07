@@ -92,19 +92,65 @@
 /* Custom Smart Link modal styling */
 .sourcehub-custom-smart-link-modal {
     max-width: 600px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 5px solid red !important;
+}
+
+.sourcehub-custom-smart-link-modal .components-modal__content {
+    max-height: calc(90vh - 60px);
+    overflow-y: auto;
+    padding-bottom: 20px;
 }
 
 .sourcehub-custom-smart-link-form {
     padding: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.sourcehub-custom-smart-link-form .components-base-control {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.sourcehub-custom-smart-link-form .components-base-control__field {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.sourcehub-custom-smart-link-form .components-text-control__input,
+.sourcehub-custom-smart-link-form input[type="text"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 768px) {
+    .sourcehub-custom-smart-link-modal {
+        width: 95vw;
+        max-height: 85vh;
+    }
+    
+    .sourcehub-custom-smart-link-form {
+        padding: 15px;
+    }
 }
 
 .custom-url-field {
     margin-bottom: 15px;
+    max-width: 100%;
 }
 
 .custom-url-field .components-text-control__input {
     font-family: monospace;
     font-size: 14px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Toolbar button styling for custom smart link */

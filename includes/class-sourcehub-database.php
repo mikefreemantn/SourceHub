@@ -321,6 +321,7 @@ class SourceHub_Database {
             'connection_id' => null,
             'status' => null,
             'action' => null,
+            'search' => null,
             'limit' => 50,
             'offset' => 0,
             'order' => 'DESC'
@@ -358,6 +359,19 @@ class SourceHub_Database {
             $where[] = 'l.action = %s';
             $values[] = $args['action'];
         }
+        
+        if (!empty($args['search'])) {
+            $where[] = '(l.message LIKE %s OR l.data LIKE %s OR c.name LIKE %s)';
+            $search_term = '%' . $wpdb->esc_like($args['search']) . '%';
+            $values[] = $search_term;
+            $values[] = $search_term;
+            $values[] = $search_term;
+        }
+        
+        if (!empty($args['date'])) {
+            $where[] = 'DATE(l.created_at) = %s';
+            $values[] = $args['date'];
+        }
 
         $where_clause = implode(' AND ', $where);
         $order = in_array(strtoupper($args['order']), array('ASC', 'DESC')) ? $args['order'] : 'DESC';
@@ -380,6 +394,10 @@ class SourceHub_Database {
         if (!empty($values)) {
             $sql = $wpdb->prepare($sql, $values);
         }
+        
+        // Temporary debugging
+        error_log('SourceHub get_logs SQL: ' . $sql);
+        error_log('SourceHub get_logs args: ' . print_r($args, true));
 
         $results = $wpdb->get_results($sql);
         
@@ -387,6 +405,8 @@ class SourceHub_Database {
             error_log('SourceHub Database Error: ' . $wpdb->last_error);
             return array();
         }
+        
+        error_log('SourceHub get_logs results count: ' . count($results));
         
         return $results ? $results : array();
     }
@@ -448,32 +468,48 @@ class SourceHub_Database {
     public static function count_logs($args = array()) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'sourcehub_logs';
+        $logs_table = $wpdb->prefix . 'sourcehub_logs';
+        $connections_table = $wpdb->prefix . 'sourcehub_connections';
         $where_clauses = array();
         $where_values = array();
 
         // Status filter
         if (!empty($args['status'])) {
-            $where_clauses[] = 'status = %s';
+            $where_clauses[] = 'l.status = %s';
             $where_values[] = $args['status'];
         }
 
         // Post ID filter
         if (!empty($args['post_id'])) {
-            $where_clauses[] = 'post_id = %d';
+            $where_clauses[] = 'l.post_id = %d';
             $where_values[] = $args['post_id'];
         }
 
         // Connection ID filter
         if (!empty($args['connection_id'])) {
-            $where_clauses[] = 'connection_id = %d';
+            $where_clauses[] = 'l.connection_id = %d';
             $where_values[] = $args['connection_id'];
         }
 
         // Action filter
         if (!empty($args['action'])) {
-            $where_clauses[] = 'action = %s';
+            $where_clauses[] = 'l.action = %s';
             $where_values[] = $args['action'];
+        }
+        
+        // Search filter
+        if (!empty($args['search'])) {
+            $where_clauses[] = '(l.message LIKE %s OR l.data LIKE %s OR c.name LIKE %s)';
+            $search_term = '%' . $wpdb->esc_like($args['search']) . '%';
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+        }
+        
+        // Date filter
+        if (!empty($args['date'])) {
+            $where_clauses[] = 'DATE(l.created_at) = %s';
+            $where_values[] = $args['date'];
         }
 
         $where_sql = '';
@@ -481,7 +517,10 @@ class SourceHub_Database {
             $where_sql = 'WHERE ' . implode(' AND ', $where_clauses);
         }
 
-        $sql = "SELECT COUNT(*) FROM $table $where_sql";
+        // Always use LEFT JOIN to maintain consistent table aliases
+        $sql = "SELECT COUNT(*) FROM $logs_table l 
+                LEFT JOIN $connections_table c ON l.connection_id = c.id 
+                $where_sql";
 
         if (!empty($where_values)) {
             $sql = $wpdb->prepare($sql, $where_values);

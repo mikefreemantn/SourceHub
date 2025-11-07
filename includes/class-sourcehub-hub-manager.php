@@ -48,6 +48,13 @@ class SourceHub_Hub_Manager {
         
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
+        
+        // Schedule timeout check for stuck processing jobs
+        if (!wp_next_scheduled('sourcehub_check_timeouts')) {
+            wp_schedule_event(time(), 'hourly', 'sourcehub_check_timeouts');
+        }
+        add_action('sourcehub_check_timeouts', array($this, 'check_processing_timeouts'));
+        
         add_action('wp_ajax_sourcehub_send_to_spoke', array($this, 'ajax_send_to_spoke'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
     }
@@ -696,6 +703,16 @@ class SourceHub_Hub_Manager {
             error_log('SourceHub: Skipping - autosave or revision');
             return;
         }
+        
+        // Prevent duplicate syndication within 30 seconds
+        $transient_key = 'sourcehub_syndicating_' . $post_id;
+        if (get_transient($transient_key)) {
+            error_log('SourceHub: Skipping - post ' . $post_id . ' was just syndicated, preventing duplicate');
+            return;
+        }
+        
+        // Set transient to prevent duplicates for 30 seconds
+        set_transient($transient_key, true, 30);
 
         // Get selected and syndicated spokes
         $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
@@ -909,10 +926,11 @@ class SourceHub_Hub_Manager {
                 
                 // Check if async processing
                 if (!empty($result['async'])) {
-                    // Store processing status
+                    // Store processing status with timestamp for timeout detection
                     $sync_status[$spoke_id] = array(
                         'status' => 'processing',
                         'last_sync' => current_time('mysql'),
+                        'started_at' => current_time('mysql'),
                         'action' => 'create',
                         'job_id' => $result['job_id'] ?? null
                     );
@@ -1033,10 +1051,11 @@ class SourceHub_Hub_Manager {
             if ($result['success']) {
                 // Check if async processing
                 if (!empty($result['async'])) {
-                    // Store processing status
+                    // Store processing status with timestamp for timeout detection
                     $sync_status[$spoke_id] = array(
                         'status' => 'processing',
                         'last_sync' => current_time('mysql'),
+                        'started_at' => current_time('mysql'),
                         'action' => 'update',
                         'job_id' => $result['job_id'] ?? null
                     );
@@ -1904,6 +1923,82 @@ class SourceHub_Hub_Manager {
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
             wp_send_json_error($result['message']);
+        }
+    }
+    
+    /**
+     * Check for processing jobs that have timed out
+     * Runs hourly via cron to find jobs stuck in "processing" state
+     */
+    public function check_processing_timeouts() {
+        global $wpdb;
+        
+        // Find all posts with sync status
+        $posts_with_status = $wpdb->get_results(
+            "SELECT post_id, meta_value 
+            FROM {$wpdb->postmeta} 
+            WHERE meta_key = '_sourcehub_sync_status'"
+        );
+        
+        $timeout_minutes = 5;
+        $timeout_seconds = $timeout_minutes * 60;
+        $now = current_time('timestamp');
+        
+        foreach ($posts_with_status as $row) {
+            $post_id = $row->post_id;
+            $sync_status = maybe_unserialize($row->meta_value);
+            
+            if (!is_array($sync_status)) {
+                continue;
+            }
+            
+            $updated = false;
+            
+            foreach ($sync_status as $connection_id => $status_data) {
+                // Check if status is "processing"
+                if (isset($status_data['status']) && $status_data['status'] === 'processing') {
+                    // Check if it has a timestamp
+                    if (isset($status_data['started_at'])) {
+                        $started_timestamp = strtotime($status_data['started_at']);
+                        $elapsed = $now - $started_timestamp;
+                        
+                        // If older than 5 minutes, mark as failed
+                        if ($elapsed > $timeout_seconds) {
+                            $connection = SourceHub_Database::get_connection($connection_id);
+                            $connection_name = $connection ? $connection->name : "Connection $connection_id";
+                            
+                            $sync_status[$connection_id] = array(
+                                'status' => 'failed',
+                                'last_sync' => current_time('mysql'),
+                                'action' => $status_data['action'] ?? 'unknown',
+                                'error' => sprintf('Timeout: No response after %d minutes', $timeout_minutes),
+                                'started_at' => $status_data['started_at']
+                            );
+                            
+                            $updated = true;
+                            
+                            // Log the timeout
+                            SourceHub_Logger::error(
+                                sprintf('Syndication timeout for post %d to %s after %d minutes', 
+                                    $post_id, $connection_name, $timeout_minutes),
+                                array(
+                                    'connection_id' => $connection_id,
+                                    'elapsed_seconds' => $elapsed,
+                                    'started_at' => $status_data['started_at']
+                                ),
+                                $post_id,
+                                $connection_id,
+                                'timeout'
+                            );
+                        }
+                    }
+                }
+            }
+            
+            // Update post meta if any statuses changed
+            if ($updated) {
+                update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+            }
         }
     }
 
