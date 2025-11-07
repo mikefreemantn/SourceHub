@@ -664,31 +664,9 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
-        // Continue with syndication logic
-        // Handle both 'publish' and 'future' (scheduled) posts
-        if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
-            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-            if (!is_array($syndicated_spokes)) {
-                $syndicated_spokes = array();
-            }
-            
-            // Find NEW spokes (selected but not yet syndicated)
-            $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
-            
-            if (!empty($new_spokes)) {
-                // Only syndicate if post is published NOW (not scheduled for future)
-                if ($post->post_status === 'publish') {
-                    // Delay syndication to allow Yoast SEO time to save its meta
-                    // Yoast has a timing issue where focus keyword and other meta isn't available on first save
-                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) to allow Yoast meta to save');
-                    
-                    // Mark as pending so shutdown hook can pick it up
-                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
-                } else {
-                    error_log('SourceHub: Post scheduled for future, will syndicate when published');
-                }
-            }
-        }
+        // Spokes are now saved - syndication will be handled by handle_post_update hook
+        // No need to do anything else here
+        // The wpseo_saved_postdata hook will handle re-syncing if Yoast data changes
     }
 
     /**
@@ -735,14 +713,6 @@ class SourceHub_Hub_Manager {
         
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
-        
-        // Check if there's a pending first sync (for Yoast meta delay)
-        // If so, let the shutdown hook handle the new spokes
-        $pending_first_sync = get_transient('sourcehub_pending_first_sync_' . $post_id);
-        if ($pending_first_sync && !empty($new_spokes)) {
-            error_log('SourceHub: Pending first sync exists, letting shutdown hook handle new spokes');
-            $new_spokes = array(); // Clear new spokes so we don't syndicate them here
-        }
         
         // If nothing to do, exit early without setting transient
         if (empty($new_spokes) && empty($existing_spokes)) {
