@@ -926,40 +926,6 @@ class SourceHub_Hub_Manager {
     }
 
     /**
-     * Handle delayed sync (for Yoast and Newspaper meta)
-     * This is triggered by wp_schedule_single_event after a delay
-     *
-     * @param int $post_id Post ID
-     */
-    public function handle_delayed_sync($post_id) {
-        error_log('SourceHub: Running delayed sync for post ' . $post_id);
-        
-        $post = get_post($post_id);
-        if (!$post || $post->post_status !== 'publish') {
-            error_log('SourceHub: Post ' . $post_id . ' not found or not published, skipping delayed sync');
-            return;
-        }
-        
-        // Get syndicated spokes
-        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-        if (empty($syndicated_spokes) || !is_array($syndicated_spokes)) {
-            error_log('SourceHub: No syndicated spokes for post ' . $post_id . ', skipping delayed sync');
-            return;
-        }
-        
-        error_log('SourceHub: Syncing Yoast/Newspaper meta updates to ' . count($syndicated_spokes) . ' spoke(s) for post ' . $post_id);
-        
-        // Trigger update to all syndicated spokes
-        foreach ($syndicated_spokes as $spoke_id) {
-            $connection = SourceHub_Database::get_connection($spoke_id);
-            if ($connection) {
-                error_log('SourceHub: Sending delayed update to spoke: ' . $connection->name);
-                $this->syndicate_post($post, $connection, false); // false = update, not create
-            }
-        }
-    }
-
-    /**
      * Handle post status transitions
      *
      * @param string $new_status New post status
