@@ -740,28 +740,33 @@ class SourceHub_Hub_Manager {
             );
         }
         
-        // Handle auto-draft → publish OR new → publish transitions
-        if (($old_status === 'auto-draft' || $old_status === 'new') && $new_status === 'publish') {
+        // Handle draft → publish transition (first publish)
+        // Check if this is a NEW publish (not an update from publish to publish)
+        if ($old_status === 'draft' && $new_status === 'publish') {
             // Only handle posts
             if ($post->post_type !== 'post') {
                 return;
             }
             
-            SourceHub_Logger::info(
-                'Triggering syndication for first publish',
-                array(
-                    'post_id' => $post->ID,
-                    'post_title' => $post->post_title,
-                    'old_status' => $old_status,
-                    'new_status' => $new_status
-                ),
-                $post->ID,
-                null,
-                'first_publish'
-            );
-            
-            // Call save_post_meta to save spokes and trigger syndication
-            $this->save_post_meta($post->ID, $post);
+            // Check if this post has NEVER been syndicated before
+            $syndicated_spokes = get_post_meta($post->ID, '_sourcehub_syndicated_spokes', true);
+            if (empty($syndicated_spokes) || !is_array($syndicated_spokes)) {
+                SourceHub_Logger::info(
+                    'Triggering syndication for first publish (draft → publish)',
+                    array(
+                        'post_id' => $post->ID,
+                        'post_title' => $post->post_title,
+                        'old_status' => $old_status,
+                        'new_status' => $new_status
+                    ),
+                    $post->ID,
+                    null,
+                    'first_publish'
+                );
+                
+                // Call save_post_meta to save spokes and trigger syndication
+                $this->save_post_meta($post->ID, $post);
+            }
         }
     }
 
