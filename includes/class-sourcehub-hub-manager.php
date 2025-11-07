@@ -31,6 +31,7 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
+        add_action('wp_insert_post', array($this, 'handle_post_insert'), 100, 3); // Handle NEW posts being created
         
         // Handle scheduled posts when they publish
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
@@ -693,6 +694,49 @@ class SourceHub_Hub_Manager {
                     error_log('SourceHub: Post scheduled for future, will syndicate when published');
                 }
             }
+        }
+    }
+
+    /**
+     * Handle new post insertion (first publish)
+     *
+     * @param int $post_id Post ID
+     * @param WP_Post $post Post object
+     * @param bool $update Whether this is an update
+     */
+    public function handle_post_insert($post_id, $post, $update) {
+        // Only handle NEW posts (not updates)
+        if ($update) {
+            return;
+        }
+        
+        error_log('SourceHub: handle_post_insert called for NEW post ' . $post_id);
+        
+        // Only handle published posts
+        if ($post->post_status !== 'publish') {
+            error_log('SourceHub: Skipping - post status is ' . $post->post_status);
+            return;
+        }
+
+        // Skip if this is an autosave or revision
+        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            error_log('SourceHub: Skipping - autosave or revision');
+            return;
+        }
+
+        // Get selected spokes
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        
+        error_log('SourceHub: Selected spokes for NEW post: ' . print_r($selected_spokes, true));
+        
+        if (!is_array($selected_spokes)) {
+            $selected_spokes = array();
+        }
+        
+        // Syndicate to selected spokes
+        if (!empty($selected_spokes)) {
+            error_log('SourceHub: Syndicating NEW post to ' . count($selected_spokes) . ' spoke(s)');
+            $this->syndicate_post($post_id, $selected_spokes);
         }
     }
 
