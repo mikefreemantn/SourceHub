@@ -614,11 +614,6 @@ class SourceHub_Hub_Manager {
         if (wp_is_post_revision($post_id)) {
             return;
         }
-        
-        // Skip auto-draft posts - wait until they're actually being published
-        if ($post->post_status === 'auto-draft') {
-            return;
-        }
 
         // Check user permissions
         if (!current_user_can('edit_post', $post_id)) {
