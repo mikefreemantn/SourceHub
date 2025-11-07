@@ -703,16 +703,6 @@ class SourceHub_Hub_Manager {
             error_log('SourceHub: Skipping - autosave or revision');
             return;
         }
-        
-        // Prevent duplicate syndication within 30 seconds
-        $transient_key = 'sourcehub_syndicating_' . $post_id;
-        if (get_transient($transient_key)) {
-            error_log('SourceHub: Skipping - post ' . $post_id . ' was just syndicated, preventing duplicate');
-            return;
-        }
-        
-        // Set transient to prevent duplicates for 30 seconds
-        set_transient($transient_key, true, 30);
 
         // Get selected and syndicated spokes
         $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
@@ -736,6 +726,23 @@ class SourceHub_Hub_Manager {
         
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
+        
+        // If nothing to do, exit early without setting transient
+        if (empty($new_spokes) && empty($existing_spokes)) {
+            error_log('SourceHub: No spokes to syndicate or update');
+            return;
+        }
+        
+        // Prevent duplicate syndication within 30 seconds
+        // Only check/set this AFTER we know we have work to do
+        $transient_key = 'sourcehub_syndicating_' . $post_id;
+        if (get_transient($transient_key)) {
+            error_log('SourceHub: Skipping - post ' . $post_id . ' was just syndicated, preventing duplicate');
+            return;
+        }
+        
+        // Set transient to prevent duplicates for 30 seconds
+        set_transient($transient_key, true, 30);
         
         // Create posts on NEW spokes
         if (!empty($new_spokes)) {
