@@ -670,31 +670,8 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
-        // Continue with syndication logic
-        // Handle both 'publish' and 'future' (scheduled) posts
-        if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
-            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-            if (!is_array($syndicated_spokes)) {
-                $syndicated_spokes = array();
-            }
-            
-            // Find NEW spokes (selected but not yet syndicated)
-            $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
-            
-            if (!empty($new_spokes)) {
-                // Only syndicate if post is published NOW (not scheduled for future)
-                if ($post->post_status === 'publish') {
-                    // Delay syndication to allow Yoast SEO time to save its meta
-                    // Yoast has a timing issue where focus keyword and other meta isn't available on first save
-                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) to allow Yoast meta to save');
-                    
-                    // Mark as pending so shutdown hook can pick it up
-                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
-                } else {
-                    error_log('SourceHub: Post scheduled for future, will syndicate when published');
-                }
-            }
-        }
+        // Syndication is handled by handle_post_insert (new posts) and handle_post_update (updates)
+        // No need to do anything else here
     }
 
     /**
