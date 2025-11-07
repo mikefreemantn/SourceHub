@@ -727,6 +727,14 @@ class SourceHub_Hub_Manager {
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
         
+        // Check if there's a pending first sync (for Yoast meta delay)
+        // If so, let the shutdown hook handle the new spokes
+        $pending_first_sync = get_transient('sourcehub_pending_first_sync_' . $post_id);
+        if ($pending_first_sync && !empty($new_spokes)) {
+            error_log('SourceHub: Pending first sync exists, letting shutdown hook handle new spokes');
+            $new_spokes = array(); // Clear new spokes so we don't syndicate them here
+        }
+        
         // If nothing to do, exit early without setting transient
         if (empty($new_spokes) && empty($existing_spokes)) {
             error_log('SourceHub: No spokes to syndicate or update');
@@ -744,7 +752,7 @@ class SourceHub_Hub_Manager {
         // Set transient to prevent duplicates for 30 seconds
         set_transient($transient_key, true, 30);
         
-        // Create posts on NEW spokes
+        // Create posts on NEW spokes (only if not handled by pending first sync)
         if (!empty($new_spokes)) {
             error_log('SourceHub: Creating posts on ' . count($new_spokes) . ' new spoke(s)');
             $this->syndicate_post($post_id, $new_spokes);
