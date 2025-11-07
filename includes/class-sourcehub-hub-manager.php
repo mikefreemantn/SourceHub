@@ -664,9 +664,31 @@ class SourceHub_Hub_Manager {
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
-        // Spokes are now saved - syndication will be handled by handle_post_update hook
-        // No need to do anything else here
-        // The wpseo_saved_postdata hook will handle re-syncing if Yoast data changes
+        // Continue with syndication logic
+        // Handle both 'publish' and 'future' (scheduled) posts
+        if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            if (!is_array($syndicated_spokes)) {
+                $syndicated_spokes = array();
+            }
+            
+            // Find NEW spokes (selected but not yet syndicated)
+            $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+            
+            if (!empty($new_spokes)) {
+                // Only syndicate if post is published NOW (not scheduled for future)
+                if ($post->post_status === 'publish') {
+                    // Delay syndication to allow Yoast SEO time to save its meta
+                    // Yoast has a timing issue where focus keyword and other meta isn't available on first save
+                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) to allow Yoast meta to save');
+                    
+                    // Mark as pending so shutdown hook can pick it up
+                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
+                } else {
+                    error_log('SourceHub: Post scheduled for future, will syndicate when published');
+                }
+            }
+        }
     }
 
     /**
@@ -714,24 +736,7 @@ class SourceHub_Hub_Manager {
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
         
-        // If nothing to do, exit early without setting transient
-        if (empty($new_spokes) && empty($existing_spokes)) {
-            error_log('SourceHub: No spokes to syndicate or update');
-            return;
-        }
-        
-        // Prevent duplicate syndication within 30 seconds
-        // Only check/set this AFTER we know we have work to do
-        $transient_key = 'sourcehub_syndicating_' . $post_id;
-        if (get_transient($transient_key)) {
-            error_log('SourceHub: Skipping - post ' . $post_id . ' was just syndicated, preventing duplicate');
-            return;
-        }
-        
-        // Set transient to prevent duplicates for 30 seconds
-        set_transient($transient_key, true, 30);
-        
-        // Create posts on NEW spokes (only if not handled by pending first sync)
+        // Create posts on NEW spokes
         if (!empty($new_spokes)) {
             error_log('SourceHub: Creating posts on ' . count($new_spokes) . ' new spoke(s)');
             $this->syndicate_post($post_id, $new_spokes);
