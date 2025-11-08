@@ -537,18 +537,21 @@ class SourceHub_Spoke_Manager {
             }
         }
 
-        // NEW APPROACH: Keep post as draft, then immediately update it
-        // This ensures Yoast meta is properly set via the update flow
-        error_log("SourceHub: Post {$post_id} created as draft, now updating with full data including Yoast");
+        // NEW APPROACH: Keep post as draft, update with Yoast as draft, then publish
+        error_log("SourceHub: Post {$post_id} created as draft, now updating with Yoast meta (still as draft)");
         SourceHub_Logger::info(
             'Post created as draft, now updating with Yoast meta',
-            array('post_id' => $post_id),
+            array('post_id' => $post_id, 'intended_status' => $intended_status),
             $post_id,
             null,
             'yoast_sync'
         );
         
-        // Call update_post_from_data to handle Yoast and final publish
+        // Temporarily change status to draft for the update
+        $original_status = $data['status'];
+        $data['status'] = 'draft';
+        
+        // Call update_post_from_data to set Yoast meta while still draft
         $update_result = $this->update_post_from_data($post_id, $data);
         
         if (is_wp_error($update_result)) {
@@ -561,10 +564,26 @@ class SourceHub_Spoke_Manager {
                 'yoast_sync'
             );
         } else {
-            error_log("SourceHub: Successfully updated post {$post_id} with Yoast meta and published");
+            error_log("SourceHub: Successfully updated post {$post_id} with Yoast meta (still draft)");
             SourceHub_Logger::success(
-                'Post updated with Yoast meta and published',
+                'Post updated with Yoast meta as draft',
                 array('post_id' => $post_id),
+                $post_id,
+                null,
+                'yoast_sync'
+            );
+        }
+        
+        // NOW publish the post if intended status was publish
+        if ($intended_status !== 'draft') {
+            wp_update_post(array(
+                'ID' => $post_id,
+                'post_status' => $intended_status
+            ));
+            error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after Yoast meta set");
+            SourceHub_Logger::success(
+                'Post published after Yoast meta set',
+                array('post_id' => $post_id, 'status' => $intended_status),
                 $post_id,
                 null,
                 'yoast_sync'
