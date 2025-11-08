@@ -537,25 +537,38 @@ class SourceHub_Spoke_Manager {
             }
         }
 
-        // NOW publish the post with all images and content properly processed
-        if ($intended_status !== 'draft') {
-            wp_update_post(array(
-                'ID' => $post_id,
-                'post_status' => $intended_status
-            ));
-            error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after all processing complete");
-        }
-
-        // Handle Yoast SEO meta AFTER publish (Yoast can clear meta on status change)
-        if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
-            $allow_override = get_option('sourcehub_allow_yoast_override', true);
-            SourceHub_Yoast_Integration::set_post_meta($post_id, $data['yoast_meta'], $allow_override);
-            
-            // Set canonical URL
-            $canonical_url = SourceHub_Yoast_Integration::generate_canonical_url($post_id, $data['hub_url'], $data['hub_id']);
-            SourceHub_Yoast_Integration::set_canonical_url($post_id, $canonical_url);
-            
-            error_log("SourceHub: Set Yoast meta after publish for post {$post_id}");
+        // NEW APPROACH: Keep post as draft, then immediately update it
+        // This ensures Yoast meta is properly set via the update flow
+        error_log("SourceHub: Post {$post_id} created as draft, now updating with full data including Yoast");
+        SourceHub_Logger::info(
+            'Post created as draft, now updating with Yoast meta',
+            array('post_id' => $post_id),
+            $post_id,
+            null,
+            'yoast_sync'
+        );
+        
+        // Call update_post_from_data to handle Yoast and final publish
+        $update_result = $this->update_post_from_data($post_id, $data);
+        
+        if (is_wp_error($update_result)) {
+            error_log("SourceHub: Error updating post {$post_id} after creation: " . $update_result->get_error_message());
+            SourceHub_Logger::error(
+                'Failed to update post after creation: ' . $update_result->get_error_message(),
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'yoast_sync'
+            );
+        } else {
+            error_log("SourceHub: Successfully updated post {$post_id} with Yoast meta and published");
+            SourceHub_Logger::success(
+                'Post updated with Yoast meta and published',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'yoast_sync'
+            );
         }
 
         return $post_id;
