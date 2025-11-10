@@ -461,10 +461,21 @@ class SourceHub_API_Handler {
 
         // Allow testing with a different API key (from form) before saving
         $api_key = $request->get_param('api_key');
+        
+        // Also check JSON body if not in params
+        if (empty($api_key)) {
+            $json_params = $request->get_json_params();
+            if (!empty($json_params['api_key'])) {
+                $api_key = $json_params['api_key'];
+            }
+        }
+        
         if (empty($api_key)) {
             // Fall back to stored key if none provided
             $api_key = $connection->api_key;
         }
+        
+        error_log('SourceHub: Testing connection ' . $connection_id . ' with API key: ' . substr($api_key, 0, 8) . '...');
 
         $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/status';
         
