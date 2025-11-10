@@ -459,12 +459,19 @@ class SourceHub_API_Handler {
             ), 404);
         }
 
+        // Allow testing with a different API key (from form) before saving
+        $api_key = $request->get_param('api_key');
+        if (empty($api_key)) {
+            // Fall back to stored key if none provided
+            $api_key = $connection->api_key;
+        }
+
         $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/status';
         
         $response = wp_remote_get($url, array(
             'timeout' => 15,
             'headers' => array(
-                'X-SourceHub-API-Key' => $connection->api_key
+                'X-SourceHub-API-Key' => $api_key
             )
         ));
 

@@ -214,11 +214,29 @@
             var connectionId = $button.data('connection-id');
             var originalText = $button.text();
             
+            // Check if we're in the edit modal - if so, use the form's API key
+            var apiKey = null;
+            var $modal = $button.closest('.sourcehub-modal');
+            if ($modal.length && $modal.attr('id') === 'edit-connection-modal') {
+                apiKey = $('#edit_connection_api_key').val();
+                if (!apiKey || apiKey.trim() === '') {
+                    SourceHubAdmin.showNotice('error', 'Please enter an API key first');
+                    return;
+                }
+            }
+            
             $button.text(sourcehub_admin.strings.testing_connection).prop('disabled', true);
+            
+            var requestData = {};
+            if (apiKey) {
+                requestData.api_key = apiKey;
+            }
             
             $.ajax({
                 url: sourcehub_admin.rest_url + 'connections/' + connectionId + '/test',
                 type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader('X-WP-Nonce', sourcehub_admin.nonce);
                 },
@@ -704,6 +722,9 @@
             $('#edit_connection_name').val(connection.name);
             $('#edit_connection_url').val(connection.url);
             $('#edit_connection_api_key').val(connection.api_key);
+            
+            // Set connection ID on test button
+            $('#edit-test-connection').data('connection-id', connection.id);
 
             // Parse and populate sync settings
             var syncSettings = {};

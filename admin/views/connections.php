@@ -431,6 +431,9 @@ if (!defined('ABSPATH')) {
                 <?php endif; ?>
 
                 <div class="form-actions">
+                    <button type="button" class="button test-connection" data-connection-id="0" id="edit-test-connection">
+                        <?php echo __('Test Connection', 'sourcehub'); ?>
+                    </button>
                     <button type="submit" class="button button-primary">
                         <?php echo __('Update Connection', 'sourcehub'); ?>
                     </button>
