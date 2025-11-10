@@ -452,14 +452,7 @@ class SourceHub_API_Handler {
         $connection_id = (int) $request->get_param('id');
         $connection = SourceHub_Database::get_connection($connection_id);
 
-        if (!$connection) {
-            return new WP_REST_Response(array(
-                'success' => false,
-                'message' => __('Connection not found', 'sourcehub')
-            ), 404);
-        }
-
-        // Allow testing with a different API key (from form) before saving
+        // Get API key from request (for testing before save)
         $api_key = $request->get_param('api_key');
         
         // Also check JSON body if not in params
@@ -470,14 +463,34 @@ class SourceHub_API_Handler {
             }
         }
         
-        if (empty($api_key)) {
-            // Fall back to stored key if none provided
-            $api_key = $connection->api_key;
+        // Get URL from request (for testing before save) or from connection
+        $test_url = null;
+        $json_params = $request->get_json_params();
+        if (!empty($json_params['url'])) {
+            $test_url = $json_params['url'];
         }
         
-        error_log('SourceHub: Testing connection ' . $connection_id . ' with API key: ' . substr($api_key, 0, 8) . '...');
+        // If we have a valid connection, use its data as fallback
+        if ($connection) {
+            if (empty($api_key)) {
+                $api_key = $connection->api_key;
+            }
+            if (empty($test_url)) {
+                $test_url = $connection->url;
+            }
+        }
+        
+        // Validate we have required data
+        if (empty($api_key) || empty($test_url)) {
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => __('API key and URL are required for testing', 'sourcehub')
+            ), 400);
+        }
+        
+        error_log('SourceHub: Testing connection to ' . $test_url . ' with API key: ' . substr($api_key, 0, 8) . '...');
 
-        $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/status';
+        $url = trailingslashit($test_url) . 'wp-json/sourcehub/v1/status';
         
         $response = wp_remote_get($url, array(
             'timeout' => 15,

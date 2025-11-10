@@ -430,6 +430,8 @@ if (!defined('ABSPATH')) {
                     </div>
                 <?php endif; ?>
 
+                <div id="edit-connection-test-result" style="margin-bottom: 15px;"></div>
+                
                 <div class="form-actions">
                     <button type="button" class="button test-connection" data-connection-id="0" id="edit-test-connection">
                         <?php echo __('Test Connection', 'sourcehub'); ?>

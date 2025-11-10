@@ -217,12 +217,25 @@
             // Check if we're in the edit modal - if so, use the form's API key
             var apiKey = null;
             var $modal = $button.closest('.sourcehub-modal');
-            if ($modal.length && $modal.attr('id') === 'edit-connection-modal') {
+            var inModal = $modal.length && $modal.attr('id') === 'edit-connection-modal';
+            var $resultDiv = $('#edit-connection-test-result');
+            
+            if (inModal) {
                 apiKey = $('#edit_connection_api_key').val();
+                var testUrl = $('#edit_connection_url').val();
+                
                 if (!apiKey || apiKey.trim() === '') {
-                    SourceHubAdmin.showNotice('error', 'Please enter an API key first');
+                    $resultDiv.html('<div class="test-result error" style="padding: 10px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">Please enter an API key first</div>');
                     return;
                 }
+                
+                if (!testUrl || testUrl.trim() === '') {
+                    $resultDiv.html('<div class="test-result error" style="padding: 10px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">Please enter a URL first</div>');
+                    return;
+                }
+                
+                // Clear previous result
+                $resultDiv.html('');
             }
             
             $button.text(sourcehub_admin.strings.testing_connection).prop('disabled', true);
@@ -230,6 +243,7 @@
             var requestData = {};
             if (apiKey) {
                 requestData.api_key = apiKey;
+                requestData.url = testUrl;
             }
             
             $.ajax({
@@ -242,17 +256,31 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        SourceHubAdmin.showNotice('success', response.message);
-                        // Update connection status in UI
-                        $button.closest('tr').find('.connection-status').html('<span class="badge badge-success">Active</span>');
+                        if (inModal) {
+                            // Show result in modal
+                            $resultDiv.html('<div class="test-result success" style="padding: 10px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;"><span class="dashicons dashicons-yes" style="color: #155724;"></span> ' + response.message + '</div>');
+                        } else {
+                            SourceHubAdmin.showNotice('success', response.message);
+                            // Update connection status in UI
+                            $button.closest('tr').find('.connection-status').html('<span class="badge badge-success">Active</span>');
+                        }
                     } else {
-                        SourceHubAdmin.showNotice('error', response.message);
-                        $button.closest('tr').find('.connection-status').html('<span class="badge badge-danger">Error</span>');
+                        if (inModal) {
+                            // Show error in modal
+                            $resultDiv.html('<div class="test-result error" style="padding: 10px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;"><span class="dashicons dashicons-no" style="color: #721c24;"></span> ' + response.message + '</div>');
+                        } else {
+                            SourceHubAdmin.showNotice('error', response.message);
+                            $button.closest('tr').find('.connection-status').html('<span class="badge badge-danger">Error</span>');
+                        }
                     }
                 },
                 error: function() {
-                    SourceHubAdmin.showNotice('error', sourcehub_admin.strings.connection_failed);
-                    $button.closest('tr').find('.connection-status').html('<span class="badge badge-danger">Error</span>');
+                    if (inModal) {
+                        $resultDiv.html('<div class="test-result error" style="padding: 10px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;"><span class="dashicons dashicons-no" style="color: #721c24;"></span> ' + sourcehub_admin.strings.connection_failed + '</div>');
+                    } else {
+                        SourceHubAdmin.showNotice('error', sourcehub_admin.strings.connection_failed);
+                        $button.closest('tr').find('.connection-status').html('<span class="badge badge-danger">Error</span>');
+                    }
                 },
                 complete: function() {
                     $button.text(originalText).prop('disabled', false);
