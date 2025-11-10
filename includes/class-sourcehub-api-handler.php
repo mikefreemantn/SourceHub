@@ -490,12 +490,17 @@ class SourceHub_API_Handler {
         
         error_log('SourceHub: Testing connection to ' . $test_url . ' with API key: ' . substr($api_key, 0, 8) . '...');
 
-        $url = trailingslashit($test_url) . 'wp-json/sourcehub/v1/status';
+        // Add cache-busting parameter to prevent cached responses
+        $url = trailingslashit($test_url) . 'wp-json/sourcehub/v1/status?_=' . time();
         
         $response = wp_remote_get($url, array(
             'timeout' => 15,
+            'sslverify' => false, // Allow testing with self-signed certs
             'headers' => array(
-                'X-SourceHub-API-Key' => $api_key
+                'X-SourceHub-API-Key' => $api_key,
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
             )
         ));
 
@@ -522,8 +527,9 @@ class SourceHub_API_Handler {
         if ($response_code === 200) {
             $data = json_decode($response_body, true);
             
+            $connection_name = $connection ? $connection->name : $test_url;
             SourceHub_Logger::success(
-                sprintf('Connection test successful: %s', $connection->name),
+                sprintf('Connection test successful: %s', $connection_name),
                 $data,
                 null,
                 $connection_id,
