@@ -270,6 +270,13 @@ class SourceHub_Logger {
         $success_rate = $total > 0 ? ($stats['success'] / $total) * 100 : 0;
         
         return array(
+            // Keys used by logs.php template
+            'total' => $total,
+            'success' => $stats['success'],
+            'error' => $stats['error'],
+            'warning' => $stats['warning'],
+            'info' => $stats['info'],
+            // Legacy keys for backwards compatibility
             'total_logs' => $total,
             'success_rate' => $success_rate,
             'success_count' => $stats['success'],

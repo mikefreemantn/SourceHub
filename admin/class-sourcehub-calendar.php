@@ -327,6 +327,12 @@ class SourceHub_Calendar {
             // Get timestamp for ordering (events on same day will be ordered by time)
             $timestamp = strtotime($post->post_date);
             
+            // Get featured image thumbnail
+            $thumbnail_url = '';
+            if (has_post_thumbnail($post->ID)) {
+                $thumbnail_url = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+            }
+
             // Create event
             $event = array(
                 'id' => $post->ID,
@@ -347,7 +353,8 @@ class SourceHub_Calendar {
                     'excerpt' => wp_trim_words($post->post_content, 20),
                     'author' => get_the_author_meta('display_name', $post->post_author),
                     'edit_url' => admin_url('post.php?action=edit&post=' . $post->ID),
-                    'original_date' => $post->post_date
+                    'original_date' => $post->post_date,
+                    'thumbnail' => $thumbnail_url
                 )
             );
 

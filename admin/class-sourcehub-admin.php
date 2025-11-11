@@ -45,6 +45,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
+        add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
     }
 
     /**
@@ -178,17 +179,9 @@ class SourceHub_Admin {
                 'sourcehub-add-spoke',
                 array($this, 'render_add_spoke')
             );
-        } elseif ($mode === 'spoke') {
-            // Hub Connections - Admin only
-            add_submenu_page(
-                'sourcehub',
-                __('Hub Connections', 'sourcehub'),
-                __('Hub Connections', 'sourcehub'),
-                $admin_capability,
-                'sourcehub-connections',
-                array($this, 'render_connections')
-            );
         }
+        // Note: Spoke mode does not have a connections page because
+        // connections are always initiated from the hub, never from the spoke
 
         // Settings page - Admin only
         add_submenu_page(
@@ -868,30 +861,26 @@ class SourceHub_Admin {
     }
 
     /**
-     * Format time ago
+     * Format datetime for display
      *
      * @param string $datetime Datetime string
-     * @return string Human readable time ago
+     * @return string Formatted date and time
      */
     public static function time_ago($datetime) {
         if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
             return __('Never', 'sourcehub');
         }
 
-        $time = time() - strtotime($datetime);
+        // Calculate time difference
+        $time_diff = current_time('timestamp') - strtotime($datetime);
 
-        if ($time < 60) {
+        // If less than 1 minute, show "Just now"
+        if ($time_diff < 60) {
             return __('Just now', 'sourcehub');
-        } elseif ($time < 3600) {
-            $minutes = floor($time / 60);
-            return sprintf(_n('%d minute ago', '%d minutes ago', $minutes, 'sourcehub'), $minutes);
-        } elseif ($time < 86400) {
-            $hours = floor($time / 3600);
-            return sprintf(_n('%d hour ago', '%d hours ago', $hours, 'sourcehub'), $hours);
-        } else {
-            $days = floor($time / 86400);
-            return sprintf(_n('%d day ago', '%d days ago', $days, 'sourcehub'), $days);
         }
+
+        // Otherwise show formatted date/time
+        return date_i18n('n/j/y g:i A', strtotime($datetime));
     }
 
     /**
@@ -1216,5 +1205,29 @@ class SourceHub_Admin {
         } catch (Exception $e) {
             wp_die(__('Failed to export logs: ', 'sourcehub') . $e->getMessage());
         }
+    }
+
+    /**
+     * Add mode badge to admin bar
+     */
+    public function add_admin_bar_badge($wp_admin_bar) {
+        $mode = sourcehub()->get_mode();
+        
+        if (empty($mode)) {
+            return;
+        }
+
+        $badge_text = $mode === 'hub' ? __('Hub Site', 'sourcehub') : __('Spoke Site', 'sourcehub');
+        $badge_class = $mode === 'hub' ? 'sourcehub-admin-bar-hub' : 'sourcehub-admin-bar-spoke';
+
+        $wp_admin_bar->add_node(array(
+            'id'     => 'sourcehub-mode-badge',
+            'parent' => 'top-secondary',
+            'title'  => '<span class="' . $badge_class . '">' . $badge_text . '</span>',
+            'href'   => admin_url('admin.php?page=sourcehub'),
+            'meta'   => array(
+                'class' => 'sourcehub-admin-bar-item'
+            )
+        ));
     }
 }

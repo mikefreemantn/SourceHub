@@ -24,8 +24,7 @@ if (!defined('ABSPATH')) {
     </a>
 
     <div class="sourcehub-add-spoke">
-        <div class="card">
-            <form id="add-spoke-form" class="sourcehub-form" method="post">
+        <form id="add-spoke-form" class="sourcehub-form" method="post">
                 <?php wp_nonce_field('sourcehub_add_spoke', 'sourcehub_nonce'); ?>
                 
                 <div class="form-row">
@@ -173,8 +172,7 @@ if (!defined('ABSPATH')) {
                         <?php echo __('Cancel', 'sourcehub'); ?>
                     </a>
                 </div>
-            </form>
-        </div>
+        </form>
     </div>
 </div>
 

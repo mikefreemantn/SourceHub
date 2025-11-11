@@ -85,20 +85,20 @@ if (!defined('ABSPATH')) {
     </div>
 
     <div class="logs-stats">
-        <div class="stats-grid">
-            <div class="stat-card">
+        <div class="logs-stats-grid">
+            <div class="logs-stat-card">
                 <div class="stat-number"><?php echo number_format($stats['total']); ?></div>
                 <div class="stat-label"><?php echo __('Total Logs', 'sourcehub'); ?></div>
             </div>
-            <div class="stat-card success">
+            <div class="logs-stat-card success">
                 <div class="stat-number"><?php echo number_format($stats['success']); ?></div>
                 <div class="stat-label"><?php echo __('Success', 'sourcehub'); ?></div>
             </div>
-            <div class="stat-card error">
+            <div class="logs-stat-card errors">
                 <div class="stat-number"><?php echo number_format($stats['error']); ?></div>
                 <div class="stat-label"><?php echo __('Errors', 'sourcehub'); ?></div>
             </div>
-            <div class="stat-card warning">
+            <div class="logs-stat-card warning">
                 <div class="stat-number"><?php echo number_format($stats['warning']); ?></div>
                 <div class="stat-label"><?php echo __('Warnings', 'sourcehub'); ?></div>
             </div>
@@ -284,13 +284,13 @@ if (!defined('ABSPATH')) {
     margin: 20px 0;
 }
 
-.stats-grid {
+.logs-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
 }
 
-.stat-card {
+.logs-stat-card {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -298,15 +298,23 @@ if (!defined('ABSPATH')) {
     text-align: center;
 }
 
-.stat-card.success {
+.logs-stat-card.success {
     border-left: 4px solid #00a32a;
 }
 
-.stat-card.error .stat-number {
+.logs-stats .logs-stat-card.errors {
+    border-left: 4px solid #dc3232 !important;
+    position: relative !important;
+    float: none !important;
+    clear: none !important;
+    display: block !important;
+}
+
+.logs-stats .logs-stat-card.errors .stat-number {
     color: #dc3232;
 }
 
-.stat-card.warning {
+.logs-stat-card.warning {
     border-left: 4px solid #dba617;
 }
 

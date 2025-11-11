@@ -44,8 +44,11 @@
             
             console.log('Initializing FullCalendar...');
             
+            // Get saved view from localStorage, default to month
+            const savedView = localStorage.getItem('sourcehub_calendar_view') || 'dayGridMonth';
+            
             calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
+                initialView: savedView,
                 eventOrder: 'order', // Sort by the order property (timestamp)
                 headerToolbar: {
                     left: 'prev,next today',
@@ -191,6 +194,21 @@
                         }
                     });
                 },
+                viewDidMount: function(info) {
+                    // Save view preference when view changes (including toolbar buttons)
+                    const currentView = info.view.type;
+                    localStorage.setItem('sourcehub_calendar_view', currentView);
+                    
+                    // Update dropdown to match
+                    $('#calendar-view-select').val(currentView);
+                    
+                    // Show/hide date picker
+                    if (currentView === 'listDay') {
+                        $('#list-date-picker-group').show();
+                    } else {
+                        $('#list-date-picker-group').hide();
+                    }
+                },
                 eventsSet: function(events) {
                     console.log('Events loaded:', events.length);
                     // Add scroll indicators after events are rendered
@@ -231,6 +249,12 @@
 
             calendar.render();
             console.log('FullCalendar rendered successfully');
+            
+            // Set dropdown to match saved view
+            $('#calendar-view-select').val(savedView);
+            if (savedView === 'listDay') {
+                $('#list-date-picker-group').show();
+            }
             
             // Hide loading initially
             $('.calendar-loading').hide();
@@ -372,6 +396,16 @@
         
         let html = '<div class="sourcehub-event-card">';
         
+        // Thumbnail (if available)
+        if (props.thumbnail) {
+            html += '<div class="event-thumbnail' + (isListView ? ' list-view' : '') + '">';
+            html += '<img src="' + props.thumbnail + '" alt="' + event.title + '">';
+            html += '</div>';
+        }
+        
+        // Event content wrapper
+        html += '<div class="event-content-wrapper">';
+        
         // Header with title and status
         html += '<div class="event-card-header">';
         
@@ -392,6 +426,11 @@
         
         // Content area
         html += '<div class="event-card-content">';
+        
+        // Excerpt (list view only)
+        if (isListView && props.excerpt) {
+            html += '<div class="event-excerpt">' + props.excerpt + '</div>';
+        }
         
         // Categories
         if (categories.length > 0) {
@@ -439,6 +478,7 @@
         }
         
         html += '</div>'; // Close content
+        html += '</div>'; // Close content wrapper
         html += '</div>'; // Close card
         
         return html;
@@ -577,6 +617,9 @@
         // View selector
         $('#calendar-view-select').on('change', function() {
             const selectedView = $(this).val();
+            
+            // Save view preference
+            localStorage.setItem('sourcehub_calendar_view', selectedView);
             
             // Show/hide date picker based on view
             if (selectedView === 'listDay') {

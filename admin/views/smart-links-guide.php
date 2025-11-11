@@ -144,6 +144,7 @@ if (!defined('ABSPATH')) {
     background: #fff;
     border: 1px solid #ccd0d4;
     border-radius: 4px;
+    max-width: 1200px;
     padding: 20px;
     margin: 20px 0;
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
