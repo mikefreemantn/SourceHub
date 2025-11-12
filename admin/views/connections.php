@@ -58,6 +58,7 @@ if (!defined('ABSPATH')) {
                         <th><?php echo __('Name', 'sourcehub'); ?></th>
                         <th><?php echo __('URL', 'sourcehub'); ?></th>
                         <th><?php echo __('Status', 'sourcehub'); ?></th>
+                        <th><?php echo __('Response Time', 'sourcehub'); ?></th>
                         <th><?php echo __('API Key', 'sourcehub'); ?></th>
                         <th><?php echo __('Actions', 'sourcehub'); ?></th>
                     </tr>
@@ -82,6 +83,9 @@ if (!defined('ABSPATH')) {
                             </td>
                             <td class="connection-status">
                                 <?php echo SourceHub_Admin::get_status_badge($connection); ?>
+                            </td>
+                            <td class="connection-response-time" data-connection-id="<?php echo $connection->id; ?>">
+                                <span class="response-time-placeholder" style="color: #999;">—</span>
                             </td>
                             <td>
                                 <code class="api-key" data-tooltip="<?php echo esc_attr__('Click to copy', 'sourcehub'); ?>">

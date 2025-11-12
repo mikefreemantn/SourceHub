@@ -29,35 +29,75 @@ $recent_logs = isset($recent_logs) ? $recent_logs : array();
     <div class="sourcehub-dashboard">
         <!-- Stats Overview -->
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="dashicons dashicons-networking"></span>
+            <?php if ($mode === 'hub'): ?>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-networking"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?php echo count($connections); ?></h3>
+                        <p><?php echo __('Spoke Sites', 'sourcehub'); ?></p>
+                    </div>
                 </div>
-                <div class="stat-content">
-                    <h3><?php echo count($connections); ?></h3>
-                    <p><?php echo $mode === 'hub' ? __('Spoke Sites', 'sourcehub') : __('Hub Sites', 'sourcehub'); ?></p>
-                </div>
-            </div>
 
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="dashicons dashicons-yes-alt"></span>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-yes-alt"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?php echo count($active_connections); ?></h3>
+                        <p><?php echo __('Active Connections', 'sourcehub'); ?></p>
+                    </div>
                 </div>
-                <div class="stat-content">
-                    <h3><?php echo count($active_connections); ?></h3>
-                    <p><?php echo __('Active Connections', 'sourcehub'); ?></p>
-                </div>
-            </div>
 
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="dashicons dashicons-chart-line"></span>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-chart-line"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?php echo isset($stats['total_logs']) ? $stats['total_logs'] : 0; ?></h3>
+                        <p><?php echo __('Activities (30 days)', 'sourcehub'); ?></p>
+                    </div>
                 </div>
-                <div class="stat-content">
-                    <h3><?php echo isset($stats['total_logs']) ? $stats['total_logs'] : 0; ?></h3>
-                    <p><?php echo __('Activities (30 days)', 'sourcehub'); ?></p>
+            <?php else: ?>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-admin-post"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?php echo isset($spoke_stats['total_syndicated']) ? $spoke_stats['total_syndicated'] : 0; ?></h3>
+                        <p><?php echo __('Syndicated Posts', 'sourcehub'); ?></p>
+                    </div>
                 </div>
-            </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?php echo isset($spoke_stats['syndicated_this_month']) ? $spoke_stats['syndicated_this_month'] : 0; ?></h3>
+                        <p><?php echo __('Posts This Month', 'sourcehub'); ?></p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="dashicons dashicons-update"></span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>
+                            <?php 
+                            if (isset($spoke_stats['last_sync']) && $spoke_stats['last_sync']) {
+                                echo SourceHub_Admin::time_ago($spoke_stats['last_sync']);
+                            } else {
+                                echo __('Never', 'sourcehub');
+                            }
+                            ?>
+                        </h3>
+                        <p><?php echo __('Last Sync', 'sourcehub'); ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="dashboard-content">

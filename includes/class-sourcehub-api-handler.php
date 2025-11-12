@@ -493,8 +493,11 @@ class SourceHub_API_Handler {
         // Add cache-busting parameter to prevent cached responses
         $url = trailingslashit($test_url) . 'wp-json/sourcehub/v1/status?_=' . time();
         
+        // Start timing
+        $start_time = microtime(true);
+        
         $response = wp_remote_get($url, array(
-            'timeout' => 15,
+            'timeout' => 30, // Match syndication timeout
             'sslverify' => false, // Allow testing with self-signed certs
             'headers' => array(
                 'X-SourceHub-API-Key' => $api_key,
@@ -503,13 +506,16 @@ class SourceHub_API_Handler {
                 'Expires' => '0'
             )
         ));
+        
+        // Calculate response time
+        $response_time = round((microtime(true) - $start_time) * 1000); // Convert to milliseconds
 
         if (is_wp_error($response)) {
             $message = sprintf(__('Connection failed: %s', 'sourcehub'), $response->get_error_message());
             
             SourceHub_Logger::error(
                 $message,
-                array('url' => $url, 'error' => $response->get_error_message()),
+                array('url' => $url, 'error' => $response->get_error_message(), 'response_time_ms' => $response_time),
                 null,
                 $connection_id,
                 'test_connection'
@@ -517,7 +523,8 @@ class SourceHub_API_Handler {
 
             return new WP_REST_Response(array(
                 'success' => false,
-                'message' => $message
+                'message' => $message,
+                'response_time' => $response_time
             ), 500);
         }
 
@@ -529,8 +536,8 @@ class SourceHub_API_Handler {
             
             $connection_name = $connection ? $connection->name : $test_url;
             SourceHub_Logger::success(
-                sprintf('Connection test successful: %s', $connection_name),
-                $data,
+                sprintf('Connection test successful: %s (%dms)', $connection_name, $response_time),
+                array_merge($data, array('response_time_ms' => $response_time)),
                 null,
                 $connection_id,
                 'test_connection'
@@ -539,7 +546,8 @@ class SourceHub_API_Handler {
             return new WP_REST_Response(array(
                 'success' => true,
                 'message' => __('Connection test successful', 'sourcehub'),
-                'spoke_info' => $data
+                'spoke_info' => $data,
+                'response_time' => $response_time
             ), 200);
         } else {
             $message = sprintf(__('Connection test failed with HTTP %d', 'sourcehub'), $response_code);

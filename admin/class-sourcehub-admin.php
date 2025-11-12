@@ -43,6 +43,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_get_logs', array($this, 'ajax_get_logs'));
         add_action('wp_ajax_sourcehub_check_timeouts', array($this, 'ajax_check_timeouts'));
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
+        add_action('wp_ajax_sourcehub_check_sync_status', array($this, 'check_sync_status'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
@@ -279,8 +280,17 @@ class SourceHub_Admin {
                 SOURCEHUB_VERSION
             );
             
-            // Localize script for TinyMCE buttons
-            wp_localize_script('sourcehub-tinymce-shortcodes', 'sourcehub_admin', array(
+            // Enqueue sync status polling script
+            wp_enqueue_script(
+                'sourcehub-sync-status',
+                SOURCEHUB_PLUGIN_URL . 'admin/js/sync-status.js',
+                array('jquery'),
+                SOURCEHUB_VERSION,
+                true
+            );
+            
+            // Localize script for TinyMCE buttons and sync status
+            wp_localize_script('sourcehub-tinymce-shortcodes', 'sourcehubAdmin', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('sourcehub_admin_nonce'),
                 'mode' => sourcehub()->get_mode()
@@ -437,6 +447,70 @@ class SourceHub_Admin {
         } catch (Exception $e) {
             error_log('SourceHub: Error getting recent logs - ' . $e->getMessage());
             $recent_logs = array();
+        }
+        
+        // Get spoke-specific stats if in spoke mode
+        $spoke_stats = array(
+            'total_syndicated' => 0,
+            'syndicated_this_month' => 0,
+            'last_sync' => null
+        );
+        
+        if ($mode === 'spoke') {
+            try {
+                // Total syndicated posts (posts with _sourcehub_hub_id meta)
+                $total_query = new WP_Query(array(
+                    'post_type' => 'any',
+                    'post_status' => 'any',
+                    'meta_key' => '_sourcehub_hub_id',
+                    'fields' => 'ids',
+                    'posts_per_page' => -1,
+                    'no_found_rows' => false,
+                    'update_post_meta_cache' => false,
+                    'update_post_term_cache' => false
+                ));
+                $spoke_stats['total_syndicated'] = $total_query->found_posts;
+                
+                // Posts syndicated in last 30 days
+                $month_query = new WP_Query(array(
+                    'post_type' => 'any',
+                    'post_status' => 'any',
+                    'meta_key' => '_sourcehub_hub_id',
+                    'date_query' => array(
+                        array(
+                            'after' => '30 days ago',
+                            'inclusive' => true
+                        )
+                    ),
+                    'fields' => 'ids',
+                    'posts_per_page' => -1,
+                    'no_found_rows' => false,
+                    'update_post_meta_cache' => false,
+                    'update_post_term_cache' => false
+                ));
+                $spoke_stats['syndicated_this_month'] = $month_query->found_posts;
+                
+                // Last sync time (most recent post with _sourcehub_hub_id)
+                $last_sync_query = new WP_Query(array(
+                    'post_type' => 'any',
+                    'post_status' => 'any',
+                    'meta_key' => '_sourcehub_hub_id',
+                    'posts_per_page' => 1,
+                    'orderby' => 'date',
+                    'order' => 'DESC',
+                    'fields' => 'ids'
+                ));
+                
+                if ($last_sync_query->have_posts()) {
+                    $last_post_id = $last_sync_query->posts[0];
+                    $last_post = get_post($last_post_id);
+                    if ($last_post) {
+                        $spoke_stats['last_sync'] = $last_post->post_date;
+                    }
+                }
+            } catch (Exception $e) {
+                error_log('SourceHub: Error getting spoke stats - ' . $e->getMessage());
+            }
         }
 
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/dashboard.php';
@@ -926,6 +1000,57 @@ class SourceHub_Admin {
                 'message' => __('Failed to load connection: ', 'sourcehub') . $e->getMessage()
             ));
         }
+    }
+
+    /**
+     * Check syndication status via AJAX
+     */
+    public function check_sync_status() {
+        check_ajax_referer('sourcehub_admin_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions', 'sourcehub')));
+        }
+
+        $post_id = intval($_POST['post_id']);
+        
+        if (!$post_id) {
+            wp_send_json_error(array('message' => __('Invalid post ID', 'sourcehub')));
+        }
+
+        // Get overall sync status from transient
+        $overall_status = get_transient('sourcehub_sync_status_' . $post_id);
+        
+        // Get per-spoke status from post meta
+        $per_spoke_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($per_spoke_status)) {
+            $per_spoke_status = array();
+        }
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes)) {
+            $syndicated_spokes = array();
+        }
+        
+        // Determine overall status
+        $status = 'none';
+        if ($overall_status && isset($overall_status['status'])) {
+            $status = $overall_status['status'];
+        } elseif (!empty($syndicated_spokes)) {
+            $status = 'completed';
+        }
+
+        // Return current status with per-spoke details
+        wp_send_json_success(array(
+            'status' => $status,
+            'spokes' => $syndicated_spokes,
+            'count' => count($syndicated_spokes),
+            'per_spoke_status' => $per_spoke_status,
+            'started' => isset($overall_status['started']) ? $overall_status['started'] : null,
+            'completed' => isset($overall_status['completed']) ? $overall_status['completed'] : null,
+            'error' => isset($overall_status['error']) ? $overall_status['error'] : null
+        ));
     }
 
     /**

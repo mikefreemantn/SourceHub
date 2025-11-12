@@ -143,6 +143,26 @@ class SourceHub_Hub_Manager {
         
         update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
         
+        // Check if all spokes are done (no processing status)
+        $all_done = true;
+        foreach ($sync_status as $spoke_id => $spoke_data) {
+            if (isset($spoke_data['status']) && $spoke_data['status'] === 'processing') {
+                $all_done = false;
+                break;
+            }
+        }
+        
+        // If all spokes are done, update overall status to completed
+        if ($all_done) {
+            $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
+            set_transient('sourcehub_sync_status_' . $hub_post_id, array(
+                'status' => 'completed',
+                'spokes' => $syndicated_spokes,
+                'completed' => time()
+            ), 300);
+            error_log('SourceHub Hub: All spokes completed for post ' . $hub_post_id);
+        }
+        
         return new WP_REST_Response(array('success' => true, 'message' => 'Status updated'), 200);
     }
 
@@ -203,6 +223,24 @@ class SourceHub_Hub_Manager {
                     <p><a href="<?php echo admin_url('admin.php?page=sourcehub-connections'); ?>" class="button button-secondary"><?php _e('Manage Connections', 'sourcehub'); ?></a></p>
                 </div>
             <?php else: ?>
+                <?php 
+                // Check overall sync status from transient
+                $overall_status = get_transient('sourcehub_sync_status_' . $post->ID);
+                $has_syndicated = !empty($syndicated_connections);
+                ?>
+                <div class="sourcehub-overall-status">
+                    <span class="sourcehub-syndication-status <?php echo $has_syndicated ? 'synced' : 'not-synced'; ?>">
+                        <?php if ($overall_status && $overall_status['status'] === 'processing'): ?>
+                            ⏳ <?php _e('Processing...', 'sourcehub'); ?>
+                        <?php elseif ($overall_status && $overall_status['status'] === 'syncing'): ?>
+                            🔄 <?php _e('Syndicating...', 'sourcehub'); ?>
+                        <?php elseif ($has_syndicated): ?>
+                            ✓ <?php printf(_n('Synced to %d spoke', 'Synced to %d spokes', count($syndicated_connections), 'sourcehub'), count($syndicated_connections)); ?>
+                        <?php else: ?>
+                            <?php _e('Not Syndicated', 'sourcehub'); ?>
+                        <?php endif; ?>
+                    </span>
+                </div>
                 <div class="sourcehub-connections-list">
                     <h4><?php _e('Select Spokes to Syndicate To:', 'sourcehub'); ?></h4>
                     <?php foreach ($connections as $connection): 
@@ -706,10 +744,52 @@ class SourceHub_Hub_Manager {
             if (!empty($new_spokes)) {
                 // Only syndicate if post is published NOW (not scheduled for future)
                 if ($post->post_status === 'publish') {
-                    error_log('SourceHub: Scheduling syndication to ' . count($new_spokes) . ' new spoke(s) via shutdown hook');
+                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) in 5 seconds (allows Yoast meta to be ready)');
                     
-                    // Mark as pending so shutdown hook can pick it up
-                    set_transient('sourcehub_pending_first_sync_' . $post_id, $new_spokes, 60);
+                    // Set overall status to processing
+                    set_transient('sourcehub_sync_status_' . $post_id, array(
+                        'status' => 'processing',
+                        'spokes' => $new_spokes,
+                        'started' => time()
+                    ), 300); // 5 minutes
+                    
+                    // Set per-spoke status to processing in post meta
+                    $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+                    if (!is_array($sync_status)) {
+                        $sync_status = array();
+                    }
+                    foreach ($new_spokes as $spoke_id) {
+                        $sync_status[$spoke_id] = array(
+                            'status' => 'processing',
+                            'started_at' => current_time('mysql')
+                        );
+                    }
+                    update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+                    
+                    // Schedule delayed sync (gives Yoast time to save meta)
+                    wp_schedule_single_event(time() + 5, 'sourcehub_delayed_sync', array($post_id));
+                    
+                    // For local development, manually spawn cron since it may not run automatically
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        add_action('admin_footer', function() use ($post_id) {
+                            ?>
+                            <script>
+                            console.log('SourceHub: Scheduling manual cron trigger in 6 seconds for post <?php echo $post_id; ?>');
+                            setTimeout(function() {
+                                console.log('SourceHub: Triggering WP Cron manually');
+                                fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
+                                    method: 'GET',
+                                    mode: 'no-cors'
+                                }).then(() => {
+                                    console.log('SourceHub: WP Cron triggered');
+                                }).catch(error => {
+                                    console.error('SourceHub: WP Cron trigger failed:', error);
+                                });
+                            }, 6000);
+                            </script>
+                            <?php
+                        });
+                    }
                 } else {
                     error_log('SourceHub: Post scheduled for future, will syndicate when published');
                 }
@@ -897,29 +977,50 @@ class SourceHub_Hub_Manager {
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
             // Yoast has a timing issue where meta isn't fully available on first save
-            // Similar to Newspaper theme issue - schedule a delayed sync to ensure Yoast data is ready
-            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 3 seconds');
-            wp_schedule_single_event(time() + 3, 'sourcehub_delayed_sync', array($post_id));
+            // Schedule a delayed sync to ensure Yoast data is ready
+            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 5 seconds');
             
-            // For local development, also trigger cron manually after a short delay
+            // Set overall status to processing
+            set_transient('sourcehub_sync_status_' . $post_id, array(
+                'status' => 'processing',
+                'spokes' => $syndicated_spokes,
+                'started' => time()
+            ), 300);
+            
+            // Set per-spoke status to processing in post meta
+            $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+            if (!is_array($sync_status)) {
+                $sync_status = array();
+            }
+            foreach ($syndicated_spokes as $spoke_id) {
+                $sync_status[$spoke_id] = array(
+                    'status' => 'processing',
+                    'started_at' => current_time('mysql')
+                );
+            }
+            update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+            
+            wp_schedule_single_event(time() + 5, 'sourcehub_delayed_sync', array($post_id));
+            
+            // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('SourceHub: Setting up manual cron trigger for Yoast sync (local development)');
                 add_action('admin_footer', function() use ($post_id) {
-                    echo '<script>
-                    console.log("SourceHub: Setting up delayed Yoast sync for post ' . $post_id . '");
+                    ?>
+                    <script>
+                    console.log('SourceHub: Scheduling manual cron trigger in 6 seconds for post <?php echo $post_id; ?> (Yoast update)');
                     setTimeout(function() {
-                        console.log("SourceHub: Triggering manual cron for Yoast sync post ' . $post_id . '");
-                        fetch("' . admin_url('admin-ajax.php') . '", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded",
-                            },
-                            body: "action=sourcehub_manual_cron&post_id=' . $post_id . '"
-                        }).then(response => response.json())
-                          .then(data => console.log("SourceHub: Manual cron response:", data))
-                          .catch(error => console.error("SourceHub: Manual cron error:", error));
-                    }, 3000);
-                    </script>';
+                        console.log('SourceHub: Triggering WP Cron manually');
+                        fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
+                            method: 'GET',
+                            mode: 'no-cors'
+                        }).then(() => {
+                            console.log('SourceHub: WP Cron triggered');
+                        }).catch(error => {
+                            console.error('SourceHub: WP Cron trigger failed:', error);
+                        });
+                    }, 6000);
+                    </script>
+                    <?php
                 });
             }
         }
@@ -952,9 +1053,10 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function syndicate_post($post_id, $spoke_ids) {
-        // Check if sync is already in progress for this post
-        if (isset($this->sync_locks[$post_id])) {
-            error_log('SourceHub: Sync already in progress for post ' . $post_id . ', skipping');
+        // Check if sync is already in progress for this post using persistent lock
+        $lock_key = 'sourcehub_sync_lock_' . $post_id;
+        if (get_transient($lock_key)) {
+            error_log('SourceHub: Sync already in progress for post ' . $post_id . ' (locked), skipping');
             return;
         }
         
@@ -965,7 +1067,8 @@ class SourceHub_Hub_Manager {
             return;
         }
         
-        // Set sync lock
+        // Set persistent sync lock (60 seconds - should be plenty for syndication)
+        set_transient($lock_key, time(), 60);
         $this->sync_locks[$post_id] = true;
         
         $post = get_post($post_id);
@@ -1063,7 +1166,8 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
-        // Release sync lock
+        // Release sync locks (both persistent and instance)
+        delete_transient('sourcehub_sync_lock_' . $post_id);
         unset($this->sync_locks[$post_id]);
     }
 
@@ -1074,13 +1178,15 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function update_syndicated_post($post_id, $spoke_ids) {
-        // Check if sync is already in progress for this post
-        if (isset($this->sync_locks[$post_id])) {
-            error_log('SourceHub: Update sync already in progress for post ' . $post_id . ', skipping');
+        // Check if sync is already in progress for this post using persistent lock
+        $lock_key = 'sourcehub_sync_lock_' . $post_id;
+        if (get_transient($lock_key)) {
+            error_log('SourceHub: Update sync already in progress for post ' . $post_id . ' (locked), skipping');
             return;
         }
         
-        // Set sync lock
+        // Set persistent sync lock
+        set_transient($lock_key, time(), 60);
         $this->sync_locks[$post_id] = true;
         
         $post = get_post($post_id);
@@ -1186,7 +1292,8 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
-        // Release sync lock
+        // Release sync locks (both persistent and instance)
+        delete_transient('sourcehub_sync_lock_' . $post_id);
         unset($this->sync_locks[$post_id]);
     }
 
@@ -1772,6 +1879,9 @@ class SourceHub_Hub_Manager {
         
         $post = get_post($post_id);
         if ($post) {
+            // Get sync status
+            $sync_status = get_transient('sourcehub_sync_status_' . $post_id);
+            
             // Check if Newspaper meta exists now
             $newspaper_meta = get_post_meta($post_id, 'td_post_theme_settings', true);
             error_log('SourceHub: Delayed sync - Newspaper meta exists: ' . (!empty($newspaper_meta) ? 'YES' : 'NO'));
@@ -1782,16 +1892,34 @@ class SourceHub_Hub_Manager {
             if (!empty($selected_spokes)) {
                 error_log('SourceHub: Running delayed sync for post ' . $post_id . ' to ' . count($selected_spokes) . ' spokes');
                 
+                // Set overall status to syncing
+                set_transient('sourcehub_sync_status_' . $post_id, array(
+                    'status' => 'syncing',
+                    'spokes' => $selected_spokes,
+                    'started' => time()
+                ), 300);
+                
                 // Check if this post has been syndicated before
                 if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                    error_log('SourceHub: Post already syndicated, updating existing posts with Newspaper template');
+                    error_log('SourceHub: Post already syndicated, updating existing posts');
                     $this->update_syndicated_post($post_id, $syndicated_spokes);
                 } else {
-                    error_log('SourceHub: First time syndication with Newspaper template');
-                    $this->syndicate_post($post_id, $selected_spokes);
+                    error_log('SourceHub: First time syndication');
+                    // Get spokes from status or use selected spokes
+                    $spokes_to_sync = ($sync_status && !empty($sync_status['spokes'])) ? $sync_status['spokes'] : $selected_spokes;
+                    $this->syndicate_post($post_id, $spokes_to_sync);
                 }
+                
+                // Don't set status to completed here - the callback will handle it
+                // The syndication is async, so we need to wait for the spoke to respond
             } else {
                 error_log('SourceHub: No selected spokes found for post ' . $post_id);
+                // Mark as failed
+                if ($sync_status) {
+                    $sync_status['status'] = 'failed';
+                    $sync_status['error'] = 'No spokes selected';
+                    set_transient('sourcehub_sync_status_' . $post_id, $sync_status, 300);
+                }
             }
         } else {
             error_log('SourceHub: Post ' . $post_id . ' not found for delayed sync');
@@ -1840,26 +1968,10 @@ class SourceHub_Hub_Manager {
     
     /**
      * Check for pending syncs at shutdown
+     * Note: This is now primarily for Newspaper theme meta
+     * First-time syncs use delayed sync via wp_cron for Yoast compatibility
      */
     public function check_pending_syncs() {
-        // Check for pending first syncs (for Yoast meta)
-        global $wpdb;
-        $transients = $wpdb->get_results(
-            "SELECT option_name, option_value FROM $wpdb->options 
-            WHERE option_name LIKE '_transient_sourcehub_pending_first_sync_%'"
-        );
-        
-        foreach ($transients as $transient) {
-            $post_id = str_replace('_transient_sourcehub_pending_first_sync_', '', $transient->option_name);
-            $new_spokes = maybe_unserialize($transient->option_value);
-            
-            if (!empty($new_spokes) && is_array($new_spokes)) {
-                error_log('SourceHub: Processing delayed first syndication for post ' . $post_id . ' to ' . count($new_spokes) . ' spokes (Yoast meta should be ready now)');
-                $this->syndicate_post($post_id, $new_spokes);
-                delete_transient('sourcehub_pending_first_sync_' . $post_id);
-            }
-        }
-        
         // Check for pending Newspaper syncs
         if (empty($this->pending_syncs)) {
             return;

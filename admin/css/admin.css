@@ -346,6 +346,63 @@
     font-weight: 600;
 }
 
+/* Syndication Status Badge */
+.sourcehub-overall-status {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    border-left: 4px solid #ddd;
+}
+
+.sourcehub-syndication-status {
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.sourcehub-syndication-status.processing {
+    color: #2271b1;
+    border-left-color: #2271b1;
+}
+
+.sourcehub-syndication-status.syncing {
+    color: #00a32a;
+    border-left-color: #00a32a;
+}
+
+.sourcehub-syndication-status.synced {
+    color: #00a32a;
+}
+
+.sourcehub-overall-status:has(.synced) {
+    border-left-color: #00a32a;
+}
+
+.sourcehub-overall-status:has(.processing) {
+    border-left-color: #2271b1;
+}
+
+.sourcehub-overall-status:has(.syncing) {
+    border-left-color: #00a32a;
+}
+
+.sourcehub-syndication-status.error {
+    color: #d63638;
+}
+
+.sourcehub-overall-status:has(.error) {
+    border-left-color: #d63638;
+}
+
+.sourcehub-syndication-status.warning {
+    color: #dba617;
+}
+
+.sourcehub-syndication-status.not-synced {
+    color: #666;
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

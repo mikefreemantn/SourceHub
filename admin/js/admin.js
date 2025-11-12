@@ -255,22 +255,76 @@
                     xhr.setRequestHeader('X-WP-Nonce', sourcehub_admin.nonce);
                 },
                 success: function(response) {
+                    var responseTime = response.response_time || 0;
+                    var speedClass, speedMessage, speedIcon, bgColor, textColor, borderColor;
+                    
+                    // Determine speed category and styling
+                    if (responseTime < 500) {
+                        // Fast - Green
+                        speedClass = 'fast';
+                        speedMessage = '⚡ Excellent! Lightning fast connection';
+                        speedIcon = 'dashicons-yes-alt';
+                        bgColor = '#d4edda';
+                        textColor = '#155724';
+                        borderColor = '#c3e6cb';
+                    } else if (responseTime < 2000) {
+                        // Moderate - Yellow/Orange
+                        speedClass = 'moderate';
+                        speedMessage = '⚠️ Good connection, but could be faster';
+                        speedIcon = 'dashicons-warning';
+                        bgColor = '#fff3cd';
+                        textColor = '#856404';
+                        borderColor = '#ffeaa7';
+                    } else if (responseTime < 5000) {
+                        // Slow - Orange/Red
+                        speedClass = 'slow';
+                        speedMessage = '🐌 Slow connection - may cause delays';
+                        speedIcon = 'dashicons-warning';
+                        bgColor = '#ffe5d0';
+                        textColor = '#d63638';
+                        borderColor = '#ffb380';
+                    } else {
+                        // Very Slow - Red
+                        speedClass = 'very-slow';
+                        speedMessage = '🔥 Extremely slow! High risk of timeouts';
+                        speedIcon = 'dashicons-dismiss';
+                        bgColor = '#f8d7da';
+                        textColor = '#721c24';
+                        borderColor = '#f5c6cb';
+                    }
+                    
+                    var timeDisplay = '<strong>' + responseTime + 'ms</strong>';
+                    
                     if (response.success) {
                         if (inModal) {
-                            // Show result in modal
-                            $resultDiv.html('<div class="test-result success" style="padding: 10px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;"><span class="dashicons dashicons-yes" style="color: #155724;"></span> ' + response.message + '</div>');
+                            // Show result in modal with color coding
+                            $resultDiv.html('<div class="test-result ' + speedClass + '" style="padding: 12px; background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + '; border-radius: 6px; font-weight: 500;"><span class="dashicons ' + speedIcon + '" style="color: ' + textColor + ';"></span> ' + speedMessage + '<br><small style="opacity: 0.9; margin-top: 4px; display: inline-block;">Response time: ' + timeDisplay + '</small></div>');
                         } else {
-                            SourceHubAdmin.showNotice('success', response.message);
+                            // Show custom styled notice with color coding
+                            SourceHubAdmin.showCustomNotice(speedMessage + ' (Response time: ' + responseTime + 'ms)', speedIcon, bgColor, textColor, borderColor);
+                            
                             // Update connection status in UI
                             $button.closest('tr').find('.connection-status').html('<span class="badge badge-success">Active</span>');
+                            
+                            // Update response time in table with color coding
+                            var $responseTimeCell = $button.closest('tr').find('.connection-response-time');
+                            $responseTimeCell.html('<span style="font-weight: 600; color: ' + textColor + ';">' + responseTime + 'ms</span>');
                         }
                     } else {
                         if (inModal) {
                             // Show error in modal
-                            $resultDiv.html('<div class="test-result error" style="padding: 10px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;"><span class="dashicons dashicons-no" style="color: #721c24;"></span> ' + response.message + '</div>');
+                            $resultDiv.html('<div class="test-result error" style="padding: 12px; background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; border-radius: 6px; font-weight: 500;"><span class="dashicons dashicons-no" style="color: #721c24;"></span> ' + response.message + '<br><small style="opacity: 0.9; margin-top: 4px; display: inline-block;">Response time: ' + timeDisplay + '</small></div>');
                         } else {
-                            SourceHubAdmin.showNotice('error', response.message);
+                            SourceHubAdmin.showNotice('error', response.message + (responseTime ? ' (' + responseTime + 'ms)' : ''));
+                            
+                            // Update connection status in UI
                             $button.closest('tr').find('.connection-status').html('<span class="badge badge-danger">Error</span>');
+                            
+                            // Update response time in table (red for errors)
+                            var $responseTimeCell = $button.closest('tr').find('.connection-response-time');
+                            if (responseTime) {
+                                $responseTimeCell.html('<span style="font-weight: 600; color: #d63638;">' + responseTime + 'ms</span>');
+                            }
                         }
                     }
                 },
@@ -595,12 +649,37 @@
             // Add new notice
             $('.sourcehub-admin h1').after($notice);
             
-            // Auto-remove after 5 seconds
+            // Auto-remove after 20 seconds
             setTimeout(function() {
                 $notice.fadeOut(300, function() {
                     $(this).remove();
                 });
-            }, 5000);
+            }, 20000);
+            
+            // Scroll to top to show notice
+            $('html, body').animate({
+                scrollTop: 0
+            }, 300);
+        },
+
+        showCustomNotice: function(message, icon, bgColor, textColor, borderColor) {
+            var $notice = $('<div class="sourcehub-notice sourcehub-notice-custom" style="background: ' + bgColor + '; color: ' + textColor + '; border-left: 4px solid ' + borderColor + ';">' +
+                '<span class="dashicons ' + icon + '" style="color: ' + textColor + ';"></span>' +
+                '<p>' + message + '</p>' +
+                '</div>');
+            
+            // Remove existing notices
+            $('.sourcehub-notice').remove();
+            
+            // Add new notice
+            $('.sourcehub-admin h1').after($notice);
+            
+            // Auto-remove after 20 seconds
+            setTimeout(function() {
+                $notice.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 20000);
             
             // Scroll to top to show notice
             $('html, body').animate({
