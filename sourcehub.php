@@ -3,7 +3,7 @@
  * Plugin Name: SourceHub - Hub & Spoke Publisher
  * Plugin URI: https://github.com/mikefreemantn/SourceHub
  * Description: A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
- * Version: 1.9.2
+ * Version: 1.9.2.1
  * Author: Mike Freeman
  * Author URI: https://manovermachine.com
  * License: GPL v2 or later
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SOURCEHUB_VERSION', '1.9.2');
+define('SOURCEHUB_VERSION', '1.9.2.1');
 define('SOURCEHUB_PLUGIN_FILE', __FILE__);
 define('SOURCEHUB_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOURCEHUB_PLUGIN_URL', plugin_dir_url(__FILE__));
