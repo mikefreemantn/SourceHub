@@ -258,7 +258,12 @@ class SourceHub_Hub_Manager {
                     </span>
                 </div>
                 <div class="sourcehub-connections-list">
-                    <h4><?php _e('Select Spokes to Syndicate To:', 'sourcehub'); ?></h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="margin: 0;"><?php _e('Select Spokes to Syndicate To:', 'sourcehub'); ?></h4>
+                        <button type="button" id="sourcehub-toggle-all-spokes" class="button button-small" style="padding: 2px 8px; height: auto; line-height: 1.4;">
+                            <?php _e('Select All', 'sourcehub'); ?>
+                        </button>
+                    </div>
                     <?php foreach ($connections as $connection): 
                         $ai_settings = json_decode($connection->ai_settings, true);
                         $has_ai_enabled = !empty($ai_settings['enabled']);
@@ -544,6 +549,41 @@ class SourceHub_Hub_Manager {
 
         <script>
         jQuery(document).ready(function($) {
+            // Toggle all spokes
+            $('#sourcehub-toggle-all-spokes').on('click', function() {
+                var $button = $(this);
+                var $checkboxes = $('input[name="sourcehub_selected_spokes[]"]:not(:disabled)');
+                var allChecked = $checkboxes.length === $checkboxes.filter(':checked').length;
+                
+                if (allChecked) {
+                    $checkboxes.prop('checked', false);
+                    $button.text('<?php _e('Select All', 'sourcehub'); ?>');
+                } else {
+                    $checkboxes.prop('checked', true);
+                    $button.text('<?php _e('Deselect All', 'sourcehub'); ?>');
+                }
+            });
+            
+            // Update button text when checkboxes change
+            $('input[name="sourcehub_selected_spokes[]"]').on('change', function() {
+                var $checkboxes = $('input[name="sourcehub_selected_spokes[]"]:not(:disabled)');
+                var allChecked = $checkboxes.length === $checkboxes.filter(':checked').length;
+                var $button = $('#sourcehub-toggle-all-spokes');
+                
+                if (allChecked) {
+                    $button.text('<?php _e('Deselect All', 'sourcehub'); ?>');
+                } else {
+                    $button.text('<?php _e('Select All', 'sourcehub'); ?>');
+                }
+            });
+            
+            // Set initial button text
+            var $checkboxes = $('input[name="sourcehub_selected_spokes[]"]:not(:disabled)');
+            var allChecked = $checkboxes.length === $checkboxes.filter(':checked').length;
+            if (allChecked && $checkboxes.length > 0) {
+                $('#sourcehub-toggle-all-spokes').text('<?php _e('Deselect All', 'sourcehub'); ?>');
+            }
+            
             // Test connections
             $('#sourcehub-test-connections').on('click', function() {
                 var $button = $(this);
@@ -760,7 +800,7 @@ class SourceHub_Hub_Manager {
             if (!empty($new_spokes)) {
                 // Only syndicate if post is published NOW (not scheduled for future)
                 if ($post->post_status === 'publish') {
-                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) in 5 seconds (allows Yoast meta to be ready)');
+                    error_log('SourceHub: Scheduling delayed syndication to ' . count($new_spokes) . ' new spoke(s) in 10 seconds (allows Yoast meta to be ready)');
                     
                     // Set overall status to processing
                     set_transient('sourcehub_sync_status_' . $post_id, array(
@@ -782,15 +822,15 @@ class SourceHub_Hub_Manager {
                     }
                     update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
                     
-                    // Schedule delayed sync (gives Yoast time to save meta)
-                    wp_schedule_single_event(time() + 5, 'sourcehub_delayed_sync', array($post_id));
+                    // Schedule delayed sync (gives Yoast time to save meta - 10 seconds for indexables to build)
+                    wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
                     
                     // For local development, manually spawn cron since it may not run automatically
                     if (defined('WP_DEBUG') && WP_DEBUG) {
                         add_action('admin_footer', function() use ($post_id) {
                             ?>
                             <script>
-                            console.log('SourceHub: Scheduling manual cron trigger in 6 seconds for post <?php echo $post_id; ?>');
+                            console.log('SourceHub: Scheduling manual cron trigger in 11 seconds for post <?php echo $post_id; ?>');
                             setTimeout(function() {
                                 console.log('SourceHub: Triggering WP Cron manually');
                                 fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
@@ -801,7 +841,7 @@ class SourceHub_Hub_Manager {
                                 }).catch(error => {
                                     console.error('SourceHub: WP Cron trigger failed:', error);
                                 });
-                            }, 6000);
+                            }, 11000);
                             </script>
                             <?php
                         });
@@ -993,8 +1033,8 @@ class SourceHub_Hub_Manager {
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
             // Yoast has a timing issue where meta isn't fully available on first save
-            // Schedule a delayed sync to ensure Yoast data is ready
-            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 5 seconds');
+            // Schedule a delayed sync to ensure Yoast data is ready (10 seconds for indexables)
+            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 10 seconds');
             
             // Set overall status to processing
             set_transient('sourcehub_sync_status_' . $post_id, array(
@@ -1016,14 +1056,14 @@ class SourceHub_Hub_Manager {
             }
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
-            wp_schedule_single_event(time() + 5, 'sourcehub_delayed_sync', array($post_id));
+            wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
             
             // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 add_action('admin_footer', function() use ($post_id) {
                     ?>
                     <script>
-                    console.log('SourceHub: Scheduling manual cron trigger in 6 seconds for post <?php echo $post_id; ?> (Yoast update)');
+                    console.log('SourceHub: Scheduling manual cron trigger in 11 seconds for post <?php echo $post_id; ?> (Yoast update)');
                     setTimeout(function() {
                         console.log('SourceHub: Triggering WP Cron manually');
                         fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
@@ -1034,7 +1074,7 @@ class SourceHub_Hub_Manager {
                         }).catch(error => {
                             console.error('SourceHub: WP Cron trigger failed:', error);
                         });
-                    }, 6000);
+                    }, 11000);
                     </script>
                     <?php
                 });
