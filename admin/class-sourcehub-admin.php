@@ -332,6 +332,7 @@ class SourceHub_Admin {
             'nonce' => wp_create_nonce('wp_rest'),
             'ajax_nonce' => wp_create_nonce('sourcehub_admin_nonce'),
             'mode' => sourcehub()->get_mode(),
+            'version' => SOURCEHUB_VERSION,
             'strings' => array(
                 'confirm_delete' => __('Are you sure you want to delete this connection?', 'sourcehub'),
                 'testing_connection' => __('Testing connection...', 'sourcehub'),

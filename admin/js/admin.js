@@ -304,11 +304,19 @@
                             // Show result in modal with color coding
                             $resultDiv.html('<div class="test-result ' + speedClass + '" style="padding: 12px; background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + '; border-radius: 6px; font-weight: 500;"><span class="dashicons ' + speedIcon + '" style="color: ' + textColor + ';"></span> ' + speedMessage + '<br><small style="opacity: 0.9; margin-top: 4px; display: inline-block;">Response time: ' + timeDisplay + '</small>' + versionInfo + '</div>');
                         } else {
-                            // Show custom styled notice with color coding
+                            // Build clean two-line message
                             var noticeMessage = speedMessage + ' (Response time: ' + responseTime + 'ms)';
+                            
+                            // Only add version line if there's a mismatch
                             if (response.spoke_info && response.spoke_info.version) {
-                                noticeMessage += ' - Plugin v' + response.spoke_info.version;
+                                var spokeVersion = response.spoke_info.version;
+                                var hubVersion = sourcehub_admin.version || 'unknown';
+                                
+                                if (spokeVersion !== hubVersion) {
+                                    noticeMessage += '<br>⚠️ Version out of date. Current version is ' + hubVersion + '. Spoke is running v' + spokeVersion;
+                                }
                             }
+                            
                             SourceHubAdmin.showCustomNotice(noticeMessage, speedIcon, bgColor, textColor, borderColor);
                             
                             // Update connection status in UI
