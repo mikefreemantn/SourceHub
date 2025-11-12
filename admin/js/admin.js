@@ -294,14 +294,22 @@
                     }
                     
                     var timeDisplay = '<strong>' + responseTime + 'ms</strong>';
+                    var versionInfo = '';
+                    if (response.spoke_info && response.spoke_info.version) {
+                        versionInfo = '<br><small style="opacity: 0.8; margin-top: 2px; display: inline-block;">Plugin version: <strong>' + response.spoke_info.version + '</strong></small>';
+                    }
                     
                     if (response.success) {
                         if (inModal) {
                             // Show result in modal with color coding
-                            $resultDiv.html('<div class="test-result ' + speedClass + '" style="padding: 12px; background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + '; border-radius: 6px; font-weight: 500;"><span class="dashicons ' + speedIcon + '" style="color: ' + textColor + ';"></span> ' + speedMessage + '<br><small style="opacity: 0.9; margin-top: 4px; display: inline-block;">Response time: ' + timeDisplay + '</small></div>');
+                            $resultDiv.html('<div class="test-result ' + speedClass + '" style="padding: 12px; background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + '; border-radius: 6px; font-weight: 500;"><span class="dashicons ' + speedIcon + '" style="color: ' + textColor + ';"></span> ' + speedMessage + '<br><small style="opacity: 0.9; margin-top: 4px; display: inline-block;">Response time: ' + timeDisplay + '</small>' + versionInfo + '</div>');
                         } else {
                             // Show custom styled notice with color coding
-                            SourceHubAdmin.showCustomNotice(speedMessage + ' (Response time: ' + responseTime + 'ms)', speedIcon, bgColor, textColor, borderColor);
+                            var noticeMessage = speedMessage + ' (Response time: ' + responseTime + 'ms)';
+                            if (response.spoke_info && response.spoke_info.version) {
+                                noticeMessage += ' - Plugin v' + response.spoke_info.version;
+                            }
+                            SourceHubAdmin.showCustomNotice(noticeMessage, speedIcon, bgColor, textColor, borderColor);
                             
                             // Update connection status in UI
                             $button.closest('tr').find('.connection-status').html('<span class="badge badge-success">Active</span>');
