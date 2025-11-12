@@ -601,14 +601,39 @@ class SourceHub_Spoke_Manager {
      * @return bool|WP_Error
      */
     private function update_post_from_data($post_id, $data) {
+        // Process gallery images FIRST to get the correct image ID mapping
+        // This prevents the post from briefly showing with wrong gallery IDs
+        $content_to_save = $data['content'];
+        
+        if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
+            error_log('SourceHub Update: Pre-processing ' . count($data['gallery_images']) . ' gallery images BEFORE post update');
+            
+            $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
+            error_log('SourceHub Update: Image ID map: ' . print_r($image_id_map, true));
+            
+            // Remap gallery IDs in content before saving
+            if (!empty($image_id_map)) {
+                $content_to_save = SourceHub_Gallery_Handler::process_galleries(
+                    $data['content'],
+                    $data['hub_id'],
+                    $post_id,
+                    $image_id_map
+                );
+                
+                error_log('SourceHub Update: Gallery IDs remapped BEFORE post update');
+            } else {
+                error_log('SourceHub Update: No image ID map generated - using original content');
+            }
+        }
+        
         // Temporarily disable content filtering to preserve iframes and embeds
         add_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10, 2);
         
-        // Prepare post data
+        // Prepare post data with already-processed gallery content
         $post_data = array(
             'ID' => $post_id,
             'post_title' => sanitize_text_field($data['title']),
-            'post_content' => $data['content'],
+            'post_content' => $content_to_save, // Use processed content with correct gallery IDs
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
             'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
             'post_name' => isset($data['slug']) ? sanitize_title($data['slug']) : '',
@@ -628,7 +653,7 @@ class SourceHub_Spoke_Manager {
             }
         }
 
-        // Update the post
+        // Update the post (now with correct gallery IDs already in place)
         $result = wp_update_post($post_data, true);
         
         // Re-enable content filtering
@@ -667,38 +692,8 @@ class SourceHub_Spoke_Manager {
             $this->set_featured_image($post_id, $data['featured_image']);
         }
 
-        // Update gallery images
-        if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
-            error_log('SourceHub Update: Processing ' . count($data['gallery_images']) . ' gallery images for post ' . $post_id);
-            error_log('SourceHub Update: Content before gallery processing: ' . substr($data['content'], 0, 500));
-            
-            $image_id_map = $this->download_gallery_images($post_id, $data['gallery_images']);
-            error_log('SourceHub Update: Image ID map: ' . print_r($image_id_map, true));
-            
-            // Remap gallery IDs in post content
-            if (!empty($image_id_map)) {
-                $updated_content = SourceHub_Gallery_Handler::process_galleries(
-                    $data['content'],
-                    $data['hub_id'],
-                    $post_id,
-                    $image_id_map
-                );
-                
-                error_log('SourceHub Update: Content after gallery processing: ' . substr($updated_content, 0, 500));
-                
-                // Update post content with remapped gallery IDs
-                wp_update_post(array(
-                    'ID' => $post_id,
-                    'post_content' => $updated_content
-                ));
-                
-                error_log('SourceHub: Remapped gallery IDs for updated post ' . $post_id);
-            } else {
-                error_log('SourceHub Update: No image ID map generated - galleries may not be remapped!');
-            }
-        } else {
-            error_log('SourceHub Update: No gallery_images in payload for post ' . $post_id);
-        }
+        // Gallery images already processed before post update (see above)
+        // No need to process them again here
 
         // Update Yoast SEO meta
         if (isset($data['yoast_meta']) && !empty($data['yoast_meta'])) {
