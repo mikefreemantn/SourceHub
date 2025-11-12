@@ -829,6 +829,7 @@
             $('#edit_connection_name').val(connection.name);
             $('#edit_connection_url').val(connection.url);
             $('#edit_connection_api_key').val(connection.api_key);
+            $('#edit_connection_status').val(connection.status || 'active');
             
             // Set connection ID on test button
             $('#edit-test-connection').data('connection-id', connection.id);

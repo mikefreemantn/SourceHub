@@ -322,6 +322,18 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <?php if ($mode === 'hub'): ?>
+                    <!-- Connection Status -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit_connection_status" class="form-label"><?php echo __('Status', 'sourcehub'); ?></label>
+                            <select id="edit_connection_status" name="status" class="form-select">
+                                <option value="active"><?php echo __('Active', 'sourcehub'); ?></option>
+                                <option value="inactive"><?php echo __('Inactive', 'sourcehub'); ?></option>
+                            </select>
+                            <div class="form-help"><?php echo __('Inactive connections will not receive syndicated content', 'sourcehub'); ?></div>
+                        </div>
+                    </div>
+                    
                     <!-- Sync Settings for Hub Mode -->
                     <h3><?php echo __('Sync Settings', 'sourcehub'); ?></h3>
                     

@@ -421,9 +421,9 @@ class SourceHub_Admin {
         $active_connections = array();
         try {
             if ($mode === 'hub') {
-                $connections = SourceHub_Database::get_connections(array('mode' => 'spoke'));
+                $connections = SourceHub_Database::get_connections(array('mode' => 'spoke', 'status' => null));
             } else {
-                $connections = SourceHub_Database::get_connections(array('mode' => 'hub'));
+                $connections = SourceHub_Database::get_connections(array('mode' => 'hub', 'status' => null));
             }
             
             if (is_array($connections)) {
@@ -527,7 +527,7 @@ class SourceHub_Admin {
 
         $mode = sourcehub()->get_mode();
         $connection_mode = $mode === 'hub' ? 'spoke' : 'hub';
-        $connections = SourceHub_Database::get_connections(array('mode' => $connection_mode));
+        $connections = SourceHub_Database::get_connections(array('mode' => $connection_mode, 'status' => null));
 
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/connections.php';
     }

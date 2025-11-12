@@ -143,6 +143,17 @@ class SourceHub_Hub_Manager {
         
         update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
         
+        // Update connection's last_sync timestamp
+        global $wpdb;
+        $table = $wpdb->prefix . 'sourcehub_connections';
+        $wpdb->update(
+            $table,
+            array('last_sync' => current_time('mysql')),
+            array('id' => $connection->id),
+            array('%s'),
+            array('%d')
+        );
+        
         // Check if all spokes are done (no processing status)
         $all_done = true;
         foreach ($sync_status as $spoke_id => $spoke_data) {
@@ -192,7 +203,12 @@ class SourceHub_Hub_Manager {
     public function render_syndication_meta_box($post) {
         wp_nonce_field('sourcehub_syndication_nonce', 'sourcehub_syndication_nonce');
 
-        $connections = SourceHub_Database::get_connections(array('mode' => 'spoke'));
+        $all_connections = SourceHub_Database::get_connections(array('mode' => 'spoke'));
+        // Filter to only active connections
+        $connections = array_filter($all_connections, function($conn) {
+            return $conn->status === 'active';
+        });
+        
         $selected_connections = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
         $syndicated_connections = get_post_meta($post->ID, '_sourcehub_syndicated_spokes', true);
         $sync_status = get_post_meta($post->ID, '_sourcehub_sync_status', true);
@@ -1225,7 +1241,7 @@ class SourceHub_Hub_Manager {
 
         foreach ($spokes_to_update as $spoke_id) {
             $connection = SourceHub_Database::get_connection($spoke_id);
-            if (!$connection) {
+            if (!$connection || $connection->status !== 'active') {
                 continue;
             }
 
