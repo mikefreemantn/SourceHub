@@ -95,7 +95,6 @@
     width: 90vw;
     max-height: 90vh;
     overflow-y: auto;
-    border: 5px solid red !important;
 }
 
 .sourcehub-custom-smart-link-modal .components-modal__content {

@@ -118,7 +118,7 @@
                             isPrimary: true,
                             onClick: onApply,
                             disabled: !smartUrl
-                        }, __('Apply Smart Link', 'sourcehub')),
+                        }, __('Insert', 'sourcehub')),
                         wp.element.createElement(Button, {
                             isSecondary: true,
                             onClick: () => setIsModalOpen(false)
@@ -243,7 +243,7 @@
                             isPrimary: true,
                             onClick: onApply,
                             disabled: spokes.length === 0 || !Object.values(customUrls).some(url => url && url.trim())
-                        }, __('Apply Custom Smart Link', 'sourcehub')),
+                        }, __('Insert', 'sourcehub')),
                         wp.element.createElement(Button, {
                             isSecondary: true,
                             onClick: () => setIsModalOpen(false)

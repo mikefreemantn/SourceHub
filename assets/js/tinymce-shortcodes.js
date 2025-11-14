@@ -36,6 +36,10 @@
                 height: 350,
                 body: [
                     {
+                        type: 'container',
+                        html: '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #ddd; display: flex; gap: 10px;"><button type="button" id="smart-copy-btn" style="padding: 8px 16px; background: #0073aa; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Copy Shortcode</button><button type="button" id="smart-insert-btn" style="padding: 8px 16px; background: #1dad4b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Insert</button><button type="button" id="smart-cancel-btn" style="padding: 8px 16px; background: #ddd; color: #333; border: none; border-radius: 4px; cursor: pointer;">Cancel</button></div>'
+                    },
+                    {
                         type: 'textbox',
                         name: 'linkText',
                         label: 'Link Text:',
@@ -76,6 +80,53 @@
                     
                     // Initial preview
                     updatePreview();
+                    
+                    // Bind top action buttons
+                    setTimeout(function() {
+                        var copyBtn = document.getElementById('smart-copy-btn');
+                        var insertBtn = document.getElementById('smart-insert-btn');
+                        var cancelBtn = document.getElementById('smart-cancel-btn');
+                        
+                        if (copyBtn) {
+                            copyBtn.addEventListener('click', function() {
+                                var formData = dialogInstance.toJSON();
+                                var linkText = formData.linkText || '';
+                                var path = formData.path || '';
+                                
+                                if (!linkText || !path) {
+                                    alert('Please fill in both link text and path.');
+                                    return;
+                                }
+                                
+                                var shortcode = '[smart-link path="' + path + '"]' + linkText + '[/smart-link]';
+                                copyToClipboard(shortcode);
+                                alert('Shortcode copied to clipboard!');
+                            });
+                        }
+                        
+                        if (insertBtn) {
+                            insertBtn.addEventListener('click', function() {
+                                var formData = dialogInstance.toJSON();
+                                var linkText = formData.linkText || '';
+                                var path = formData.path || '';
+                                
+                                if (!linkText || !path) {
+                                    alert('Please fill in both link text and path.');
+                                    return;
+                                }
+                                
+                                var shortcode = '[smart-link path="' + path + '"]' + linkText + '[/smart-link]';
+                                editor.insertContent(shortcode);
+                                dialogInstance.close();
+                            });
+                        }
+                        
+                        if (cancelBtn) {
+                            cancelBtn.addEventListener('click', function() {
+                                dialogInstance.close();
+                            });
+                        }
+                    }, 100);
                 },
                 buttons: [
                     {
@@ -133,7 +184,7 @@
                 type: 'POST',
                 data: {
                     action: 'sourcehub_get_spoke_connections',
-                    nonce: sourcehub_admin.nonce
+                    nonce: sourcehubAdmin.nonce
                 },
                 success: function(response) {
                     if (response.success) {

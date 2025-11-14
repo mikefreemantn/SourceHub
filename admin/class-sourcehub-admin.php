@@ -358,7 +358,7 @@ class SourceHub_Admin {
         wp_enqueue_script(
             'sourcehub-block-editor',
             SOURCEHUB_PLUGIN_URL . 'admin/js/block-editor.js',
-            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n', 'wp-rich-text'),
+            array('wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-rich-text'),
             SOURCEHUB_VERSION,
             true
         );

@@ -2,28 +2,9 @@
 
 ## High Priority Issues
 
-### 1. Fix Connection Test to Use Form API Key
-**Problem:** The "Test Connection" button uses the API key stored in the database instead of the key typed in the form.
-
-**Location:** `/includes/class-sourcehub-hub-manager.php` line 1665 - `ajax_test_connection()`
-
-**Current Behavior:**
-- User changes API key in form
-- Clicks "Test Connection"
-- Test uses OLD key from database (not the new one)
-- Test passes even with wrong key in form
-- User saves wrong key, breaking syndication
-
-**Fix Needed:**
-- Accept API key from AJAX request parameters
-- Test with the provided key (not database key)
-- Only allow saving if test passes with new key
-
-**Security Impact:** Users can't verify new keys before saving, risking broken connections
-
 ---
 
-### 2. Fix Activity Logs Stats Display
+### 1. Fix Activity Logs Stats Display
 **Problem:** Activity Logs page shows "0 Total Logs, 0 Success, 0 Warnings, 0 Errors" even when logs exist.
 
 **Location:** `/admin/views/logs.php` - Stats display section
