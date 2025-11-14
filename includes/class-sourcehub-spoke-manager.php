@@ -129,6 +129,32 @@ class SourceHub_Spoke_Manager {
                 ), 400);
             }
 
+            // Check if post already exists (prevents duplicate creation from retries)
+            $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
+            if ($existing_post) {
+                error_log(sprintf('SourceHub Spoke: Post already exists (hub_id: %d, local_id: %d). Returning success to prevent duplicate.', $data['hub_id'], $existing_post->ID));
+                
+                // Log the duplicate prevention
+                SourceHub_Logger::info(
+                    sprintf('Duplicate prevented: "%s" already exists (retry detected)', $data['title']),
+                    array(
+                        'hub_id' => $data['hub_id'],
+                        'local_id' => $existing_post->ID,
+                        'hub_url' => $data['hub_url']
+                    ),
+                    $existing_post->ID,
+                    null,
+                    'duplicate_prevented'
+                );
+                
+                return new WP_REST_Response(array(
+                    'success' => true,
+                    'message' => __('Post already exists', 'sourcehub'),
+                    'post_id' => $existing_post->ID,
+                    'status' => 'exists'
+                ), 200);
+            }
+
             // Queue job for async processing
             $job_id = $this->queue_sync_job($data, 'create');
             
