@@ -1328,21 +1328,71 @@ class SourceHub_Spoke_Manager {
     private function notify_hub_completion($job_id, $hub_url, $hub_post_id, $spoke_post_id = null, $error_message = null) {
         $callback_url = trailingslashit($hub_url) . 'wp-json/sourcehub/v1/sync-complete';
         
+        $payload = array(
+            'job_id' => $job_id,
+            'hub_post_id' => $hub_post_id,
+            'spoke_post_id' => $spoke_post_id,
+            'status' => $spoke_post_id ? 'completed' : 'failed',
+            'error_message' => $error_message,
+            'spoke_url' => home_url()
+        );
+        
+        error_log(sprintf('SourceHub Spoke: Notifying hub of completion - URL: %s, Payload: %s', 
+            $callback_url, json_encode($payload)));
+        
         $response = wp_remote_post($callback_url, array(
             'headers' => array('Content-Type' => 'application/json'),
-            'body' => json_encode(array(
-                'job_id' => $job_id,
-                'hub_post_id' => $hub_post_id,
-                'spoke_post_id' => $spoke_post_id,
-                'status' => $spoke_post_id ? 'completed' : 'failed',
-                'error_message' => $error_message,
-                'spoke_url' => home_url()
-            )),
+            'body' => json_encode($payload),
             'timeout' => 10
         ));
         
         if (is_wp_error($response)) {
-            error_log("SourceHub: Failed to notify hub: " . $response->get_error_message());
+            error_log("SourceHub Spoke: Failed to notify hub: " . $response->get_error_message());
+            
+            SourceHub_Logger::error(
+                'Failed to notify hub of completion',
+                array(
+                    'hub_url' => $hub_url,
+                    'job_id' => $job_id,
+                    'error' => $response->get_error_message()
+                ),
+                null,
+                null,
+                'hub_notification_failed'
+            );
+        } else {
+            $response_code = wp_remote_retrieve_response_code($response);
+            $response_body = wp_remote_retrieve_body($response);
+            
+            error_log(sprintf('SourceHub Spoke: Hub notification response - Code: %d, Body: %s', 
+                $response_code, $response_body));
+            
+            if ($response_code !== 200) {
+                SourceHub_Logger::warning(
+                    'Hub notification returned non-200 status',
+                    array(
+                        'hub_url' => $hub_url,
+                        'job_id' => $job_id,
+                        'response_code' => $response_code,
+                        'response_body' => $response_body
+                    ),
+                    null,
+                    null,
+                    'hub_notification_error'
+                );
+            } else {
+                SourceHub_Logger::info(
+                    'Successfully notified hub of completion',
+                    array(
+                        'hub_url' => $hub_url,
+                        'job_id' => $job_id,
+                        'spoke_post_id' => $spoke_post_id
+                    ),
+                    $spoke_post_id,
+                    null,
+                    'hub_notified'
+                );
+            }
         }
     }
 

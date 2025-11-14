@@ -129,6 +129,20 @@ class SourceHub_Hub_Manager {
             
             error_log(sprintf('SourceHub Hub: Post %d synced successfully to %s (spoke post ID: %d)', 
                 $hub_post_id, $connection->name, $spoke_post_id));
+            
+            // Log successful completion
+            $post = get_post($hub_post_id);
+            SourceHub_Logger::success(
+                sprintf('Sync completed: "%s" successfully synced to %s', $post ? $post->post_title : 'Unknown', $connection->name),
+                array(
+                    'hub_post_id' => $hub_post_id,
+                    'spoke_post_id' => $spoke_post_id,
+                    'job_id' => $job_id
+                ),
+                $hub_post_id,
+                $connection->id,
+                'sync_completed'
+            );
         } else {
             $sync_status[$connection->id] = array(
                 'status' => 'failed',
