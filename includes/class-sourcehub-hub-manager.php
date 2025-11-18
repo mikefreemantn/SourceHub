@@ -836,15 +836,15 @@ class SourceHub_Hub_Manager {
                     }
                     update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
                     
-                    // Schedule delayed sync (gives Yoast time to save meta - 10 seconds for indexables to build)
-                    wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
+                    // Schedule delayed sync (gives Yoast time to save meta - 20 seconds for indexables to build)
+                    wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
                     
                     // For local development, manually spawn cron since it may not run automatically
                     if (defined('WP_DEBUG') && WP_DEBUG) {
                         add_action('admin_footer', function() use ($post_id) {
                             ?>
                             <script>
-                            console.log('SourceHub: Scheduling manual cron trigger in 11 seconds for post <?php echo $post_id; ?>');
+                            console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?>');
                             setTimeout(function() {
                                 console.log('SourceHub: Triggering WP Cron manually');
                                 fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
@@ -855,7 +855,7 @@ class SourceHub_Hub_Manager {
                                 }).catch(error => {
                                     console.error('SourceHub: WP Cron trigger failed:', error);
                                 });
-                            }, 11000);
+                            }, 21000);
                             </script>
                             <?php
                         });
@@ -1070,14 +1070,14 @@ class SourceHub_Hub_Manager {
             }
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
-            wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
+            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
             
             // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 add_action('admin_footer', function() use ($post_id) {
                     ?>
                     <script>
-                    console.log('SourceHub: Scheduling manual cron trigger in 11 seconds for post <?php echo $post_id; ?> (Yoast update)');
+                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?> (Yoast update)');
                     setTimeout(function() {
                         console.log('SourceHub: Triggering WP Cron manually');
                         fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
@@ -1088,7 +1088,7 @@ class SourceHub_Hub_Manager {
                         }).catch(error => {
                             console.error('SourceHub: WP Cron trigger failed:', error);
                         });
-                    }, 11000);
+                    }, 21000);
                     </script>
                     <?php
                 });

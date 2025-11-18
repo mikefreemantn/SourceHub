@@ -16,6 +16,61 @@ if (!defined('ABSPATH')) {
 class SourceHub_Newspaper_Integration {
 
     /**
+     * Initialize hooks
+     */
+    public static function init() {
+        // Auto-set template when post is saved with video format
+        add_action('save_post', array(__CLASS__, 'auto_set_video_template_on_save'), 10, 2);
+    }
+
+    /**
+     * Automatically set Newspaper template to style 2 when video format is selected
+     *
+     * @param int $post_id Post ID
+     * @param WP_Post $post Post object
+     */
+    public static function auto_set_video_template_on_save($post_id, $post) {
+        // Avoid autosaves and revisions
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+        
+        // Only for posts
+        if ($post->post_type !== 'post') {
+            return;
+        }
+
+        // Only proceed if Newspaper theme is active
+        if (!self::is_newspaper_active()) {
+            return;
+        }
+
+        // Get the post format
+        $format = get_post_format($post_id);
+        
+        error_log(sprintf('SourceHub Newspaper: Checking format for post %d: %s', $post_id, $format ? $format : 'standard'));
+
+        // Only set template for video format
+        if ($format !== 'video') {
+            return;
+        }
+
+        // Set the template to style 2
+        // Newspaper stores this as an array with 'td_post_template' key
+        $template_settings = array(
+            'td_post_template' => 'single_template_2'
+        );
+
+        update_post_meta($post_id, 'td_post_theme_settings', $template_settings);
+        
+        error_log(sprintf('SourceHub Newspaper: Auto-set template to style 2 for video post %d', $post_id));
+    }
+
+    /**
      * Newspaper meta fields to sync
      *
      * @var array

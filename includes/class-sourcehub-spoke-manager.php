@@ -95,11 +95,36 @@ class SourceHub_Spoke_Manager {
 
         if (empty($api_key) || empty($stored_key)) {
             error_log('SourceHub Spoke: API key check failed - one or both keys are empty');
+            
+            SourceHub_Logger::error(
+                'API authentication failed: Missing API key',
+                array(
+                    'has_api_key' => !empty($api_key),
+                    'has_stored_key' => !empty($stored_key)
+                ),
+                null,
+                null,
+                'auth_failed'
+            );
+            
             return false;
         }
 
         $matches = hash_equals($stored_key, $api_key);
         error_log('SourceHub Spoke: API key match: ' . ($matches ? 'YES' : 'NO'));
+        
+        if (!$matches) {
+            SourceHub_Logger::error(
+                'API authentication failed: Invalid API key',
+                array(
+                    'received_key_prefix' => substr($api_key, 0, 8),
+                    'stored_key_prefix' => substr($stored_key, 0, 8)
+                ),
+                null,
+                null,
+                'auth_failed'
+            );
+        }
         
         return $matches;
     }
@@ -116,6 +141,19 @@ class SourceHub_Spoke_Manager {
             error_log('SourceHub Spoke: receive_post started');
             
             $data = $request->get_json_params();
+            
+            // Log incoming request immediately
+            SourceHub_Logger::info(
+                'Received syndication request from hub',
+                array(
+                    'hub_url' => $data['hub_url'] ?? 'unknown',
+                    'hub_id' => $data['hub_id'] ?? 'unknown',
+                    'title' => $data['title'] ?? 'unknown'
+                ),
+                null,
+                null,
+                'receive_request'
+            );
             
             // Validate required data
             $validation_start = microtime(true);
@@ -165,8 +203,25 @@ class SourceHub_Spoke_Manager {
                 ), 500);
             }
             
+            // Log successful job queuing
+            SourceHub_Logger::info(
+                sprintf('Job queued for processing: "%s"', $data['title']),
+                array(
+                    'job_id' => $job_id,
+                    'hub_id' => $data['hub_id'],
+                    'hub_url' => $data['hub_url'],
+                    'action' => 'create'
+                ),
+                null,
+                null,
+                'job_queued'
+            );
+            
             // Schedule immediate processing
             wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
+            
+            // Spawn WP Cron immediately to ensure job processes without waiting for site visits
+            spawn_cron();
             
             // Return 202 Accepted immediately
             error_log(sprintf('SourceHub Spoke: Job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
@@ -232,8 +287,25 @@ class SourceHub_Spoke_Manager {
                 ), 500);
             }
             
+            // Log successful job queuing
+            SourceHub_Logger::info(
+                sprintf('Update job queued for processing: "%s"', $data['title']),
+                array(
+                    'job_id' => $job_id,
+                    'hub_id' => $data['hub_id'],
+                    'hub_url' => $data['hub_url'],
+                    'action' => 'update'
+                ),
+                null,
+                null,
+                'job_queued'
+            );
+            
             // Schedule immediate processing
             wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
+            
+            // Spawn WP Cron immediately to ensure job processes without waiting for site visits
+            spawn_cron();
             
             // Return 202 Accepted immediately
             error_log(sprintf('SourceHub Spoke: Update job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
@@ -1240,12 +1312,47 @@ class SourceHub_Spoke_Manager {
         // Decode payload
         $data = json_decode($job->payload, true);
         
+        // Log job processing start
+        SourceHub_Logger::info(
+            sprintf('Job processing started: "%s"', $data['title'] ?? 'Unknown'),
+            array(
+                'job_id' => $job_id,
+                'action' => $job->action,
+                'hub_id' => $data['hub_id'] ?? 'unknown'
+            ),
+            null,
+            null,
+            'job_processing'
+        );
+        
         // Process based on action
         try {
-            if ($job->action === 'create') {
+            // CRITICAL: Check for existing post again during processing to prevent race conditions
+            // Multiple simultaneous requests might pass the initial check before any post is created
+            $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
+            
+            if ($existing_post && $job->action === 'create') {
+                // Post was created by another simultaneous request - don't create duplicate
+                error_log(sprintf('SourceHub: Race condition prevented - post already exists (hub_id: %d, local_id: %d)', 
+                    $data['hub_id'], $existing_post->ID));
+                
+                SourceHub_Logger::info(
+                    sprintf('Race condition prevented: "%s" was created by simultaneous request', $data['title']),
+                    array(
+                        'hub_id' => $data['hub_id'],
+                        'local_id' => $existing_post->ID,
+                        'job_id' => $job_id
+                    ),
+                    $existing_post->ID,
+                    null,
+                    'race_prevented'
+                );
+                
+                $post_id = $existing_post->ID;
+            } elseif ($job->action === 'create') {
                 $post_id = $this->create_post_from_data($data);
             } else {
-                $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
+                // Update action
                 if ($existing_post) {
                     $post_id = $this->update_post_from_data($existing_post->ID, $data);
                 } else {
