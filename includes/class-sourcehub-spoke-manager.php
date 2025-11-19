@@ -961,6 +961,20 @@ class SourceHub_Spoke_Manager {
             return;
         }
 
+        // Check if this post already has a featured image with the same URL
+        $current_thumbnail_id = get_post_thumbnail_id($post_id);
+        if ($current_thumbnail_id) {
+            $current_image_url = wp_get_attachment_url($current_thumbnail_id);
+            $current_image_filename = basename($current_image_url);
+            $new_image_filename = basename($image_data['url']);
+            
+            // If the filenames match, the image is already set - skip download
+            if ($current_image_filename === $new_image_filename) {
+                error_log('SourceHub Spoke: Featured image already exists for post ' . $post_id . ', skipping download');
+                return;
+            }
+        }
+
         // Download image using wp_remote_get
         $response = wp_remote_get($image_data['url'], array(
             'timeout' => 30,

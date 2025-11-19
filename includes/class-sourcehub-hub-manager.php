@@ -1043,9 +1043,19 @@ class SourceHub_Hub_Manager {
             return;
         }
 
+        // Check if Yoast sync is already in progress for this post using persistent lock
+        $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
+        if (get_transient($yoast_lock_key)) {
+            error_log('SourceHub: Yoast sync already in progress for post ' . $post_id . ' (locked), skipping');
+            return;
+        }
+
         // Get previously syndicated spokes
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+            // Set lock to prevent duplicate syncs (expires in 60 seconds)
+            set_transient($yoast_lock_key, true, 60);
+            
             error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', forcing save and scheduling sync');
             
             // CRITICAL: Force a post save to ensure all Yoast data is written to database
