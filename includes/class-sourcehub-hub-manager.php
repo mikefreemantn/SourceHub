@@ -1662,6 +1662,29 @@ class SourceHub_Hub_Manager {
 
         // Add Yoast SEO data
         $data['yoast_meta'] = SourceHub_Yoast_Integration::get_post_meta($post->ID);
+        
+        // Log what Yoast data was collected for debugging
+        if (!empty($data['yoast_meta'])) {
+            SourceHub_Logger::info(
+                sprintf('Collected Yoast data for "%s" to send to %s', $post->post_title, $connection->name),
+                array(
+                    'yoast_fields' => array_keys($data['yoast_meta']),
+                    'has_metadesc' => isset($data['yoast_meta']['_yoast_wpseo_metadesc']),
+                    'has_focuskw' => isset($data['yoast_meta']['_yoast_wpseo_focuskw'])
+                ),
+                $post->ID,
+                $connection->id,
+                'yoast_collect'
+            );
+        } else {
+            SourceHub_Logger::warning(
+                sprintf('No Yoast data found for "%s" to send to %s', $post->post_title, $connection->name),
+                array('post_id' => $post->ID),
+                $post->ID,
+                $connection->id,
+                'yoast_collect'
+            );
+        }
 
         // Add Newspaper theme data
         $data['newspaper_meta'] = SourceHub_Newspaper_Integration::get_post_meta($post->ID);

@@ -92,6 +92,29 @@ class SourceHub_Yoast_Integration {
         }
 
         error_log('SourceHub Yoast: Setting meta for post ID: ' . $post_id . ' with data: ' . json_encode($meta_data));
+        
+        // Log what Yoast data was received from hub
+        if (!empty($meta_data)) {
+            SourceHub_Logger::info(
+                sprintf('Received Yoast data from hub (%d fields)', count($meta_data)),
+                array(
+                    'yoast_fields' => array_keys($meta_data),
+                    'has_metadesc' => isset($meta_data['_yoast_wpseo_metadesc']),
+                    'has_focuskw' => isset($meta_data['_yoast_wpseo_focuskw'])
+                ),
+                $post_id,
+                null,
+                'yoast_receive'
+            );
+        } else {
+            SourceHub_Logger::warning(
+                'Received empty Yoast data from hub',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'yoast_receive'
+            );
+        }
 
         $updated_fields = array();
 
