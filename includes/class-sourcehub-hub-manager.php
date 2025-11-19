@@ -1046,9 +1046,26 @@ class SourceHub_Hub_Manager {
         // Get previously syndicated spokes
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-            // Yoast has a timing issue where meta isn't fully available on first save
-            // Schedule a delayed sync to ensure Yoast data is ready (10 seconds for indexables)
-            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling delayed sync in 10 seconds');
+            error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', forcing save and scheduling sync');
+            
+            // CRITICAL: Force a post save to ensure all Yoast data is written to database
+            // This prevents race condition where user clicks Publish immediately after filling Yoast fields
+            // Remove our own hooks temporarily to prevent infinite loops
+            remove_action('save_post', array($this, 'handle_post_save'), 10);
+            remove_action('wpseo_saved_postdata', array($this, 'handle_yoast_meta_save'));
+            
+            // Force save the post to commit all data to database
+            wp_update_post(array(
+                'ID' => $post_id,
+                'post_modified' => current_time('mysql'),
+                'post_modified_gmt' => current_time('mysql', 1)
+            ));
+            
+            // Re-add our hooks
+            add_action('save_post', array($this, 'handle_post_save'), 10, 3);
+            add_action('wpseo_saved_postdata', array($this, 'handle_yoast_meta_save'));
+            
+            error_log('SourceHub: Post saved, Yoast data committed to database');
             
             // Set overall status to processing
             set_transient('sourcehub_sync_status_' . $post_id, array(
@@ -1070,14 +1087,15 @@ class SourceHub_Hub_Manager {
             }
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
-            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
+            // Now schedule sync with shorter delay since data is already saved
+            wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
             
             // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 add_action('admin_footer', function() use ($post_id) {
                     ?>
                     <script>
-                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?> (Yoast update)');
+                    console.log('SourceHub: Scheduling manual cron trigger in 11 seconds for post <?php echo $post_id; ?> (Yoast update)');
                     setTimeout(function() {
                         console.log('SourceHub: Triggering WP Cron manually');
                         fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
@@ -1088,7 +1106,7 @@ class SourceHub_Hub_Manager {
                         }).catch(error => {
                             console.error('SourceHub: WP Cron trigger failed:', error);
                         });
-                    }, 21000);
+                    }, 11000);
                     </script>
                     <?php
                 });
