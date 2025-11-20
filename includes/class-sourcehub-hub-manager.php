@@ -1033,24 +1033,25 @@ class SourceHub_Hub_Manager {
                     // For local development, manually spawn cron since it may not run automatically
                     if (defined('WP_DEBUG') && WP_DEBUG) {
                         $post_id = $post->ID;
-                        add_action('admin_footer', function() use ($post_id) {
-                            ?>
-                            <script>
-                            console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?>');
-                            setTimeout(function() {
-                                console.log('SourceHub: Triggering WP Cron manually');
-                                fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
-                                    method: 'GET',
-                                    mode: 'no-cors'
-                                }).then(() => {
-                                    console.log('SourceHub: WP Cron triggered');
-                                }).catch(error => {
-                                    console.error('SourceHub: WP Cron trigger failed:', error);
-                                });
-                            }, 21000);
-                            </script>
-                            <?php
-                        });
+                        add_action('shutdown', function() use ($post_id) {
+                            // Spawn wp-cron.php in background after 21 seconds
+                            $cron_url = site_url('wp-cron.php?doing_wp_cron&post_id=' . $post_id);
+                            
+                            SourceHub_Logger::info(
+                                'Spawning background cron trigger',
+                                array('post_id' => $post_id, 'cron_url' => $cron_url),
+                                $post_id,
+                                null,
+                                'cron_spawn'
+                            );
+                            
+                            // Use wp_remote_post with timeout=0.01 to spawn and forget
+                            wp_remote_post($cron_url, array(
+                                'timeout' => 0.01,
+                                'blocking' => false,
+                                'sslverify' => false
+                            ));
+                        }, 999);
                     }
                 } else {
                     SourceHub_Logger::warning(
