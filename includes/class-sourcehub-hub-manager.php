@@ -836,8 +836,15 @@ class SourceHub_Hub_Manager {
                     }
                     update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
                     
-                    // Schedule delayed sync (gives Yoast time to save meta - 20 seconds for indexables to build)
-                    wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
+                    // Check if a delayed sync is already scheduled for this post
+                    $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
+                    if (!$scheduled) {
+                        // Schedule delayed sync (gives Yoast time to save meta - 20 seconds for indexables to build)
+                        wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
+                        error_log('SourceHub: Scheduled delayed sync for post ' . $post_id . ' in 20 seconds');
+                    } else {
+                        error_log('SourceHub: Delayed sync already scheduled for post ' . $post_id . ' at ' . date('Y-m-d H:i:s', $scheduled) . ', skipping');
+                    }
                     
                     // For local development, manually spawn cron since it may not run automatically
                     if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -1097,8 +1104,15 @@ class SourceHub_Hub_Manager {
             }
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
-            // Now schedule sync with shorter delay since data is already saved
-            wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
+            // Check if a delayed sync is already scheduled for this post
+            $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
+            if ($scheduled) {
+                error_log('SourceHub: Delayed sync already scheduled for post ' . $post_id . ' at ' . date('Y-m-d H:i:s', $scheduled) . ', skipping');
+            } else {
+                // Now schedule sync with shorter delay since data is already saved
+                wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
+                error_log('SourceHub: Scheduled delayed sync for post ' . $post_id . ' in 10 seconds');
+            }
             
             // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
