@@ -1292,8 +1292,10 @@ class SourceHub_Admin {
                 wp_die('No logs found to export. Try adjusting your filters or check if logs exist in the database.');
             }
 
-            // Generate CSV
-            $filename = 'sourcehub-logs-' . date('Y-m-d-His') . '.csv';
+            // Generate CSV with site URL and version
+            $site_url = parse_url(get_site_url(), PHP_URL_HOST);
+            $version = SOURCEHUB_VERSION;
+            $filename = $site_url . '.' . $version . '.csv';
             
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
