@@ -939,17 +939,33 @@ class SourceHub_Hub_Manager {
                 
                 // Get selected spokes from post meta
                 $selected_spokes = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
+                
+                SourceHub_Logger::info(
+                    sprintf('Checking for selected spokes - found: %s', !empty($selected_spokes) ? count($selected_spokes) . ' spokes' : 'none'),
+                    array(
+                        'post_id' => $post->ID,
+                        'selected_spokes' => $selected_spokes
+                    ),
+                    $post->ID,
+                    null,
+                    'spoke_check'
+                );
+                
                 if (!empty($selected_spokes) && is_array($selected_spokes)) {
-                    error_log('SourceHub: Found selected spokes for first publish: ' . print_r($selected_spokes, true));
+                    SourceHub_Logger::info(
+                        sprintf('Scheduling delayed sync for %d spoke(s)', count($selected_spokes)),
+                        array('spoke_ids' => $selected_spokes),
+                        $post->ID,
+                        null,
+                        'schedule_sync'
+                    );
                     
                     // Set lock to prevent handle_post_update from running
                     $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post->ID;
                     set_transient($delayed_sync_lock_key, time(), 120);
-                    error_log('SourceHub: Set delayed sync lock for post ' . $post->ID);
                     
                     // Schedule delayed sync
                     wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post->ID));
-                    error_log('SourceHub: Scheduled delayed sync for post ' . $post->ID . ' in 20 seconds (first publish)');
                     
                     // Set processing status
                     $sync_status = array();
@@ -961,7 +977,13 @@ class SourceHub_Hub_Manager {
                     }
                     update_post_meta($post->ID, '_sourcehub_sync_status', $sync_status);
                 } else {
-                    error_log('SourceHub: No selected spokes found for post ' . $post->ID);
+                    SourceHub_Logger::warning(
+                        'No selected spokes found - cannot syndicate',
+                        array('post_id' => $post->ID),
+                        $post->ID,
+                        null,
+                        'no_spokes'
+                    );
                 }
             }
         }
