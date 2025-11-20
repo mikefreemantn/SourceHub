@@ -1085,12 +1085,16 @@ class SourceHub_Hub_Manager {
             }
             update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             
-            // Check if a delayed sync is already scheduled for this post
-            $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
-            if ($scheduled) {
-                // Cancel the old one and reschedule - the old one was scheduled before Yoast saved
+            // Clear ALL scheduled delayed sync events for this post (there might be multiple)
+            $cleared_count = 0;
+            while ($scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id))) {
                 wp_unschedule_event($scheduled, 'sourcehub_delayed_sync', array($post_id));
-                error_log('SourceHub: Cancelled previous delayed sync scheduled at ' . date('Y-m-d H:i:s', $scheduled));
+                $cleared_count++;
+                error_log('SourceHub: Cleared scheduled sync #' . $cleared_count . ' at ' . date('Y-m-d H:i:s', $scheduled));
+            }
+            
+            if ($cleared_count > 0) {
+                error_log('SourceHub: Cleared ' . $cleared_count . ' scheduled sync(s) for post ' . $post_id);
             }
             
             // Schedule sync with delay to ensure Yoast data is fully processed
