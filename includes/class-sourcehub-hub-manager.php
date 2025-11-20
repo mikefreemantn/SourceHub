@@ -805,8 +805,16 @@ class SourceHub_Hub_Manager {
         
         // Save selected spokes from POST if we have POST data
         if ($has_sourcehub_data) {
-            error_log('SourceHub: Nonce verified, processing meta save for post ' . $post_id);
-            error_log('SourceHub: Full $_POST data: ' . print_r($_POST, true));
+            SourceHub_Logger::info(
+                'Nonce verified - saving spoke selection',
+                array(
+                    'post_id' => $post_id,
+                    'spokes_in_post' => isset($_POST['sourcehub_selected_spokes']) ? $_POST['sourcehub_selected_spokes'] : 'NOT SET'
+                ),
+                $post_id,
+                null,
+                'nonce_passed'
+            );
 
             // Save selected spokes FIRST (before any early returns)
             // This ensures spoke selection is always saved, even if we return early for Newspaper theme
@@ -815,14 +823,21 @@ class SourceHub_Hub_Manager {
             $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
                 array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
             
-            error_log('SourceHub: Saving spoke selection for post ' . $post_id . ': ' . print_r($selected_spokes, true));
-            error_log('SourceHub: POST data sourcehub_selected_spokes: ' . (isset($_POST['sourcehub_selected_spokes']) ? print_r($_POST['sourcehub_selected_spokes'], true) : 'NOT SET'));
-            
             update_post_meta($post_id, '_sourcehub_selected_spokes', $selected_spokes);
             
             // Verify it was saved
             $saved_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
-            error_log('SourceHub: Verified saved spokes: ' . print_r($saved_spokes, true));
+            
+            SourceHub_Logger::info(
+                sprintf('Saved %d spoke(s) to post meta', count($saved_spokes)),
+                array(
+                    'post_id' => $post_id,
+                    'saved_spokes' => $saved_spokes
+                ),
+                $post_id,
+                null,
+                'spokes_saved'
+            );
 
             // Save AI overrides
             $ai_overrides = array();
