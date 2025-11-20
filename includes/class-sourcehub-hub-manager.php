@@ -839,6 +839,11 @@ class SourceHub_Hub_Manager {
                     // Check if a delayed sync is already scheduled for this post
                     $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
                     if (!$scheduled) {
+                        // Set lock BEFORE scheduling to prevent handle_post_update from running
+                        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
+                        set_transient($delayed_sync_lock_key, time(), 120);
+                        error_log('SourceHub: Set delayed sync lock for post ' . $post_id);
+                        
                         // Schedule delayed sync (gives Yoast time to save meta - 20 seconds for indexables to build)
                         wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
                         error_log('SourceHub: Scheduled delayed sync for post ' . $post_id . ' in 20 seconds');
@@ -1103,6 +1108,11 @@ class SourceHub_Hub_Manager {
             if ($cleared_count > 0) {
                 error_log('SourceHub: Cleared ' . $cleared_count . ' scheduled sync(s) for post ' . $post_id);
             }
+            
+            // Set/refresh lock to prevent handle_post_update from running
+            $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
+            set_transient($delayed_sync_lock_key, time(), 120);
+            error_log('SourceHub: Refreshed delayed sync lock for post ' . $post_id);
             
             // Schedule sync with delay to ensure Yoast data is fully processed
             wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
