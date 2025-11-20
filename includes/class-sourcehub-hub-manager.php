@@ -983,14 +983,21 @@ class SourceHub_Hub_Manager {
                     'first_publish'
                 );
                 
-                // Get selected spokes from post meta
-                $selected_spokes = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
+                // Get selected spokes from POST data (since save_post_meta hasn't run yet)
+                // Fall back to post meta if POST data not available
+                $selected_spokes = array();
+                if (isset($_POST['sourcehub_selected_spokes']) && is_array($_POST['sourcehub_selected_spokes'])) {
+                    $selected_spokes = array_map('intval', $_POST['sourcehub_selected_spokes']);
+                } else {
+                    $selected_spokes = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
+                }
                 
                 SourceHub_Logger::info(
                     sprintf('Checking for selected spokes - found: %s', !empty($selected_spokes) ? count($selected_spokes) . ' spokes' : 'none'),
                     array(
                         'post_id' => $post->ID,
-                        'selected_spokes' => $selected_spokes
+                        'selected_spokes' => $selected_spokes,
+                        'source' => isset($_POST['sourcehub_selected_spokes']) ? 'POST' : 'post_meta'
                     ),
                     $post->ID,
                     null,
