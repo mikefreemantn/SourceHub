@@ -769,7 +769,10 @@ class SourceHub_Hub_Manager {
                 'post_id' => $post_id,
                 'has_data' => $has_sourcehub_data,
                 'has_spokes_post' => isset($_POST['sourcehub_selected_spokes']),
-                'has_ai_post' => isset($_POST['sourcehub_ai_overrides'])
+                'has_ai_post' => isset($_POST['sourcehub_ai_overrides']),
+                'has_nonce' => isset($_POST['sourcehub_syndication_nonce']),
+                'post_keys' => array_keys($_POST),
+                'post_status' => $post->post_status
             ),
             $post_id,
             null,
