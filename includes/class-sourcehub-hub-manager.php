@@ -940,6 +940,13 @@ class SourceHub_Hub_Manager {
     public function handle_post_update($post_id, $post_after, $post_before) {
         error_log('SourceHub: handle_post_update called for post ' . $post_id);
         
+        // Check if a sync is already in progress or scheduled
+        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
+        if (get_transient($delayed_sync_lock_key)) {
+            error_log('SourceHub: Sync already in progress for post ' . $post_id . ', skipping post_update');
+            return;
+        }
+        
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
             error_log('SourceHub: Skipping - post status is ' . $post_after->post_status);
