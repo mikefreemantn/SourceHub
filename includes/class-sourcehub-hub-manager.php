@@ -1107,12 +1107,14 @@ class SourceHub_Hub_Manager {
             // Check if a delayed sync is already scheduled for this post
             $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
             if ($scheduled) {
-                error_log('SourceHub: Delayed sync already scheduled for post ' . $post_id . ' at ' . date('Y-m-d H:i:s', $scheduled) . ', skipping');
-            } else {
-                // Now schedule sync with shorter delay since data is already saved
-                wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
-                error_log('SourceHub: Scheduled delayed sync for post ' . $post_id . ' in 10 seconds');
+                // Cancel the old one and reschedule - the old one was scheduled before Yoast saved
+                wp_unschedule_event($scheduled, 'sourcehub_delayed_sync', array($post_id));
+                error_log('SourceHub: Cancelled previous delayed sync scheduled at ' . date('Y-m-d H:i:s', $scheduled));
             }
+            
+            // Schedule sync with shorter delay since Yoast data is now saved
+            wp_schedule_single_event(time() + 10, 'sourcehub_delayed_sync', array($post_id));
+            error_log('SourceHub: Scheduled delayed sync for post ' . $post_id . ' in 10 seconds (after Yoast save)');
             
             // For local development, manually spawn cron since it may not run automatically
             if (defined('WP_DEBUG') && WP_DEBUG) {
