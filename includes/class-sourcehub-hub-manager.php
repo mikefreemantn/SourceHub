@@ -1999,6 +1999,17 @@ class SourceHub_Hub_Manager {
     public function handle_delayed_sync($post_id) {
         error_log('SourceHub: handle_delayed_sync called for post ' . $post_id);
         
+        // Check if delayed sync is already running for this post
+        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
+        if (get_transient($delayed_sync_lock_key)) {
+            error_log('SourceHub: Delayed sync already running for post ' . $post_id . ' (locked), skipping');
+            return;
+        }
+        
+        // Set lock to prevent concurrent delayed syncs (expires in 120 seconds)
+        set_transient($delayed_sync_lock_key, time(), 120);
+        error_log('SourceHub: Delayed sync lock set for post ' . $post_id);
+        
         $post = get_post($post_id);
         if ($post) {
             // Get sync status
