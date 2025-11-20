@@ -754,51 +754,51 @@ class SourceHub_Hub_Manager {
                 return;
             }
         } else {
-            // No SourceHub data in POST, nothing to save
-            error_log('SourceHub: No SourceHub data in POST for post ' . $post_id);
-            SourceHub_Logger::warning(
-                'No SourceHub data in POST - meta box may not have rendered',
-                array(
-                    'post_id' => $post_id,
-                    'post_title' => $post->post_title,
-                    'post_status' => $post->post_status,
-                    'post_type' => $post->post_type
-                ),
-                $post_id,
-                null,
-                'no_metabox_data'
-            );
-            return;
+            // No SourceHub data in POST - check if we have existing spoke selection
+            $existing_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+            if (empty($existing_spokes) || !is_array($existing_spokes)) {
+                // No POST data and no existing spokes - nothing to do
+                error_log('SourceHub: No SourceHub data in POST and no existing spoke selection for post ' . $post_id);
+                return;
+            }
+            // We have existing spokes, continue with syndication check below
+            error_log('SourceHub: No POST data but found existing spoke selection for post ' . $post_id . ': ' . print_r($existing_spokes, true));
         }
         
-        error_log('SourceHub: Nonce verified, processing meta save for post ' . $post_id);
-        error_log('SourceHub: Full $_POST data: ' . print_r($_POST, true));
+        // Save selected spokes from POST if we have POST data
+        if ($has_sourcehub_data) {
+            error_log('SourceHub: Nonce verified, processing meta save for post ' . $post_id);
+            error_log('SourceHub: Full $_POST data: ' . print_r($_POST, true));
 
-        // Save selected spokes FIRST (before any early returns)
-        // This ensures spoke selection is always saved, even if we return early for Newspaper theme
-        // Only update if the form was submitted (nonce verified above)
-        // If checkboxes are unchecked, $_POST['sourcehub_selected_spokes'] won't exist,
-        // but we still want to save empty array to clear previous selections
-        $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
-            array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
-        
-        error_log('SourceHub: Saving spoke selection for post ' . $post_id . ': ' . print_r($selected_spokes, true));
-        error_log('SourceHub: POST data sourcehub_selected_spokes: ' . (isset($_POST['sourcehub_selected_spokes']) ? print_r($_POST['sourcehub_selected_spokes'], true) : 'NOT SET'));
-        
-        update_post_meta($post_id, '_sourcehub_selected_spokes', $selected_spokes);
-        
-        // Verify it was saved
-        $saved_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
-        error_log('SourceHub: Verified saved spokes: ' . print_r($saved_spokes, true));
+            // Save selected spokes FIRST (before any early returns)
+            // This ensures spoke selection is always saved, even if we return early for Newspaper theme
+            // If checkboxes are unchecked, $_POST['sourcehub_selected_spokes'] won't exist,
+            // but we still want to save empty array to clear previous selections
+            $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
+                array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
+            
+            error_log('SourceHub: Saving spoke selection for post ' . $post_id . ': ' . print_r($selected_spokes, true));
+            error_log('SourceHub: POST data sourcehub_selected_spokes: ' . (isset($_POST['sourcehub_selected_spokes']) ? print_r($_POST['sourcehub_selected_spokes'], true) : 'NOT SET'));
+            
+            update_post_meta($post_id, '_sourcehub_selected_spokes', $selected_spokes);
+            
+            // Verify it was saved
+            $saved_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+            error_log('SourceHub: Verified saved spokes: ' . print_r($saved_spokes, true));
 
-        // Save AI overrides
-        $ai_overrides = array();
-        if (isset($_POST['sourcehub_ai_overrides'])) {
-            $ai_overrides = array_map(function($value) {
-                return intval($value);
-            }, $_POST['sourcehub_ai_overrides']);
+            // Save AI overrides
+            $ai_overrides = array();
+            if (isset($_POST['sourcehub_ai_overrides'])) {
+                $ai_overrides = array_map(function($value) {
+                    return intval($value);
+                }, $_POST['sourcehub_ai_overrides']);
+            }
+            update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
+        } else {
+            // No POST data - use existing spoke selection
+            $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+            error_log('SourceHub: Using existing spoke selection for post ' . $post_id . ': ' . print_r($selected_spokes, true));
         }
-        update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
 
         // Handle syndication for NEW posts (post_updated doesn't fire for new posts)
         // For updates, handle_post_update will handle it
