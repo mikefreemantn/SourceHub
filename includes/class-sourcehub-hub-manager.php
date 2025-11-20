@@ -717,29 +717,36 @@ class SourceHub_Hub_Manager {
      * @param WP_Post $post Post object
      */
     public function save_post_meta($post_id, $post) {
+        error_log('SourceHub: save_post_meta called for post ' . $post_id . ' with status ' . $post->post_status);
+        
         // Check if this is an autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            error_log('SourceHub: Skipping autosave');
             return;
         }
 
         // Check if this is a revision
         if (wp_is_post_revision($post_id)) {
+            error_log('SourceHub: Skipping revision');
             return;
         }
         
         // Skip auto-draft posts - meta box hasn't rendered yet
         if ($post->post_status === 'auto-draft') {
+            error_log('SourceHub: Skipping auto-draft');
             return;
         }
 
         // Check user permissions
         if (!current_user_can('edit_post', $post_id)) {
+            error_log('SourceHub: User lacks permissions');
             return;
         }
 
         // Check nonce - but only if SourceHub data is being submitted
         // On brand new posts, the meta box might not be rendered yet, so no nonce
         $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
+        error_log('SourceHub: has_sourcehub_data = ' . ($has_sourcehub_data ? 'true' : 'false'));
         
         if ($has_sourcehub_data) {
             if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
