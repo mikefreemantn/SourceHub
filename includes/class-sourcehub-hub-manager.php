@@ -1007,6 +1007,29 @@ class SourceHub_Hub_Manager {
                         );
                     }
                     update_post_meta($post->ID, '_sourcehub_sync_status', $sync_status);
+                    
+                    // For local development, manually spawn cron since it may not run automatically
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        $post_id = $post->ID;
+                        add_action('admin_footer', function() use ($post_id) {
+                            ?>
+                            <script>
+                            console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?>');
+                            setTimeout(function() {
+                                console.log('SourceHub: Triggering WP Cron manually');
+                                fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
+                                    method: 'GET',
+                                    mode: 'no-cors'
+                                }).then(() => {
+                                    console.log('SourceHub: WP Cron triggered');
+                                }).catch(error => {
+                                    console.error('SourceHub: WP Cron trigger failed:', error);
+                                });
+                            }, 21000);
+                            </script>
+                            <?php
+                        });
+                    }
                 } else {
                     SourceHub_Logger::warning(
                         'No selected spokes found - cannot syndicate',
