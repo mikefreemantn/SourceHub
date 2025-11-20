@@ -31,7 +31,7 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
-        add_action('transition_post_status', array($this, 'handle_status_transition'), 10, 3); // Catch auto-draft → publish
+        add_action('transition_post_status', array($this, 'handle_status_transition'), 100, 3); // Run AFTER save_post_meta (priority 99)
         
         // Handle scheduled posts when they publish
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
