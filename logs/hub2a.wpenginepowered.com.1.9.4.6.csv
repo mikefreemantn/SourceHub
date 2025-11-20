@@ -1,0 +1,174 @@
+Date,Status,Action,Message,Connection,Details
+"2025-11-20 18:35:57",SUCCESS,sync_completed,"Sync completed: ""1.9.4.6 test"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":46681,""spoke_post_id"":true,""job_id"":""5KxKDr573ihfUecCaTDtCgoy2RfNvWCi""}"
+"2025-11-20 18:35:56",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""a0iNW6OKol8YPPBSZHCRjRFvmOzBzWcn"",""status"":""processing""},""async"":true,""job_id"":""a0iNW6OKol8YPPBSZHCRjRFvmOzBzWcn""}"
+"2025-11-20 18:35:55",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:35:55",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""D5POuHZ5NviF4WSCgmq8AZNDEwaN3NTe"",""status"":""processing""},""async"":true,""job_id"":""D5POuHZ5NviF4WSCgmq8AZNDEwaN3NTe""}"
+"2025-11-20 18:35:55",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:35:55",INFO,yoast_collect,"Collected Yoast data for ""1.9.4.6 test"" to send to Spoke 2","Spoke 2","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-20 18:35:55",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-11-20 18:35:55",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":60}"
+"2025-11-20 18:35:55",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-11-20 18:35:55",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-11-20 18:35:55",SUCCESS,sync_completed,"Sync completed: ""1.9.4.6 test"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46681,""spoke_post_id"":true,""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE""}"
+"2025-11-20 18:35:53",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""5KxKDr573ihfUecCaTDtCgoy2RfNvWCi"",""status"":""processing""},""async"":true,""job_id"":""5KxKDr573ihfUecCaTDtCgoy2RfNvWCi""}"
+"2025-11-20 18:35:53",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE"",""status"":""processing""},""async"":true,""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE""}"
+"2025-11-20 18:35:53",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:35:53",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:35:53",INFO,yoast_collect,"Collected Yoast data for ""1.9.4.6 test"" to send to Spoke 2","Spoke 2","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-20 18:35:53",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-11-20 18:35:53",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":60}"
+"2025-11-20 18:35:53",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-11-20 18:35:53",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-11-20 18:35:53",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:35:53",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:35:53",INFO,yoast_collect,"Collected Yoast data for ""1.9.4.6 test"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-20 18:35:53",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-20 18:35:53",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":60}"
+"2025-11-20 18:35:53",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-20 18:35:53",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-20 18:35:52",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-20 18:35:52",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:35:52",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:35:52",INFO,yoast_collect,"Collected Yoast data for ""1.9.4.6 test"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-20 18:35:52",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-20 18:35:52",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":60}"
+"2025-11-20 18:35:52",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-20 18:34:49",SUCCESS,sync_completed,"Sync completed: ""1.9.4.6 test"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":46681,""spoke_post_id"":46619,""job_id"":""vblt98Y74CV4ZRTqES6c6aW2BYc4Yt3b""}"
+"2025-11-20 18:34:48",SUCCESS,sync_completed,"Sync completed: ""1.9.4.6 test"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46681,""spoke_post_id"":47229,""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE""}"
+"2025-11-20 18:34:46",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""BN8AKUMKyKThYcTA1mE6ldot0JJ7xFv4"",""status"":""processing""},""async"":true,""job_id"":""BN8AKUMKyKThYcTA1mE6ldot0JJ7xFv4""}"
+"2025-11-20 18:34:45",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-11-20 18:34:45",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-11-20 18:34:45",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":60}"
+"2025-11-20 18:34:45",INFO,syndicate_queued,"Post ""1.9.4.6 test"" queued for syndication to Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""vblt98Y74CV4ZRTqES6c6aW2BYc4Yt3b"",""status"":""processing""},""async"":true,""job_id"":""vblt98Y74CV4ZRTqES6c6aW2BYc4Yt3b""}"
+"2025-11-20 18:34:45",INFO,update,"Syncing updates for post ""1.9.4.6 test"" to 2 existing spoke sites",-,"{""spoke_ids"":[1,6]}"
+"2025-11-20 18:34:45",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:34:45",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:34:45",WARNING,yoast_collect,"No Yoast data found for ""1.9.4.6 test"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46681}"
+"2025-11-20 18:34:45",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-20 18:34:45",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":60}"
+"2025-11-20 18:34:45",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-20 18:34:45",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-20 18:34:45",INFO,update_queued,"Post ""1.9.4.6 test"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""KtgyaIpsTHu6fLOmwA4KcaMlerIqr8g7"",""status"":""processing""},""async"":true,""job_id"":""KtgyaIpsTHu6fLOmwA4KcaMlerIqr8g7""}"
+"2025-11-20 18:34:45",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:34:45",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:34:45",WARNING,yoast_collect,"No Yoast data found for ""1.9.4.6 test"" to send to Spoke 2","Spoke 2","{""post_id"":46681}"
+"2025-11-20 18:34:45",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-11-20 18:34:44",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-11-20 18:34:44",INFO,syndicate_queued,"Post ""1.9.4.6 test"" queued for syndication to hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE"",""status"":""processing""},""async"":true,""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE""}"
+"2025-11-20 18:34:44",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:34:44",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:34:44",WARNING,yoast_collect,"No Yoast data found for ""1.9.4.6 test"" to send to Spoke 2","Spoke 2","{""post_id"":46681}"
+"2025-11-20 18:34:44",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":60}"
+"2025-11-20 18:34:44",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-11-20 18:34:44",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-11-20 18:34:43",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-20 18:34:43",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-20 18:34:43",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-20 18:34:43",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-20 18:34:43",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-20 18:34:43",INFO,debug_content,"DEBUG: Original post content: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:34:43",WARNING,yoast_collect,"No Yoast data found for ""1.9.4.6 test"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46681}"
+"2025-11-20 18:34:43",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-20 18:34:43",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":60}"
+"2025-11-20 18:34:43",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-20 18:34:43",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-20 18:34:11",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-20 18:34:11",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46681,""post_title"":""1.9.4.6 test"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-20 18:34:00",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46681,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-20 18:34:00",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46681,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"

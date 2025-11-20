@@ -1,0 +1,32 @@
+Date,Status,Action,Message,Connection,Details
+"2025-11-20 18:35:55",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE"",""spoke_post_id"":true}"
+"2025-11-20 18:35:55",SUCCESS,async_update,"Async update completed for ""1.9.4.6 test"" (1.17s)",-,"{""hub_id"":46681,""local_id"":true,""processing_time"":1.1746859550476074,""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE""}"
+"2025-11-20 18:35:55",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-20 18:35:55",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-20 18:35:55",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47232,""post_id"":47229}"
+"2025-11-20 18:35:55",INFO,job_queued,"Update job queued for processing: ""1.9.4.6 test""",-,"{""job_id"":""D5POuHZ5NviF4WSCgmq8AZNDEwaN3NTe"",""hub_id"":46681,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-20 18:35:54",INFO,find_author,"Found matching author by email: mike@manovermachine.com",-,"{""matched_user_id"":38,""display_name"":""manovermachine""}"
+"2025-11-20 18:35:54",INFO,job_processing,"Job processing started: ""1.9.4.6 test""",-,"{""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE"",""action"":""update"",""hub_id"":46681}"
+"2025-11-20 18:35:53",INFO,job_queued,"Update job queued for processing: ""1.9.4.6 test""",-,"{""job_id"":""330gZ8DUTdbltlGVePZijhWeiJFEsNxE"",""hub_id"":46681,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-20 18:34:48",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE"",""spoke_post_id"":47229}"
+"2025-11-20 18:34:47",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47229}"
+"2025-11-20 18:34:47",SUCCESS,async_create,"Async create completed for ""1.9.4.6 test"" (2.39s)",-,"{""hub_id"":46681,""local_id"":47229,""processing_time"":2.38645601272583,""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE""}"
+"2025-11-20 18:34:47",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47229,""status"":""publish""}"
+"2025-11-20 18:34:47",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47231,""post_id"":47229}"
+"2025-11-20 18:34:46",INFO,find_author,"Found matching author by email: mike@manovermachine.com",-,"{""matched_user_id"":38,""display_name"":""manovermachine""}"
+"2025-11-20 18:34:46",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47229,""intended_status"":""publish""}"
+"2025-11-20 18:34:46",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-20 18:34:46",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47230,""post_id"":47229}"
+"2025-11-20 18:34:45",INFO,find_author,"Found matching author by email: mike@manovermachine.com",-,"{""matched_user_id"":38,""display_name"":""manovermachine""}"
+"2025-11-20 18:34:45",INFO,debug_content,"DEBUG: Content received from hub: 1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test
+
+1.9.4.6 test",-,"{""full_content_length"":60}"
+"2025-11-20 18:34:45",INFO,job_processing,"Job processing started: ""1.9.4.6 test""",-,"{""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE"",""action"":""create"",""hub_id"":46681}"
+"2025-11-20 18:34:45",INFO,job_queued,"Job queued for processing: ""1.9.4.6 test""",-,"{""job_id"":""KtgyaIpsTHu6fLOmwA4KcaMlerIqr8g7"",""hub_id"":46681,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-20 18:34:45",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46681,""title"":""1.9.4.6 test""}"
+"2025-11-20 18:34:44",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46681,""title"":""1.9.4.6 test""}"
+"2025-11-20 18:34:44",INFO,job_queued,"Job queued for processing: ""1.9.4.6 test""",-,"{""job_id"":""JY8RFmrpeUzACvbw6xWOXI6dJweRLZCE"",""hub_id"":46681,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
