@@ -802,6 +802,7 @@ class SourceHub_Hub_Manager {
 
         // Handle syndication for NEW posts (post_updated doesn't fire for new posts)
         // For updates, handle_post_update will handle it
+        error_log('SourceHub: Checking syndication conditions - post_status: ' . $post->post_status . ', selected_spokes: ' . print_r($selected_spokes, true));
         if (in_array($post->post_status, ['publish', 'future']) && !empty($selected_spokes)) {
             $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
             if (!is_array($syndicated_spokes)) {
@@ -929,8 +930,32 @@ class SourceHub_Hub_Manager {
                     'first_publish'
                 );
                 
-                // Call save_post_meta to save spokes and trigger syndication
-                $this->save_post_meta($post->ID, $post);
+                // Get selected spokes from post meta
+                $selected_spokes = get_post_meta($post->ID, '_sourcehub_selected_spokes', true);
+                if (!empty($selected_spokes) && is_array($selected_spokes)) {
+                    error_log('SourceHub: Found selected spokes for first publish: ' . print_r($selected_spokes, true));
+                    
+                    // Set lock to prevent handle_post_update from running
+                    $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post->ID;
+                    set_transient($delayed_sync_lock_key, time(), 120);
+                    error_log('SourceHub: Set delayed sync lock for post ' . $post->ID);
+                    
+                    // Schedule delayed sync
+                    wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post->ID));
+                    error_log('SourceHub: Scheduled delayed sync for post ' . $post->ID . ' in 20 seconds (first publish)');
+                    
+                    // Set processing status
+                    $sync_status = array();
+                    foreach ($selected_spokes as $spoke_id) {
+                        $sync_status[$spoke_id] = array(
+                            'status' => 'processing',
+                            'started_at' => current_time('mysql')
+                        );
+                    }
+                    update_post_meta($post->ID, '_sourcehub_sync_status', $sync_status);
+                } else {
+                    error_log('SourceHub: No selected spokes found for post ' . $post->ID);
+                }
             }
         }
     }

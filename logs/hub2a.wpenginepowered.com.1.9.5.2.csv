@@ -1,4 +1,12 @@
 Date,Status,Action,Message,Connection,Details
+"2025-11-20 21:06:06",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-20 21:06:06",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-20 21:06:06",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-20 21:06:06",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-20 21:05:35",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-20 21:05:35",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46690,""post_title"":""1.9.5.2"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-20 21:05:27",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46690,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-20 21:05:27",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46690,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
 "2025-11-20 20:56:58",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46689,""post_title"":""1.9.5.1"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
 "2025-11-20 20:56:58",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46689,""post_title"":""1.9.5.1"",""old_status"":""draft"",""new_status"":""publish""}"
 "2025-11-20 20:56:58",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46689,""post_title"":""1.9.5.1"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
