@@ -729,10 +729,16 @@ class SourceHub_Hub_Manager {
             'save_meta_start'
         );
         
-        // Check if this is an autosave
+        // Check if this is an autosave - but allow if we have SourceHub POST data
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            SourceHub_Logger::info('Skipping autosave', array('post_id' => $post_id), $post_id, null, 'skip_autosave');
-            return;
+            // Check if we have SourceHub data to save
+            $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
+            if (!$has_sourcehub_data) {
+                SourceHub_Logger::info('Skipping autosave (no SourceHub data)', array('post_id' => $post_id), $post_id, null, 'skip_autosave');
+                return;
+            }
+            // We have SourceHub data, continue to save it even during autosave
+            SourceHub_Logger::info('Autosave but has SourceHub data - continuing', array('post_id' => $post_id), $post_id, null, 'autosave_with_data');
         }
 
         // Check if this is a revision
