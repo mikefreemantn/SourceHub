@@ -717,36 +717,58 @@ class SourceHub_Hub_Manager {
      * @param WP_Post $post Post object
      */
     public function save_post_meta($post_id, $post) {
-        error_log('SourceHub: save_post_meta called for post ' . $post_id . ' with status ' . $post->post_status);
+        SourceHub_Logger::info(
+            'save_post_meta called',
+            array(
+                'post_id' => $post_id,
+                'post_status' => $post->post_status,
+                'post_title' => $post->post_title
+            ),
+            $post_id,
+            null,
+            'save_meta_start'
+        );
         
         // Check if this is an autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            error_log('SourceHub: Skipping autosave');
+            SourceHub_Logger::info('Skipping autosave', array('post_id' => $post_id), $post_id, null, 'skip_autosave');
             return;
         }
 
         // Check if this is a revision
         if (wp_is_post_revision($post_id)) {
-            error_log('SourceHub: Skipping revision');
+            SourceHub_Logger::info('Skipping revision', array('post_id' => $post_id), $post_id, null, 'skip_revision');
             return;
         }
         
         // Skip auto-draft posts - meta box hasn't rendered yet
         if ($post->post_status === 'auto-draft') {
-            error_log('SourceHub: Skipping auto-draft');
+            SourceHub_Logger::info('Skipping auto-draft', array('post_id' => $post_id), $post_id, null, 'skip_autodraft');
             return;
         }
 
         // Check user permissions
         if (!current_user_can('edit_post', $post_id)) {
-            error_log('SourceHub: User lacks permissions');
+            SourceHub_Logger::warning('User lacks permissions', array('post_id' => $post_id), $post_id, null, 'no_permission');
             return;
         }
 
         // Check nonce - but only if SourceHub data is being submitted
         // On brand new posts, the meta box might not be rendered yet, so no nonce
         $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
-        error_log('SourceHub: has_sourcehub_data = ' . ($has_sourcehub_data ? 'true' : 'false'));
+        
+        SourceHub_Logger::info(
+            'Checking for SourceHub POST data',
+            array(
+                'post_id' => $post_id,
+                'has_data' => $has_sourcehub_data,
+                'has_spokes_post' => isset($_POST['sourcehub_selected_spokes']),
+                'has_ai_post' => isset($_POST['sourcehub_ai_overrides'])
+            ),
+            $post_id,
+            null,
+            'post_data_check'
+        );
         
         if ($has_sourcehub_data) {
             if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
