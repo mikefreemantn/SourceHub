@@ -937,6 +937,9 @@ class SourceHub_Hub_Manager {
                         'spokes_found'
                     );
                     
+                    // Save selected spokes to post meta so validation can find them
+                    update_post_meta($post->ID, '_sourcehub_selected_spokes', $selected_spokes);
+                    
                     // Call syndicate_post directly with selected spokes
                     $this->syndicate_post($post->ID, $selected_spokes);
                 } else {
@@ -1194,6 +1197,13 @@ class SourceHub_Hub_Manager {
         // Check if post should be syndicated (validation filter)
         $should_syndicate = apply_filters('sourcehub_should_syndicate_post', true, $post_id);
         if (!$should_syndicate) {
+            SourceHub_Logger::warning(
+                'Syndication halted by validation filter',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'validation_failed'
+            );
             error_log('SourceHub: Syndication halted for post ' . $post_id . ' by validation filter');
             return;
         }
