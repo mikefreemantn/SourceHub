@@ -1336,6 +1336,28 @@ class SourceHub_Hub_Manager {
                 null,
                 'delayed_sync_scheduled'
             );
+            
+            // For local development, manually spawn cron since it may not run automatically
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                add_action('admin_footer', function() use ($post_id) {
+                    ?>
+                    <script>
+                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?>');
+                    setTimeout(function() {
+                        console.log('SourceHub: Triggering WP Cron manually');
+                        fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
+                            method: 'GET',
+                            cache: 'no-cache'
+                        }).then(function() {
+                            console.log('SourceHub: WP Cron triggered successfully');
+                        }).catch(function(error) {
+                            console.error('SourceHub: Failed to trigger WP Cron:', error);
+                        });
+                    }, 21000);
+                    </script>
+                    <?php
+                });
+            }
         }
         
         // Release sync locks (both persistent and instance)
