@@ -975,6 +975,12 @@ class SourceHub_Hub_Manager {
             return;
         }
         
+        // Skip first publish - handle_status_transition already handles it
+        if ($post_before->post_status !== 'publish' && $post_after->post_status === 'publish') {
+            error_log('SourceHub: Skipping - first publish handled by handle_status_transition');
+            return;
+        }
+        
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
             error_log('SourceHub: Skipping - post status is ' . $post_after->post_status);
