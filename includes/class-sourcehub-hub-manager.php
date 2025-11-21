@@ -924,8 +924,30 @@ class SourceHub_Hub_Manager {
                     'first_publish'
                 );
                 
-                // Call save_post_meta to save spokes and trigger syndication
-                $this->save_post_meta($post->ID, $post);
+                // Get selected spokes from POST data (from the meta box form submission)
+                $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
+                    array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
+                
+                if (!empty($selected_spokes)) {
+                    SourceHub_Logger::info(
+                        sprintf('Found %d selected spokes in POST data for first publish', count($selected_spokes)),
+                        array('spoke_ids' => $selected_spokes),
+                        $post->ID,
+                        null,
+                        'spokes_found'
+                    );
+                    
+                    // Call syndicate_post directly with selected spokes
+                    $this->syndicate_post($post->ID, $selected_spokes);
+                } else {
+                    SourceHub_Logger::warning(
+                        'No selected spokes found in POST data for first publish',
+                        array('post_id' => $post->ID),
+                        $post->ID,
+                        null,
+                        'no_spokes'
+                    );
+                }
             }
         }
     }
