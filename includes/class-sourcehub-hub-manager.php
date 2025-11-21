@@ -940,12 +940,18 @@ class SourceHub_Hub_Manager {
     public function handle_post_update($post_id, $post_after, $post_before) {
         error_log('SourceHub: handle_post_update called for post ' . $post_id);
         
-        // Check if a sync is already in progress or scheduled
+        // Check if ANY sync is already in progress or scheduled (unified lock check)
+        $sync_lock_key = 'sourcehub_sync_lock_' . $post_id;
         $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
-        if (get_transient($delayed_sync_lock_key)) {
+        $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
+        
+        if (get_transient($sync_lock_key) || get_transient($delayed_sync_lock_key) || get_transient($yoast_lock_key)) {
             error_log('SourceHub: Sync already in progress for post ' . $post_id . ', skipping post_update');
             return;
         }
+        
+        // Set lock to prevent other sync paths from running
+        set_transient($sync_lock_key, time(), 120);
         
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
@@ -1057,10 +1063,13 @@ class SourceHub_Hub_Manager {
             return;
         }
 
-        // Check if Yoast sync is already in progress for this post using persistent lock
+        // Check if ANY sync is already in progress (unified lock check)
+        $sync_lock_key = 'sourcehub_sync_lock_' . $post_id;
+        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
         $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
-        if (get_transient($yoast_lock_key)) {
-            error_log('SourceHub: Yoast sync already in progress for post ' . $post_id . ' (locked), skipping');
+        
+        if (get_transient($sync_lock_key) || get_transient($delayed_sync_lock_key) || get_transient($yoast_lock_key)) {
+            error_log('SourceHub: Sync already in progress for post ' . $post_id . ' (locked), skipping Yoast sync');
             return;
         }
 
@@ -1069,6 +1078,7 @@ class SourceHub_Hub_Manager {
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
             // Set lock to prevent duplicate syncs (expires in 60 seconds)
             set_transient($yoast_lock_key, true, 60);
+            set_transient($sync_lock_key, time(), 60);
             
             error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling sync');
             
@@ -2006,16 +2016,20 @@ class SourceHub_Hub_Manager {
     public function handle_delayed_sync($post_id) {
         error_log('SourceHub: handle_delayed_sync called for post ' . $post_id);
         
-        // Check if delayed sync is already running for this post
+        // Check if ANY sync is already running (unified lock check)
+        $sync_lock_key = 'sourcehub_sync_lock_' . $post_id;
         $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
-        if (get_transient($delayed_sync_lock_key)) {
-            error_log('SourceHub: Delayed sync already running for post ' . $post_id . ' (locked), skipping');
+        $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
+        
+        if (get_transient($sync_lock_key) || get_transient($delayed_sync_lock_key) || get_transient($yoast_lock_key)) {
+            error_log('SourceHub: Sync already running for post ' . $post_id . ' (locked), skipping delayed sync');
             return;
         }
         
-        // Set lock to prevent concurrent delayed syncs (expires in 120 seconds)
+        // Set locks to prevent concurrent syncs (expires in 120 seconds)
         set_transient($delayed_sync_lock_key, time(), 120);
-        error_log('SourceHub: Delayed sync lock set for post ' . $post_id);
+        set_transient($sync_lock_key, time(), 120);
+        error_log('SourceHub: Delayed sync locks set for post ' . $post_id);
         
         $post = get_post($post_id);
         if ($post) {
