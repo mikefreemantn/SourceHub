@@ -2164,10 +2164,9 @@ class SourceHub_Hub_Manager {
             return;
         }
         
-        // Set locks to prevent concurrent syncs (expires in 120 seconds)
+        // Set delayed sync lock only (update_syndicated_post will set its own sync lock)
         set_transient($delayed_sync_lock_key, time(), 120);
-        set_transient($sync_lock_key, time(), 120);
-        error_log('SourceHub: Delayed sync locks set for post ' . $post_id);
+        error_log('SourceHub: Delayed sync lock set for post ' . $post_id);
         
         $post = get_post($post_id);
         if ($post) {
