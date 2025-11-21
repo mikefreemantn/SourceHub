@@ -972,9 +972,6 @@ class SourceHub_Hub_Manager {
             return;
         }
         
-        // Set lock to prevent other sync paths from running
-        set_transient($sync_lock_key, time(), 120);
-        
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
             error_log('SourceHub: Skipping - post status is ' . $post_after->post_status);
@@ -1098,10 +1095,6 @@ class SourceHub_Hub_Manager {
         // Get previously syndicated spokes
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-            // Set lock to prevent duplicate syncs (expires in 60 seconds)
-            set_transient($yoast_lock_key, true, 60);
-            set_transient($sync_lock_key, time(), 60);
-            
             error_log('SourceHub: Yoast meta saved for post ' . $post_id . ', scheduling sync');
             
             // Set overall status to processing
