@@ -1396,16 +1396,36 @@ class SourceHub_Hub_Manager {
             $selected_spokes = array();
         }
         
+        error_log('SourceHub: update_syndicated_post - spoke_ids: ' . print_r($spoke_ids, true));
+        error_log('SourceHub: update_syndicated_post - selected_spokes: ' . print_r($selected_spokes, true));
+        
         // Only update spokes that are both syndicated AND currently selected
         $spokes_to_update = array_intersect($spoke_ids, $selected_spokes);
         
+        error_log('SourceHub: update_syndicated_post - spokes_to_update after intersect: ' . print_r($spokes_to_update, true));
+        
         if (empty($spokes_to_update)) {
             error_log('SourceHub: No spokes selected for update, skipping');
+            SourceHub_Logger::warning(
+                'No spokes to update - intersection of syndicated and selected is empty',
+                array('syndicated' => $spoke_ids, 'selected' => $selected_spokes),
+                $post_id,
+                null,
+                'update_skipped'
+            );
             unset($this->sync_locks[$post_id]);
             return;
         }
         
         error_log('SourceHub: Updating ' . count($spokes_to_update) . ' selected spokes out of ' . count($spoke_ids) . ' previously syndicated');
+        
+        SourceHub_Logger::info(
+            sprintf('Updating %d spokes', count($spokes_to_update)),
+            array('spoke_ids' => $spokes_to_update),
+            $post_id,
+            null,
+            'update'
+        );
 
         $ai_overrides = get_post_meta($post_id, '_sourcehub_ai_overrides', true);
         if (!is_array($ai_overrides)) {
