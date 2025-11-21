@@ -75,7 +75,14 @@ class SourceHub_Log_Viewer {
             update_option('sourcehub_log_viewer_token', $token);
         }
         
-        $log_url = rest_url('sourcehub/v1/logs') . '?token=' . $token;
+        // Build URL with proper parameters
+        $log_url = add_query_arg(
+            array(
+                'token' => $token,
+                'limit' => 50
+            ),
+            rest_url('sourcehub/v1/logs')
+        );
         
         ?>
         <div class="notice notice-info" style="padding: 12px; border-left-color: #2271b1;">
@@ -100,18 +107,18 @@ class SourceHub_Log_Viewer {
         $limit = $request->get_param('limit') ?: 100;
         $limit = max(1, min(1000, intval($limit)));
         
-        // Get site domain for log filename
-        $site_domain = str_replace(array('http://', 'https://'), '', home_url());
-        $site_domain = preg_replace('/[^a-zA-Z0-9.-]/', '', $site_domain);
-        
-        // Build log file path
+        // Find log file using glob pattern (works regardless of domain)
         $log_dir = SOURCEHUB_PLUGIN_DIR . 'logs/';
-        $log_file = $log_dir . $site_domain . '.' . $version . '.csv';
+        $pattern = $log_dir . '*.' . $version . '.csv';
+        $log_files = glob($pattern);
         
         // Check if log file exists
-        if (!file_exists($log_file)) {
-            return new WP_Error('log_not_found', 'Log file not found: ' . basename($log_file), array('status' => 404));
+        if (empty($log_files)) {
+            return new WP_Error('log_not_found', 'Log file not found for version: ' . $version, array('status' => 404));
         }
+        
+        // Use the first (and should be only) matching file
+        $log_file = $log_files[0];
         
         // Read and parse log file
         $lines = file($log_file);
