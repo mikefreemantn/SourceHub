@@ -1017,9 +1017,6 @@ class SourceHub_Hub_Manager {
                     $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post->ID;
                     set_transient($delayed_sync_lock_key, time(), 120);
                     
-                    // Schedule delayed sync
-                    wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post->ID));
-                    
                     // Set processing status
                     $sync_status = array();
                     foreach ($selected_spokes as $spoke_id) {
@@ -1030,17 +1027,17 @@ class SourceHub_Hub_Manager {
                     }
                     update_post_meta($post->ID, '_sourcehub_sync_status', $sync_status);
                     
-                    // For local development, manually trigger cron
+                    // Call delayed sync directly instead of scheduling
                     SourceHub_Logger::info(
-                        'Triggering cron manually via spawn_cron()',
+                        'Calling handle_delayed_sync() directly',
                         array('post_id' => $post->ID),
                         $post->ID,
                         null,
-                        'cron_trigger'
+                        'direct_sync'
                     );
                     
-                    // Directly call spawn_cron() to execute scheduled events
-                    spawn_cron();
+                    // Execute sync immediately
+                    $this->handle_delayed_sync($post->ID);
                 } else {
                     SourceHub_Logger::warning(
                         'No selected spokes found - cannot syndicate',
