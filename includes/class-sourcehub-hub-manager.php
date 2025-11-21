@@ -1006,15 +1006,15 @@ class SourceHub_Hub_Manager {
                 
                 if (!empty($selected_spokes) && is_array($selected_spokes)) {
                     SourceHub_Logger::info(
-                        sprintf('Calling handle_delayed_sync() for %d spoke(s)', count($selected_spokes)),
+                        sprintf('Calling syndicate_post() directly for %d spoke(s)', count($selected_spokes)),
                         array('spoke_ids' => $selected_spokes),
                         $post->ID,
                         null,
-                        'direct_sync'
+                        'direct_syndicate'
                     );
                     
-                    // Execute sync immediately - handle_delayed_sync will set its own lock
-                    $this->handle_delayed_sync($post->ID);
+                    // Call syndicate_post directly like v1.9.5.0 - it handles its own locking
+                    $this->syndicate_post($post->ID, $selected_spokes);
                 } else {
                     SourceHub_Logger::warning(
                         'No selected spokes found - cannot syndicate',
@@ -1262,10 +1262,24 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function syndicate_post($post_id, $spoke_ids) {
+        SourceHub_Logger::info(
+            sprintf('syndicate_post() called for %d spoke(s)', count($spoke_ids)),
+            array('post_id' => $post_id, 'spoke_ids' => $spoke_ids),
+            $post_id,
+            null,
+            'syndicate_start'
+        );
+        
         // Check if sync is already in progress for this post using persistent lock
         $lock_key = 'sourcehub_sync_lock_' . $post_id;
         if (get_transient($lock_key)) {
-            error_log('SourceHub: Sync already in progress for post ' . $post_id . ' (locked), skipping');
+            SourceHub_Logger::warning(
+                'Sync already in progress (locked), skipping',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'sync_locked'
+            );
             return;
         }
         
@@ -2107,18 +2121,36 @@ class SourceHub_Hub_Manager {
      * Handle delayed sync
      */
     public function handle_delayed_sync($post_id) {
-        error_log('SourceHub: handle_delayed_sync called for post ' . $post_id);
+        SourceHub_Logger::info(
+            'handle_delayed_sync() called',
+            array('post_id' => $post_id),
+            $post_id,
+            null,
+            'delayed_sync_start'
+        );
         
         // Check if delayed sync is already running for this post
         $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
         if (get_transient($delayed_sync_lock_key)) {
-            error_log('SourceHub: Delayed sync already running for post ' . $post_id . ' (locked), skipping');
+            SourceHub_Logger::warning(
+                'Delayed sync already running (locked), skipping',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'sync_locked'
+            );
             return;
         }
         
         // Set lock to prevent concurrent delayed syncs (expires in 120 seconds)
         set_transient($delayed_sync_lock_key, time(), 120);
-        error_log('SourceHub: Delayed sync lock set for post ' . $post_id);
+        SourceHub_Logger::info(
+            'Delayed sync lock set',
+            array('post_id' => $post_id, 'expires' => 120),
+            $post_id,
+            null,
+            'lock_set'
+        );
         
         $post = get_post($post_id);
         if ($post) {
@@ -2132,8 +2164,27 @@ class SourceHub_Hub_Manager {
             $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
             $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
             
+            SourceHub_Logger::info(
+                'Retrieved spoke data from post meta',
+                array(
+                    'post_id' => $post_id,
+                    'selected_spokes' => $selected_spokes,
+                    'syndicated_spokes' => $syndicated_spokes,
+                    'has_newspaper_meta' => !empty($newspaper_meta)
+                ),
+                $post_id,
+                null,
+                'spoke_data'
+            );
+            
             if (!empty($selected_spokes)) {
-                error_log('SourceHub: Running delayed sync for post ' . $post_id . ' to ' . count($selected_spokes) . ' spokes');
+                SourceHub_Logger::info(
+                    sprintf('Running delayed sync to %d spoke(s)', count($selected_spokes)),
+                    array('spoke_ids' => $selected_spokes),
+                    $post_id,
+                    null,
+                    'sync_execute'
+                );
                 
                 // Set overall status to syncing
                 set_transient('sourcehub_sync_status_' . $post_id, array(
@@ -2144,10 +2195,22 @@ class SourceHub_Hub_Manager {
                 
                 // Check if this post has been syndicated before
                 if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                    error_log('SourceHub: Post already syndicated, updating existing posts');
+                    SourceHub_Logger::info(
+                        'Post already syndicated, calling update_syndicated_post()',
+                        array('syndicated_spoke_ids' => $syndicated_spokes),
+                        $post_id,
+                        null,
+                        'update_mode'
+                    );
                     $this->update_syndicated_post($post_id, $syndicated_spokes);
                 } else {
-                    error_log('SourceHub: First time syndication');
+                    SourceHub_Logger::info(
+                        'First time syndication, calling syndicate_post()',
+                        array('spoke_ids' => $selected_spokes),
+                        $post_id,
+                        null,
+                        'create_mode'
+                    );
                     // Get spokes from status or use selected spokes
                     $spokes_to_sync = ($sync_status && !empty($sync_status['spokes'])) ? $sync_status['spokes'] : $selected_spokes;
                     $this->syndicate_post($post_id, $spokes_to_sync);
@@ -2156,7 +2219,13 @@ class SourceHub_Hub_Manager {
                 // Don't set status to completed here - the callback will handle it
                 // The syndication is async, so we need to wait for the spoke to respond
             } else {
-                error_log('SourceHub: No selected spokes found for post ' . $post_id);
+                SourceHub_Logger::warning(
+                    'No selected spokes found in post meta',
+                    array('post_id' => $post_id),
+                    $post_id,
+                    null,
+                    'no_spokes_meta'
+                );
                 // Mark as failed
                 if ($sync_status) {
                     $sync_status['status'] = 'failed';
@@ -2165,7 +2234,13 @@ class SourceHub_Hub_Manager {
                 }
             }
         } else {
-            error_log('SourceHub: Post ' . $post_id . ' not found for delayed sync');
+            SourceHub_Logger::error(
+                'Post not found for delayed sync',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'post_not_found'
+            );
         }
     }
     
