@@ -1,9 +1,0 @@
-Date,Status,Action,Message,Connection,Details
-"2025-11-21 03:54:51",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
-"2025-11-21 03:54:51",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""draft"",""new_status"":""publish""}"
-"2025-11-21 03:54:51",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
-"2025-11-21 03:54:51",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""draft"",""new_status"":""publish""}"
-"2025-11-21 03:54:27",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
-"2025-11-21 03:54:27",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46728,""post_title"":""1972 - test 3"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
-"2025-11-21 03:54:16",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46728,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
-"2025-11-21 03:54:16",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46728,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"

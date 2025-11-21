@@ -1240,6 +1240,16 @@ class SourceHub_Hub_Manager {
             $sync_status = array();
         }
 
+        // For first publish: Create draft first, then schedule delayed sync for image+Yoast+publish
+        // This prevents duplicate images and ensures Yoast data is ready
+        SourceHub_Logger::info(
+            'Creating draft posts on spoke sites (no image yet)',
+            array('spoke_ids' => $spoke_ids),
+            $post_id,
+            null,
+            'draft_create'
+        );
+        
         foreach ($spoke_ids as $spoke_id) {
             $connection = SourceHub_Database::get_connection($spoke_id);
             if (!$connection || $connection->status !== 'active') {
@@ -1250,7 +1260,8 @@ class SourceHub_Hub_Manager {
             $has_ai_enabled = !empty($ai_settings['enabled']);
             $ai_disabled_for_post = isset($ai_overrides['disable_ai_' . $spoke_id]) ? $ai_overrides['disable_ai_' . $spoke_id] : false;
 
-            $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, false);
+            // Send as draft without image (will be added in delayed sync)
+            $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, false, 1, true);
             
             if ($result['success']) {
                 $syndicated_spokes[] = $spoke_id;
@@ -1312,6 +1323,20 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
+        
+        // Schedule delayed sync to add image, Yoast data, and publish (20 seconds)
+        // This gives Yoast time to build indexables and prevents duplicate images
+        $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
+        if (!$scheduled) {
+            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
+            SourceHub_Logger::info(
+                'Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish',
+                array('post_id' => $post_id, 'spoke_count' => count($syndicated_spokes)),
+                $post_id,
+                null,
+                'delayed_sync_scheduled'
+            );
+        }
         
         // Release sync locks (both persistent and instance)
         delete_transient('sourcehub_sync_lock_' . $post_id);
@@ -1452,13 +1477,14 @@ class SourceHub_Hub_Manager {
      * @param bool $use_ai Whether to use AI rewriting
      * @param bool $is_update Whether this is an update
      * @param int $attempt Current attempt number (internal use)
+     * @param bool $skip_image Whether to skip featured image (for draft creation)
      * @return array Result array
      */
-    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1) {
+    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1, $skip_image = false) {
         $max_attempts = 1; // Disabled auto-retry to prevent duplicates from timeouts
         
         // Prepare post data
-        $post_data = $this->prepare_post_data($post, $connection, $use_ai);
+        $post_data = $this->prepare_post_data($post, $connection, $use_ai, $skip_image);
         
         // Debug: Log final content being sent to spoke
         SourceHub_Logger::info(
@@ -1603,9 +1629,10 @@ class SourceHub_Hub_Manager {
      * @param WP_Post $post Post object
      * @param object $connection Connection object
      * @param bool $use_ai Whether to use AI rewriting
+     * @param bool $skip_image Whether to skip featured image (for draft creation)
      * @return array
      */
-    private function prepare_post_data($post, $connection, $use_ai = false) {
+    private function prepare_post_data($post, $connection, $use_ai = false, $skip_image = false) {
         // Get page template
         $page_template = get_page_template_slug($post->ID);
         error_log('SourceHub: Collecting page template for post ' . $post->ID . ': ' . ($page_template ? $page_template : 'DEFAULT'));
@@ -1644,7 +1671,7 @@ class SourceHub_Hub_Manager {
             'title' => $post->post_title,
             'content' => $processed_content,
             'excerpt' => $post->post_excerpt,
-            'status' => $post->post_status,
+            'status' => $skip_image ? 'draft' : $post->post_status, // Create as draft if skipping image
             'slug' => $post->post_name,
             'date' => $post->post_date,
             'date_gmt' => $post->post_date_gmt,
@@ -1697,21 +1724,23 @@ class SourceHub_Hub_Manager {
             $data['post_format'] = $post_format;
         }
 
-        // Add featured image
-        $featured_image_id = get_post_thumbnail_id($post->ID);
-        
-        if ($featured_image_id && !empty($sync_settings['featured_image'])) {
-            $image_data = wp_get_attachment_image_src($featured_image_id, 'full');
-            if ($image_data) {
-                $data['featured_image'] = array(
-                    'url' => $image_data[0],
-                    'width' => $image_data[1],
-                    'height' => $image_data[2],
-                    'title' => get_the_title($featured_image_id),
-                    'alt' => get_post_meta($featured_image_id, '_wp_attachment_image_alt', true),
-                    'caption' => wp_get_attachment_caption($featured_image_id),
-                    'description' => get_post_field('post_content', $featured_image_id)
-                );
+        // Add featured image (skip if creating draft)
+        if (!$skip_image) {
+            $featured_image_id = get_post_thumbnail_id($post->ID);
+            
+            if ($featured_image_id && !empty($sync_settings['featured_image'])) {
+                $image_data = wp_get_attachment_image_src($featured_image_id, 'full');
+                if ($image_data) {
+                    $data['featured_image'] = array(
+                        'url' => $image_data[0],
+                        'width' => $image_data[1],
+                        'height' => $image_data[2],
+                        'title' => get_the_title($featured_image_id),
+                        'alt' => get_post_meta($featured_image_id, '_wp_attachment_image_alt', true),
+                        'caption' => wp_get_attachment_caption($featured_image_id),
+                        'description' => get_post_field('post_content', $featured_image_id)
+                    );
+                }
             }
         }
 
@@ -1737,29 +1766,39 @@ class SourceHub_Hub_Manager {
             SourceHub_Logger::info('No gallery images found in post content', array(), $post->ID, null, 'gallery_sync');
         }
 
-        // Add Yoast SEO data
-        $data['yoast_meta'] = SourceHub_Yoast_Integration::get_post_meta($post->ID);
-        
-        // Log what Yoast data was collected for debugging
-        if (!empty($data['yoast_meta'])) {
-            SourceHub_Logger::info(
-                sprintf('Collected Yoast data for "%s" to send to %s', $post->post_title, $connection->name),
-                array(
-                    'yoast_fields' => array_keys($data['yoast_meta']),
-                    'has_metadesc' => isset($data['yoast_meta']['_yoast_wpseo_metadesc']),
-                    'has_focuskw' => isset($data['yoast_meta']['_yoast_wpseo_focuskw'])
-                ),
-                $post->ID,
-                $connection->id,
-                'yoast_collect'
-            );
+        // Add Yoast SEO data (skip if creating draft - will be added in delayed sync)
+        if (!$skip_image) {
+            $data['yoast_meta'] = SourceHub_Yoast_Integration::get_post_meta($post->ID);
+            
+            // Log what Yoast data was collected for debugging
+            if (!empty($data['yoast_meta'])) {
+                SourceHub_Logger::info(
+                    sprintf('Collected Yoast data for "%s" to send to %s', $post->post_title, $connection->name),
+                    array(
+                        'yoast_fields' => array_keys($data['yoast_meta']),
+                        'has_metadesc' => isset($data['yoast_meta']['_yoast_wpseo_metadesc']),
+                        'has_focuskw' => isset($data['yoast_meta']['_yoast_wpseo_focuskw'])
+                    ),
+                    $post->ID,
+                    $connection->id,
+                    'yoast_collect'
+                );
+            } else {
+                SourceHub_Logger::warning(
+                    sprintf('No Yoast data found for "%s" to send to %s', $post->post_title, $connection->name),
+                    array('post_id' => $post->ID),
+                    $post->ID,
+                    $connection->id,
+                    'yoast_collect'
+                );
+            }
         } else {
-            SourceHub_Logger::warning(
-                sprintf('No Yoast data found for "%s" to send to %s', $post->post_title, $connection->name),
+            SourceHub_Logger::info(
+                'Skipping Yoast data for draft creation - will be added in delayed sync',
                 array('post_id' => $post->ID),
                 $post->ID,
                 $connection->id,
-                'yoast_collect'
+                'yoast_skip'
             );
         }
 

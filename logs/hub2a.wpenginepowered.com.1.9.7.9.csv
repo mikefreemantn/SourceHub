@@ -1,0 +1,18 @@
+Date,Status,Action,Message,Connection,Details
+"2025-11-21 04:52:22",SUCCESS,sync_completed,"Sync completed: ""1979 testing yoast"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46735,""spoke_post_id"":47291,""job_id"":""xEywwjAyf5bDlUfHCen0yjzQaohzINH5""}"
+"2025-11-21 04:52:20",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46735,""post_title"":""1979 testing yoast"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 04:52:20",INFO,syndicate_queued,"Post ""1979 testing yoast"" queued for syndication to hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""xEywwjAyf5bDlUfHCen0yjzQaohzINH5"",""status"":""processing""},""async"":true,""job_id"":""xEywwjAyf5bDlUfHCen0yjzQaohzINH5""}"
+"2025-11-21 04:52:19",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-21 04:52:19",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 04:52:19",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 04:52:19",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1979 testing yoast",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":18}"
+"2025-11-21 04:52:19",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 04:52:19",WARNING,yoast_collect,"No Yoast data found for ""1979 testing yoast"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46735}"
+"2025-11-21 04:52:19",INFO,debug_content,"DEBUG: Original post content: 1979 testing yoast",-,"{""full_content_length"":18}"
+"2025-11-21 04:52:19",INFO,spokes_found,"Found 1 selected spokes in POST data for first publish",-,"{""spoke_ids"":[1]}"
+"2025-11-21 04:52:19",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46735,""post_title"":""1979 testing yoast"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-21 04:52:19",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46735,""post_title"":""1979 testing yoast"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 04:51:50",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46735,""post_title"":""1979 testing yoast"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 04:51:50",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46735,""post_title"":""1979 testing yoast"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 04:51:41",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46735,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-21 04:51:41",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46735,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
