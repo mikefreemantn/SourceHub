@@ -1375,8 +1375,20 @@ class SourceHub_Hub_Manager {
     public function update_syndicated_post($post_id, $spoke_ids) {
         // Check if sync is already in progress for this post using persistent lock
         $lock_key = 'sourcehub_sync_lock_' . $post_id;
-        if (get_transient($lock_key)) {
+        $lock_value = get_transient($lock_key);
+        
+        error_log('SourceHub: update_syndicated_post called for post ' . $post_id);
+        error_log('SourceHub: Lock check - key: ' . $lock_key . ', value: ' . ($lock_value ? $lock_value : 'NOT SET'));
+        
+        if ($lock_value) {
             error_log('SourceHub: Update sync already in progress for post ' . $post_id . ' (locked), skipping');
+            SourceHub_Logger::warning(
+                'Update blocked by sync lock',
+                array('post_id' => $post_id, 'lock_value' => $lock_value, 'lock_age' => time() - $lock_value),
+                $post_id,
+                null,
+                'update_locked'
+            );
             return;
         }
         
@@ -2134,8 +2146,21 @@ class SourceHub_Hub_Manager {
         $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
         $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
         
-        if (get_transient($sync_lock_key) || get_transient($delayed_sync_lock_key) || get_transient($yoast_lock_key)) {
+        $sync_lock = get_transient($sync_lock_key);
+        $delayed_lock = get_transient($delayed_sync_lock_key);
+        $yoast_lock = get_transient($yoast_lock_key);
+        
+        error_log('SourceHub: Lock status - sync: ' . ($sync_lock ? $sync_lock : 'NOT SET') . ', delayed: ' . ($delayed_lock ? $delayed_lock : 'NOT SET') . ', yoast: ' . ($yoast_lock ? $yoast_lock : 'NOT SET'));
+        
+        if ($sync_lock || $delayed_lock || $yoast_lock) {
             error_log('SourceHub: Sync already running for post ' . $post_id . ' (locked), skipping delayed sync');
+            SourceHub_Logger::warning(
+                'Delayed sync blocked by existing lock',
+                array('sync_lock' => $sync_lock, 'delayed_lock' => $delayed_lock, 'yoast_lock' => $yoast_lock),
+                $post_id,
+                null,
+                'delayed_sync_locked'
+            );
             return;
         }
         
