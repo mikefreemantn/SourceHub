@@ -1319,7 +1319,8 @@ class SourceHub_Hub_Manager {
             }
         }
 
-        // Update syndicated spokes list and sync status
+        // Mark as pending completion (not fully syndicated yet - waiting for image/Yoast)
+        update_post_meta($post_id, '_sourcehub_pending_completion', true);
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
@@ -2145,8 +2146,25 @@ class SourceHub_Hub_Manager {
                     'started' => time()
                 ), 300);
                 
-                // Check if this post has been syndicated before
-                if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                // Check if this is completing a pending draft (2-step syndication)
+                $pending_completion = get_post_meta($post_id, '_sourcehub_pending_completion', true);
+                
+                if ($pending_completion) {
+                    error_log('SourceHub: Completing pending draft - adding image, Yoast, and publishing');
+                    SourceHub_Logger::info(
+                        'Completing draft syndication - adding image, Yoast data, and publishing',
+                        array('post_id' => $post_id, 'spoke_count' => count($syndicated_spokes)),
+                        $post_id,
+                        null,
+                        'completing_draft'
+                    );
+                    
+                    // Remove pending flag
+                    delete_post_meta($post_id, '_sourcehub_pending_completion');
+                    
+                    // Update with full data (image, Yoast, publish status)
+                    $this->update_syndicated_post($post_id, $syndicated_spokes);
+                } else if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
                     error_log('SourceHub: Post already syndicated, updating existing posts');
                     $this->update_syndicated_post($post_id, $syndicated_spokes);
                 } else {
