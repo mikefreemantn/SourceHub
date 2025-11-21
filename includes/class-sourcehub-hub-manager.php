@@ -1006,37 +1006,14 @@ class SourceHub_Hub_Manager {
                 
                 if (!empty($selected_spokes) && is_array($selected_spokes)) {
                     SourceHub_Logger::info(
-                        sprintf('Scheduling delayed sync for %d spoke(s)', count($selected_spokes)),
+                        sprintf('Calling handle_delayed_sync() for %d spoke(s)', count($selected_spokes)),
                         array('spoke_ids' => $selected_spokes),
-                        $post->ID,
-                        null,
-                        'schedule_sync'
-                    );
-                    
-                    // Set lock to prevent handle_post_update from running
-                    $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post->ID;
-                    set_transient($delayed_sync_lock_key, time(), 120);
-                    
-                    // Set processing status
-                    $sync_status = array();
-                    foreach ($selected_spokes as $spoke_id) {
-                        $sync_status[$spoke_id] = array(
-                            'status' => 'processing',
-                            'started_at' => current_time('mysql')
-                        );
-                    }
-                    update_post_meta($post->ID, '_sourcehub_sync_status', $sync_status);
-                    
-                    // Call delayed sync directly instead of scheduling
-                    SourceHub_Logger::info(
-                        'Calling handle_delayed_sync() directly',
-                        array('post_id' => $post->ID),
                         $post->ID,
                         null,
                         'direct_sync'
                     );
                     
-                    // Execute sync immediately
+                    // Execute sync immediately - handle_delayed_sync will set its own lock
                     $this->handle_delayed_sync($post->ID);
                 } else {
                     SourceHub_Logger::warning(
