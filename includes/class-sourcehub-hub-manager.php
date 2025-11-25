@@ -120,10 +120,12 @@ class SourceHub_Hub_Manager {
         }
         
         if ($status === 'completed') {
+            $action = $sync_status[$connection->id]['action'] ?? 'create';
+            
             $sync_status[$connection->id] = array(
                 'status' => 'success',
                 'last_sync' => current_time('mysql'),
-                'action' => $sync_status[$connection->id]['action'] ?? 'create',
+                'action' => $action,
                 'spoke_post_id' => $spoke_post_id
             );
             
@@ -143,6 +145,67 @@ class SourceHub_Hub_Manager {
                 $connection->id,
                 'sync_completed'
             );
+            
+            // If this was a CREATE completion and post is pending completion, schedule delayed sync
+            if ($action === 'create') {
+                $pending_completion = get_post_meta($hub_post_id, '_sourcehub_pending_completion', true);
+                
+                if ($pending_completion) {
+                    // Check if all spokes have completed their CREATE
+                    $all_creates_complete = true;
+                    $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
+                    
+                    if (is_array($syndicated_spokes)) {
+                        foreach ($syndicated_spokes as $spoke_id) {
+                            $spoke_status = $sync_status[$spoke_id] ?? null;
+                            if (!$spoke_status || $spoke_status['status'] !== 'success' || ($spoke_status['action'] ?? '') !== 'create') {
+                                $all_creates_complete = false;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // If all CREATEs are done, schedule the delayed sync
+                    if ($all_creates_complete) {
+                        $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($hub_post_id));
+                        if (!$scheduled) {
+                            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($hub_post_id));
+                            
+                            SourceHub_Logger::info(
+                                'All draft creates completed - scheduling delayed sync in 20 seconds to add image, Yoast data, and publish',
+                                array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
+                                $hub_post_id,
+                                null,
+                                'delayed_sync_scheduled'
+                            );
+                            
+                            error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduled delayed sync', $hub_post_id));
+                            
+                            // For local development, manually spawn cron since it may not run automatically
+                            if (defined('WP_DEBUG') && WP_DEBUG) {
+                                add_action('admin_footer', function() use ($hub_post_id) {
+                                    ?>
+                                    <script>
+                                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $hub_post_id; ?>');
+                                    setTimeout(function() {
+                                        console.log('SourceHub: Triggering WP Cron manually');
+                                        fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
+                                            method: 'GET',
+                                            cache: 'no-cache'
+                                        }).then(function() {
+                                            console.log('SourceHub: WP Cron triggered successfully');
+                                        }).catch(function(error) {
+                                            console.error('SourceHub: Failed to trigger WP Cron:', error);
+                                        });
+                                    }, 21000);
+                                    </script>
+                                    <?php
+                                });
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             $sync_status[$connection->id] = array(
                 'status' => 'failed',
@@ -1325,41 +1388,15 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
-        // Schedule delayed sync to add image, Yoast data, and publish (20 seconds)
-        // This gives Yoast time to build indexables and prevents duplicate images
-        $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($post_id));
-        if (!$scheduled) {
-            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($post_id));
-            SourceHub_Logger::info(
-                'Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish',
-                array('post_id' => $post_id, 'spoke_count' => count($syndicated_spokes)),
-                $post_id,
-                null,
-                'delayed_sync_scheduled'
-            );
-            
-            // For local development, manually spawn cron since it may not run automatically
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                add_action('admin_footer', function() use ($post_id) {
-                    ?>
-                    <script>
-                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $post_id; ?>');
-                    setTimeout(function() {
-                        console.log('SourceHub: Triggering WP Cron manually');
-                        fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
-                            method: 'GET',
-                            cache: 'no-cache'
-                        }).then(function() {
-                            console.log('SourceHub: WP Cron triggered successfully');
-                        }).catch(function(error) {
-                            console.error('SourceHub: Failed to trigger WP Cron:', error);
-                        });
-                    }, 21000);
-                    </script>
-                    <?php
-                });
-            }
-        }
+        // Delayed sync will be scheduled when spoke completion callbacks are received
+        // This ensures the draft posts are fully created before we send the update
+        SourceHub_Logger::info(
+            'Draft posts queued - delayed sync will be scheduled when all creates complete',
+            array('post_id' => $post_id, 'spoke_count' => count($syndicated_spokes)),
+            $post_id,
+            null,
+            'awaiting_create_completion'
+        );
         
         // Release sync locks (both persistent and instance)
         delete_transient('sourcehub_sync_lock_' . $post_id);

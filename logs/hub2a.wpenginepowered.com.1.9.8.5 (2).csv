@@ -1,0 +1,1304 @@
+Date,Status,Action,Message,Connection,Details
+"2025-11-25 16:07:01",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46755,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-25 16:07:01",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46755,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 22:07:41",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46754,""spoke_post_id"":true,""job_id"":""TRA2i2GPqRKmacrOJ071IdM27xlKKlz2""}"
+"2025-11-24 22:07:31",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46754,""spoke_post_id"":true,""job_id"":""4ZQbZscSm1LZSZeLUcVf30K5moegvEYn""}"
+"2025-11-24 22:06:35",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46754,""spoke_post_id"":true,""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp""}"
+"2025-11-24 22:06:22",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 22:06:22",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""TRA2i2GPqRKmacrOJ071IdM27xlKKlz2"",""status"":""processing""},""async"":true,""job_id"":""TRA2i2GPqRKmacrOJ071IdM27xlKKlz2""}"
+"2025-11-24 22:06:21",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 22:06:21",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""4ZQbZscSm1LZSZeLUcVf30K5moegvEYn"",""status"":""processing""},""async"":true,""job_id"":""4ZQbZscSm1LZSZeLUcVf30K5moegvEYn""}"
+"2025-11-24 22:06:21",INFO,update,"Syncing updates for post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to 2 existing spoke sites",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 22:06:21",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 22:06:21",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 22:06:21",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 22:06:21",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 22:06:21",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 22:06:21",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1204}"
+"2025-11-24 22:06:21",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 22:06:21",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 22:06:21",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""veLDODdwyv4Nov3PgUDIwqkc9jldzJAg"",""status"":""processing""},""async"":true,""job_id"":""veLDODdwyv4Nov3PgUDIwqkc9jldzJAg""}"
+"2025-11-24 22:06:21",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 22:06:21",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 22:06:21",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 22:06:21",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 22:06:21",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1207}"
+"2025-11-24 22:06:21",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 22:06:20",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp"",""status"":""processing""},""async"":true,""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp""}"
+"2025-11-24 22:06:20",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 22:06:20",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 22:06:20",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 22:06:20",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 22:06:20",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1207}"
+"2025-11-24 22:06:20",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 22:06:19",INFO,update,"Syncing updates for post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to 2 existing spoke sites",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 22:06:19",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 22:06:19",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 22:06:19",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 22:06:19",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 22:06:19",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 22:06:19",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1204}"
+"2025-11-24 22:06:19",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 22:06:19",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 22:06:18",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 22:06:18",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 15:34:55",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46754,""spoke_post_id"":true,""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE""}"
+"2025-11-24 15:34:46",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46754,""spoke_post_id"":true,""job_id"":""RfzQjkXYqbfcjmRStfUrp4WsKwyU0Fh6""}"
+"2025-11-24 15:34:41",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""RfzQjkXYqbfcjmRStfUrp4WsKwyU0Fh6"",""status"":""processing""},""async"":true,""job_id"":""RfzQjkXYqbfcjmRStfUrp4WsKwyU0Fh6""}"
+"2025-11-24 15:34:41",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763998479,""yoast_lock"":false}"
+"2025-11-24 15:34:40",INFO,update_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE"",""status"":""processing""},""async"":true,""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE""}"
+"2025-11-24 15:34:40",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 15:34:40",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:34:40",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:34:40",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 15:34:40",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1207}"
+"2025-11-24 15:34:40",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 15:34:40",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 15:34:39",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46754,""spoke_count"":2}"
+"2025-11-24 15:34:39",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:34:39",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 15:34:39",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:34:39",INFO,yoast_collect,"Collected Yoast data for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:34:39",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 15:34:39",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1204}"
+"2025-11-24 15:34:39",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 15:34:39",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 15:34:39",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46754,""spoke_post_id"":48669,""job_id"":""znLKrjkQtal5n8l2OE7G3AZrBY7nisJ3""}"
+"2025-11-24 15:33:47",INFO,syndicate_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""znLKrjkQtal5n8l2OE7G3AZrBY7nisJ3"",""status"":""processing""},""async"":true,""job_id"":""znLKrjkQtal5n8l2OE7G3AZrBY7nisJ3""}"
+"2025-11-24 15:33:47",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46754,""spoke_count"":2}"
+"2025-11-24 15:33:47",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 15:33:46",INFO,syndicate_queued,"Post ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7"",""status"":""processing""},""async"":true,""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7""}"
+"2025-11-24 15:33:46",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 15:33:46",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:33:46",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46754}"
+"2025-11-24 15:33:46",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 15:33:46",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1207}"
+"2025-11-24 15:33:46",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 15:33:46",SUCCESS,sync_completed,"Sync completed: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46754,""spoke_post_id"":47238,""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7""}"
+"2025-11-24 15:33:46",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 15:33:44",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 15:33:44",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-24 15:33:44",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:33:44",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:33:44",INFO,debug_content,"DEBUG: Original post content: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1153}"
+"2025-11-24 15:33:44",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:33:44",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46754}"
+"2025-11-24 15:33:44",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 15:33:44",INFO,debug_content,"DEBUG: Final content being sent to spoke: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1204}"
+"2025-11-24 15:33:44",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 15:33:44",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 15:32:33",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:32:33",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:30:33",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:30:33",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46754,""post_title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:28:11",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46754,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 15:28:11",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46754,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 15:08:46",SUCCESS,sync_completed,"Sync completed: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46752,""spoke_post_id"":true,""job_id"":""MNlkdMdXR708KTyXuSKzdIpl6E68AXV8""}"
+"2025-11-24 15:08:01",SUCCESS,sync_completed,"Sync completed: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46752,""spoke_post_id"":true,""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT""}"
+"2025-11-24 15:07:29",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 15:07:29",INFO,update_queued,"Post ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""MNlkdMdXR708KTyXuSKzdIpl6E68AXV8"",""status"":""processing""},""async"":true,""job_id"":""MNlkdMdXR708KTyXuSKzdIpl6E68AXV8""}"
+"2025-11-24 15:07:29",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763996847,""yoast_lock"":false}"
+"2025-11-24 15:07:28",INFO,update_queued,"Post ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT"",""status"":""processing""},""async"":true,""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT""}"
+"2025-11-24 15:07:28",INFO,debug_content,"DEBUG: Original post content: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi",-,"{""full_content_length"":3244}"
+"2025-11-24 15:07:28",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:07:28",INFO,yoast_collect,"Collected Yoast data for ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:07:28",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 15:07:28",INFO,debug_content,"DEBUG: Final content being sent to spoke: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3298}"
+"2025-11-24 15:07:28",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 15:07:27",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46752,""spoke_count"":2}"
+"2025-11-24 15:07:27",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:07:27",INFO,debug_content,"DEBUG: Original post content: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi",-,"{""full_content_length"":3244}"
+"2025-11-24 15:07:27",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:07:27",INFO,yoast_collect,"Collected Yoast data for ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:07:27",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 15:07:27",INFO,debug_content,"DEBUG: Final content being sent to spoke: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3295}"
+"2025-11-24 15:07:27",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 15:07:27",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 15:06:34",SUCCESS,sync_completed,"Sync completed: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46752,""spoke_post_id"":48663,""job_id"":""3lSg1kvNoVSn9dlMVndfbvppRE429YiV""}"
+"2025-11-24 15:06:17",INFO,syndicate_queued,"Post ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""3lSg1kvNoVSn9dlMVndfbvppRE429YiV"",""status"":""processing""},""async"":true,""job_id"":""3lSg1kvNoVSn9dlMVndfbvppRE429YiV""}"
+"2025-11-24 15:06:17",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46752,""spoke_count"":2}"
+"2025-11-24 15:06:17",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46752,""post_title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 15:06:16",INFO,syndicate_queued,"Post ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz"",""status"":""processing""},""async"":true,""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz""}"
+"2025-11-24 15:06:16",INFO,debug_content,"DEBUG: Original post content: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi",-,"{""full_content_length"":3244}"
+"2025-11-24 15:06:16",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:06:16",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46752}"
+"2025-11-24 15:06:16",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 15:06:16",INFO,debug_content,"DEBUG: Final content being sent to spoke: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3298}"
+"2025-11-24 15:06:16",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 15:06:16",SUCCESS,sync_completed,"Sync completed: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46752,""spoke_post_id"":47232,""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz""}"
+"2025-11-24 15:06:16",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 15:06:14",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46752,""post_title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 15:06:14",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46752,""post_title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-24 15:06:14",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:06:14",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 15:06:14",INFO,debug_content,"DEBUG: Original post content: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi",-,"{""full_content_length"":3244}"
+"2025-11-24 15:06:14",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 15:06:14",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46752}"
+"2025-11-24 15:06:14",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 15:06:14",INFO,debug_content,"DEBUG: Final content being sent to spoke: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3295}"
+"2025-11-24 15:06:14",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 15:06:14",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 15:04:08",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46752,""post_title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:04:08",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46752,""post_title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 15:02:56",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46752,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 15:02:56",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46752,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 14:47:46",INFO,,"Bug submitted: Video template test leads to other issues",-,bug_tracker
+"2025-11-24 14:31:10",SUCCESS,sync_completed,"Sync completed: ""Crumbl Weekly Menu Through November 29, 2025"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46750,""spoke_post_id"":48661,""job_id"":""U3soHCeKI470T3QkKsEWRZknQegorfrA""}"
+"2025-11-24 14:31:10",SUCCESS,sync_completed,"Sync completed: ""Crumbl Weekly Menu Through November 29, 2025"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46750,""spoke_post_id"":48661,""job_id"":""zrmCFkSjaaSlNULKjEMDoG7onK0ASBn1""}"
+"2025-11-24 14:30:27",SUCCESS,sync_completed,"Sync completed: ""Crumbl Weekly Menu Through November 29, 2025"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46750,""spoke_post_id"":true,""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e""}"
+"2025-11-24 14:30:25",INFO,update_queued,"Post ""Crumbl Weekly Menu Through November 29, 2025"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e"",""status"":""processing""},""async"":true,""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e""}"
+"2025-11-24 14:30:25",INFO,debug_content,"DEBUG: Original post content: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s",-,"{""full_content_length"":1892}"
+"2025-11-24 14:30:25",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 14:30:25",INFO,yoast_collect,"Collected Yoast data for ""Crumbl Weekly Menu Through November 29, 2025"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 14:30:25",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 14:30:25",INFO,debug_content,"DEBUG: Final content being sent to spoke: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1946}"
+"2025-11-24 14:30:25",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 14:30:25",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 14:30:25",INFO,update_queued,"Post ""Crumbl Weekly Menu Through November 29, 2025"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""zrmCFkSjaaSlNULKjEMDoG7onK0ASBn1"",""status"":""processing""},""async"":true,""job_id"":""zrmCFkSjaaSlNULKjEMDoG7onK0ASBn1""}"
+"2025-11-24 14:30:25",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763994623,""yoast_lock"":false}"
+"2025-11-24 14:30:24",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 14:30:24",INFO,debug_content,"DEBUG: Original post content: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s",-,"{""full_content_length"":1892}"
+"2025-11-24 14:30:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 14:30:24",INFO,yoast_collect,"Collected Yoast data for ""Crumbl Weekly Menu Through November 29, 2025"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 14:30:24",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 14:30:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1943}"
+"2025-11-24 14:30:24",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 14:30:24",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 14:30:23",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46750,""spoke_count"":2}"
+"2025-11-24 14:30:03",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 14:30:03",INFO,syndicate_queued,"Post ""Crumbl Weekly Menu Through November 29, 2025"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""U3soHCeKI470T3QkKsEWRZknQegorfrA"",""status"":""processing""},""async"":true,""job_id"":""U3soHCeKI470T3QkKsEWRZknQegorfrA""}"
+"2025-11-24 14:30:03",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46750,""spoke_count"":2}"
+"2025-11-24 14:30:03",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 14:30:01",INFO,syndicate_queued,"Post ""Crumbl Weekly Menu Through November 29, 2025"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax"",""status"":""processing""},""async"":true,""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax""}"
+"2025-11-24 14:30:01",SUCCESS,sync_completed,"Sync completed: ""Crumbl Weekly Menu Through November 29, 2025"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46750,""spoke_post_id"":47228,""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax""}"
+"2025-11-24 14:30:01",INFO,debug_content,"DEBUG: Original post content: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s",-,"{""full_content_length"":1892}"
+"2025-11-24 14:30:01",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 14:30:01",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46750}"
+"2025-11-24 14:30:01",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 14:30:01",INFO,debug_content,"DEBUG: Final content being sent to spoke: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1946}"
+"2025-11-24 14:30:01",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 14:30:00",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 14:29:59",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 14:29:59",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-24 14:29:59",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 14:29:59",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 14:29:59",INFO,debug_content,"DEBUG: Original post content: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s",-,"{""full_content_length"":1892}"
+"2025-11-24 14:29:59",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 14:29:59",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46750}"
+"2025-11-24 14:29:59",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 14:29:59",INFO,debug_content,"DEBUG: Final content being sent to spoke: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1943}"
+"2025-11-24 14:29:59",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 14:25:29",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 14:25:29",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 14:25:06",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 14:25:06",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46750,""post_title"":""Crumbl Weekly Menu Through November 29, 2025"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 14:23:52",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46750,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 14:23:52",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46750,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 13:59:43",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Announces 2026 MLS Regular Season Schedule"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46748,""spoke_post_id"":true,""job_id"":""gtGGGHDkXiW8tmvvQoVvYKUjLN8WuGSz""}"
+"2025-11-24 13:59:40",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Announces 2026 MLS Regular Season Schedule"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46748,""spoke_post_id"":true,""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7""}"
+"2025-11-24 13:59:39",INFO,update_queued,"Post ""Nashville SC Announces 2026 MLS Regular Season Schedule"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""gtGGGHDkXiW8tmvvQoVvYKUjLN8WuGSz"",""status"":""processing""},""async"":true,""job_id"":""gtGGGHDkXiW8tmvvQoVvYKUjLN8WuGSz""}"
+"2025-11-24 13:59:39",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763992776,""yoast_lock"":false}"
+"2025-11-24 13:59:38",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 13:59:37",INFO,update_queued,"Post ""Nashville SC Announces 2026 MLS Regular Season Schedule"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7"",""status"":""processing""},""async"":true,""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7""}"
+"2025-11-24 13:59:37",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road",-,"{""full_content_length"":9288}"
+"2025-11-24 13:59:37",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:59:37",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Announces 2026 MLS Regular Season Schedule"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:59:37",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 13:59:37",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":9342}"
+"2025-11-24 13:59:37",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 13:59:36",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46748,""spoke_count"":2}"
+"2025-11-24 13:59:36",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:59:36",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road",-,"{""full_content_length"":9288}"
+"2025-11-24 13:59:36",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:59:36",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Announces 2026 MLS Regular Season Schedule"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:59:36",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 13:59:36",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":9339}"
+"2025-11-24 13:59:36",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 13:59:36",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 13:58:39",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Announces 2026 MLS Regular Season Schedule"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46748,""spoke_post_id"":48657,""job_id"":""aCyR4RaYMGK1O6BkQUp2lHXH3HN0k3Tf""}"
+"2025-11-24 13:58:26",INFO,syndicate_queued,"Post ""Nashville SC Announces 2026 MLS Regular Season Schedule"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""aCyR4RaYMGK1O6BkQUp2lHXH3HN0k3Tf"",""status"":""processing""},""async"":true,""job_id"":""aCyR4RaYMGK1O6BkQUp2lHXH3HN0k3Tf""}"
+"2025-11-24 13:58:26",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46748,""spoke_count"":2}"
+"2025-11-24 13:58:26",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 13:58:25",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Announces 2026 MLS Regular Season Schedule"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46748,""spoke_post_id"":47226,""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n""}"
+"2025-11-24 13:58:25",INFO,syndicate_queued,"Post ""Nashville SC Announces 2026 MLS Regular Season Schedule"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n"",""status"":""processing""},""async"":true,""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n""}"
+"2025-11-24 13:58:25",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road",-,"{""full_content_length"":9288}"
+"2025-11-24 13:58:25",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:58:25",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46748}"
+"2025-11-24 13:58:25",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 13:58:25",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":9342}"
+"2025-11-24 13:58:25",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 13:58:25",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 13:58:24",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 13:58:23",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 13:58:23",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-24 13:58:23",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:58:23",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:58:23",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road",-,"{""full_content_length"":9288}"
+"2025-11-24 13:58:23",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:58:23",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46748}"
+"2025-11-24 13:58:23",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 13:58:23",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":9339}"
+"2025-11-24 13:58:23",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 13:57:07",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:57:07",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:54:05",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:54:05",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:52:05",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:52:05",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46748,""post_title"":""Nashville SC Announces 2026 MLS Regular Season Schedule"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:51:40",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46748,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 13:51:40",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46748,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 13:43:07",SUCCESS,sync_completed,"Sync completed: ""Titans Come Up Short in 30-24 Loss to Seahawks"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46747,""spoke_post_id"":true,""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu""}"
+"2025-11-24 13:41:49",SUCCESS,sync_completed,"Sync completed: ""Titans Come Up Short in 30-24 Loss to Seahawks"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46747,""spoke_post_id"":true,""job_id"":""TUCMHjn9SZB6gHErMeL6bGLnz71PLjQw""}"
+"2025-11-24 13:41:46",INFO,update_queued,"Post ""Titans Come Up Short in 30-24 Loss to Seahawks"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""TUCMHjn9SZB6gHErMeL6bGLnz71PLjQw"",""status"":""processing""},""async"":true,""job_id"":""TUCMHjn9SZB6gHErMeL6bGLnz71PLjQw""}"
+"2025-11-24 13:41:46",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763991704,""yoast_lock"":false}"
+"2025-11-24 13:41:44",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46747,""spoke_count"":2}"
+"2025-11-24 13:41:44",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:41:44",INFO,debug_content,"DEBUG: Original post content: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big",-,"{""full_content_length"":7822}"
+"2025-11-24 13:41:44",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:41:44",INFO,yoast_collect,"Collected Yoast data for ""Titans Come Up Short in 30-24 Loss to Seahawks"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:41:44",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 13:41:44",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":7873}"
+"2025-11-24 13:41:44",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 13:41:44",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 13:41:44",INFO,update_queued,"Post ""Titans Come Up Short in 30-24 Loss to Seahawks"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu"",""status"":""processing""},""async"":true,""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu""}"
+"2025-11-24 13:41:44",INFO,debug_content,"DEBUG: Original post content: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big",-,"{""full_content_length"":7822}"
+"2025-11-24 13:41:44",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:41:44",INFO,yoast_collect,"Collected Yoast data for ""Titans Come Up Short in 30-24 Loss to Seahawks"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:41:44",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 13:41:44",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":7876}"
+"2025-11-24 13:41:44",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 13:41:44",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 13:41:13",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46747,""spoke_count"":2}"
+"2025-11-24 13:41:13",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 13:41:12",SUCCESS,sync_completed,"Sync completed: ""Titans Come Up Short in 30-24 Loss to Seahawks"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46747,""spoke_post_id"":48655,""job_id"":""AVuECrfrzHemKv7aEkNGWlG4YVLhVAbS""}"
+"2025-11-24 13:41:12",INFO,syndicate_queued,"Post ""Titans Come Up Short in 30-24 Loss to Seahawks"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""AVuECrfrzHemKv7aEkNGWlG4YVLhVAbS"",""status"":""processing""},""async"":true,""job_id"":""AVuECrfrzHemKv7aEkNGWlG4YVLhVAbS""}"
+"2025-11-24 13:41:11",SUCCESS,sync_completed,"Sync completed: ""Titans Come Up Short in 30-24 Loss to Seahawks"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46747,""spoke_post_id"":47224,""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4""}"
+"2025-11-24 13:41:11",INFO,syndicate_queued,"Post ""Titans Come Up Short in 30-24 Loss to Seahawks"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4"",""status"":""processing""},""async"":true,""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4""}"
+"2025-11-24 13:41:11",INFO,debug_content,"DEBUG: Original post content: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big",-,"{""full_content_length"":7822}"
+"2025-11-24 13:41:11",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:41:11",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46747}"
+"2025-11-24 13:41:11",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-11-24 13:41:11",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":7876}"
+"2025-11-24 13:41:11",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-11-24 13:41:11",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-11-24 13:41:10",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-11-24 13:41:09",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-24 13:41:09",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-24 13:41:09",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:41:09",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-11-24 13:41:09",INFO,debug_content,"DEBUG: Original post content: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big",-,"{""full_content_length"":7822}"
+"2025-11-24 13:41:09",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-24 13:41:09",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46747}"
+"2025-11-24 13:41:09",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-11-24 13:41:09",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":7873}"
+"2025-11-24 13:41:09",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-11-24 13:40:09",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:40:09",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:38:08",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:38:08",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:36:08",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:36:08",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46747,""post_title"":""Titans Come Up Short in 30-24 Loss to Seahawks"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-24 13:35:50",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46747,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-24 13:35:50",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46747,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-21 18:30:49",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""Y7AImtokHOarS3BjjO37aC3NOcWpVVXX""}"
+"2025-11-21 18:30:44",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""poRzCsmuF8AyeO48ZnsKCybLvMW9OMyX"",""status"":""processing""},""async"":true,""job_id"":""poRzCsmuF8AyeO48ZnsKCybLvMW9OMyX""}"
+"2025-11-21 18:30:43",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""Y7AImtokHOarS3BjjO37aC3NOcWpVVXX"",""status"":""processing""},""async"":true,""job_id"":""Y7AImtokHOarS3BjjO37aC3NOcWpVVXX""}"
+"2025-11-21 18:30:43",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:43",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:43",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls='{""hub",-,"{""full_content_length"":579}"
+"2025-11-21 18:30:43",INFO,gallery_sync,"Extracting 5 gallery images from post",-,"{""image_ids"":[""46566"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:30:43",SUCCESS,gallery_sync,"Prepared 5 gallery images for syndication",-,[]
+"2025-11-21 18:30:43",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:30:43",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:30:43",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link Test: ",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":642}"
+"2025-11-21 18:30:43",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:30:43",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:30:42",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:30:42",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:30:42",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:42",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:42",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls='{""hub",-,"{""full_content_length"":579}"
+"2025-11-21 18:30:42",INFO,gallery_sync,"Extracting 5 gallery images from post",-,"{""image_ids"":[""46566"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:30:42",SUCCESS,gallery_sync,"Prepared 5 gallery images for syndication",-,[]
+"2025-11-21 18:30:42",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:30:42",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:30:42",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link Test: ",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":642}"
+"2025-11-21 18:30:42",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:30:42",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:30:37",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""VWcyjXOUa9qXpCAfIYBlmP3po7AlZ8Xo""}"
+"2025-11-21 18:30:14",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""rhnWqbfgmac7l5vd4hJMt6VjJ4dlP2F5"",""status"":""processing""},""async"":true,""job_id"":""rhnWqbfgmac7l5vd4hJMt6VjJ4dlP2F5""}"
+"2025-11-21 18:30:13",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""VWcyjXOUa9qXpCAfIYBlmP3po7AlZ8Xo"",""status"":""processing""},""async"":true,""job_id"":""VWcyjXOUa9qXpCAfIYBlmP3po7AlZ8Xo""}"
+"2025-11-21 18:30:13",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:13",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:13",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:30:13",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:30:13",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:30:13",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:30:13",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:30:13",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:30:13",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:30:13",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:30:12",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:30:12",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:30:12",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:12",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:30:12",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:30:12",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:30:12",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:30:12",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:30:12",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:30:12",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:30:12",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:30:12",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:29:32",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""vbMMuYTr8cTYXQQ97sDfZnpDKzgbBuyX""}"
+"2025-11-21 18:29:27",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:29:27",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""d8j9uhf7JFcaqkZ0gEh25HzxO6UXAN1D"",""status"":""processing""},""async"":true,""job_id"":""d8j9uhf7JFcaqkZ0gEh25HzxO6UXAN1D""}"
+"2025-11-21 18:29:26",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""vbMMuYTr8cTYXQQ97sDfZnpDKzgbBuyX"",""status"":""processing""},""async"":true,""job_id"":""vbMMuYTr8cTYXQQ97sDfZnpDKzgbBuyX""}"
+"2025-11-21 18:29:26",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:29:26",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:29:26",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:29:26",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:29:26",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:29:26",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:29:26",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:29:26",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:29:26",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:29:25",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:29:25",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:29:25",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:29:25",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:29:25",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:29:25",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:29:25",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:29:25",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:29:25",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:29:25",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:29:25",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:29:25",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:29:13",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""4fXjZN5m3gBdCEoLDgUSFZKkGQy05HbJ""}"
+"2025-11-21 18:28:57",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:28:57",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:28:57",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:28:57",INFO,yoast_collect,"Collected Yoast data for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 18:28:57",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:28:57",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:28:57",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:28:57",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:27:48",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""aUApJjpMvEiWFBvInlLrGIutAHwyQp6q""}"
+"2025-11-21 18:27:42",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""aUApJjpMvEiWFBvInlLrGIutAHwyQp6q"",""status"":""processing""},""async"":true,""job_id"":""aUApJjpMvEiWFBvInlLrGIutAHwyQp6q""}"
+"2025-11-21 18:27:42",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:27:42",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:27:42",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:27:42",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:27:42",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:27:42",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:27:42",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:27:42",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:27:42",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:27:42",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:27:42",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""A7IoGOVNQGKuIqIHcvEEemWH62JEXXPt"",""status"":""processing""},""async"":true,""job_id"":""A7IoGOVNQGKuIqIHcvEEemWH62JEXXPt""}"
+"2025-11-21 18:27:40",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:27:40",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:27:40",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:27:40",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:27:40",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:27:40",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:27:40",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:27:40",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:27:40",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:27:40",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:27:40",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:27:40",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:26:13",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""SOs09uLSKa2EwzFu621Ep1u5SJshqg0l""}"
+"2025-11-21 18:26:06",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""cer47Zm0XN4bMvzf0mqNGTdCmRauHaRd"",""status"":""processing""},""async"":true,""job_id"":""cer47Zm0XN4bMvzf0mqNGTdCmRauHaRd""}"
+"2025-11-21 18:26:04",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:26:04",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:26:04",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:26:04",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:26:04",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:26:04",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:26:04",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:26:04",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:26:04",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:26:04",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:26:04",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:26:04",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:26:04",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""SOs09uLSKa2EwzFu621Ep1u5SJshqg0l"",""status"":""processing""},""async"":true,""job_id"":""SOs09uLSKa2EwzFu621Ep1u5SJshqg0l""}"
+"2025-11-21 18:26:04",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:26:04",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:26:04",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-l",-,"{""full_content_length"":594}"
+"2025-11-21 18:26:04",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46402"",""46471""]}"
+"2025-11-21 18:26:04",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:26:04",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:26:04",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:26:04",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty, ADDED Disney
+
+[gallery ids=""46566,46544,46557,46632,46402""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Sm",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":657}"
+"2025-11-21 18:26:04",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:26:04",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:24:27",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""VkrK1dzw5lXRoiljPweoOfCN2m114gpl""}"
+"2025-11-21 18:24:22",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""VkrK1dzw5lXRoiljPweoOfCN2m114gpl"",""status"":""processing""},""async"":true,""job_id"":""VkrK1dzw5lXRoiljPweoOfCN2m114gpl""}"
+"2025-11-21 18:24:22",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:24:22",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:24:22",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls='{""hub20spo",-,"{""full_content_length"":574}"
+"2025-11-21 18:24:22",INFO,gallery_sync,"Extracting 5 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46471""]}"
+"2025-11-21 18:24:22",SUCCESS,gallery_sync,"Prepared 5 gallery images for syndication",-,[]
+"2025-11-21 18:24:22",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:24:22",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:24:22",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link Test: Hubsp",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":637}"
+"2025-11-21 18:24:22",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:24:22",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:24:22",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""KWqs6TOOiuO82Lie8Skhgpb3aTN8O12b"",""status"":""processing""},""async"":true,""job_id"":""KWqs6TOOiuO82Lie8Skhgpb3aTN8O12b""}"
+"2025-11-21 18:24:20",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:24:20",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:24:20",INFO,update,"Syncing updates for post ""1985 Gallery & image testing"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:24:20",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:24:20",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls='{""hub20spo",-,"{""full_content_length"":574}"
+"2025-11-21 18:24:20",INFO,gallery_sync,"Extracting 5 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46471""]}"
+"2025-11-21 18:24:20",SUCCESS,gallery_sync,"Prepared 5 gallery images for syndication",-,[]
+"2025-11-21 18:24:20",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:24:20",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:24:20",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+UPDATED
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link Test: Hubsp",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":637}"
+"2025-11-21 18:24:20",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:24:20",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:23:36",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""jIuTaSXCzxs5w34tnpGtSzkKpWf2lsrT""}"
+"2025-11-21 18:23:26",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls='{""hub20spokesite"":""ww",-,"{""full_content_length"":563}"
+"2025-11-21 18:23:26",INFO,gallery_sync,"Extracting 5 gallery images from post",-,"{""image_ids"":[""46566"",""46544"",""46557"",""46632"",""46471""]}"
+"2025-11-21 18:23:26",SUCCESS,gallery_sync,"Prepared 5 gallery images for syndication",-,[]
+"2025-11-21 18:23:26",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:23:26",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:23:26",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46544,46557,46632""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link Test: Hubspoke20 goes ",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":626}"
+"2025-11-21 18:23:26",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:23:26",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:22:37",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:22:37",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:22:16",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:22:16",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:22:12",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":true,""job_id"":""SO6V0NOJ1Wz1u21O7Xy2OnIEXcYknXWT""}"
+"2025-11-21 18:22:06",INFO,update_queued,"Post ""1985 Gallery & image testing"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""SO6V0NOJ1Wz1u21O7Xy2OnIEXcYknXWT"",""status"":""processing""},""async"":true,""job_id"":""SO6V0NOJ1Wz1u21O7Xy2OnIEXcYknXWT""}"
+"2025-11-21 18:22:06",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763749324,""yoast_lock"":false}"
+"2025-11-21 18:22:04",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46745,""spoke_count"":1}"
+"2025-11-21 18:22:04",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:22:04",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Jonas Brothers, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46541,46544,46557,46632""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls=",-,"{""full_content_length"":585}"
+"2025-11-21 18:22:04",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46541"",""46544"",""46557"",""46632"",""46471""]}"
+"2025-11-21 18:22:04",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:22:04",WARNING,yoast_collect,"No Yoast data found for ""1985 Gallery & image testing"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:22:04",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:22:04",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Jonas Brothers, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46541,46544,46557,46632""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link ",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":648}"
+"2025-11-21 18:22:04",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:22:04",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:21:21",SUCCESS,sync_completed,"Sync completed: ""1985 Gallery & image testing"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46745,""spoke_post_id"":47312,""job_id"":""4cWjxE69fySyXYMEe86oJMjnUv8m3N2H""}"
+"2025-11-21 18:21:12",INFO,syndicate_queued,"Post ""1985 Gallery & image testing"" queued for syndication to hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""4cWjxE69fySyXYMEe86oJMjnUv8m3N2H"",""status"":""processing""},""async"":true,""job_id"":""4cWjxE69fySyXYMEe86oJMjnUv8m3N2H""}"
+"2025-11-21 18:21:12",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46745,""spoke_count"":1}"
+"2025-11-21 18:21:12",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:21:11",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 18:21:10",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 18:21:10",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-21 18:21:10",INFO,spokes_found,"Found 1 selected spokes in POST data for first publish",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:21:10",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[1]}"
+"2025-11-21 18:21:10",INFO,debug_content,"DEBUG: Original post content: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Jonas Brothers, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46541,46544,46557,46632""]
+
+Smart Link Test
+
+[smart-link path=""/weather""]weather[/smart-link]
+
+Custom Smart Link Test: Hubspoke20 goes to google.com
+
+[custom-smart-link urls=",-,"{""full_content_length"":585}"
+"2025-11-21 18:21:10",INFO,gallery_sync,"Extracting 6 gallery images from post",-,"{""image_ids"":[""46566"",""46541"",""46544"",""46557"",""46632"",""46471""]}"
+"2025-11-21 18:21:10",SUCCESS,gallery_sync,"Prepared 6 gallery images for syndication",-,[]
+"2025-11-21 18:21:10",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync",hub20spokesite,"{""post_id"":46745}"
+"2025-11-21 18:21:10",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 18:21:10",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 Gallery &amp; image testing
+
+Firemen
+<img class=""alignnone size-medium wp-image-46471"" src=""https://hub2a.wpenginepowered.com/wp-content/uploads/2025/10/fire-mgmt-300x200.webp"" alt="""" width=""300"" height=""200"" />
+
+<strong>Gallery
+</strong>Pie, Jonas Brothers, Whiskey, Football, Frosty
+
+[gallery ids=""46566,46541,46544,46557,46632""]
+
+Smart Link Test
+
+<a href=""https://hub20spokesite.wpenginepowered.com/weather"" class=""sourcehub-smart-link-processed"">weather</a>
+
+Custom Smart Link ",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":648}"
+"2025-11-21 18:21:10",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 18:19:49",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 18:19:49",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 18:17:48",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 18:17:48",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46745,""post_title"":""1985 Gallery & image testing"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 18:17:25",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46745,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-21 18:17:25",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46745,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-21 17:33:58",ERROR,timeout,"Syndication timeout for post 46739 to hub20spokesite after 5 minutes",hub20spokesite,"{""connection_id"":1,""elapsed_seconds"":3220,""started_at"":""2025-11-21 10:40:18""}"
+"2025-11-21 17:19:50",SUCCESS,sync_completed,"Sync completed: ""1985 test post (rerun 2)"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46744,""spoke_post_id"":true,""job_id"":""qSb0X7gVzOpov5yZWfnVght92nns8Ee3""}"
+"2025-11-21 17:19:48",INFO,update_queued,"Post ""1985 test post (rerun 2)"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""X03lnACABMZK0Ung6yGxrDr1K6tfsQtU"",""status"":""processing""},""async"":true,""job_id"":""X03lnACABMZK0Ung6yGxrDr1K6tfsQtU""}"
+"2025-11-21 17:19:47",INFO,update_queued,"Post ""1985 test post (rerun 2)"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""qSb0X7gVzOpov5yZWfnVght92nns8Ee3"",""status"":""processing""},""async"":true,""job_id"":""qSb0X7gVzOpov5yZWfnVght92nns8Ee3""}"
+"2025-11-21 17:19:47",INFO,update,"Syncing updates for post ""1985 test post (rerun 2)"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:19:47",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:19:47",INFO,debug_content,"DEBUG: Original post content: 1985 test post (rerun 2) update",-,"{""full_content_length"":31}"
+"2025-11-21 17:19:47",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-21 17:19:47",INFO,yoast_collect,"Collected Yoast data for ""1985 test post (rerun 2)"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 17:19:47",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 17:19:47",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 test post (rerun 2) update",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":31}"
+"2025-11-21 17:19:47",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 17:19:47",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 17:19:46",INFO,update,"Syncing updates for post ""1985 test post (rerun 2)"" to 1 existing spoke sites",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:19:46",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:19:46",INFO,debug_content,"DEBUG: Original post content: 1985 test post (rerun 2) update",-,"{""full_content_length"":31}"
+"2025-11-21 17:19:46",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-21 17:19:46",INFO,yoast_collect,"Collected Yoast data for ""1985 test post (rerun 2)"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 17:19:46",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 17:19:46",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 test post (rerun 2) update",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":31}"
+"2025-11-21 17:19:46",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 17:19:46",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 17:19:45",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 17:19:45",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 17:10:44",SUCCESS,sync_completed,"Sync completed: ""1985 test post (rerun 2)"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46744,""spoke_post_id"":true,""job_id"":""iP528BfKEoyFOcBnJNhGkaPugfwgt3ZW""}"
+"2025-11-21 17:10:13",INFO,update_queued,"Post ""1985 test post (rerun 2)"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""iP528BfKEoyFOcBnJNhGkaPugfwgt3ZW"",""status"":""processing""},""async"":true,""job_id"":""iP528BfKEoyFOcBnJNhGkaPugfwgt3ZW""}"
+"2025-11-21 17:10:13",WARNING,delayed_sync_locked,"Delayed sync blocked by existing lock",-,"{""sync_lock"":false,""delayed_lock"":1763745011,""yoast_lock"":false}"
+"2025-11-21 17:10:12",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 17:10:11",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46744,""spoke_count"":1}"
+"2025-11-21 17:10:11",INFO,update,"Updating 1 spokes",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:10:11",INFO,debug_content,"DEBUG: Original post content: 1985 test post (rerun 2)",-,"{""full_content_length"":24}"
+"2025-11-21 17:10:11",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-21 17:10:11",INFO,yoast_collect,"Collected Yoast data for ""1985 test post (rerun 2)"" to send to hub20spokesite",hub20spokesite,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-21 17:10:11",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 17:10:11",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 test post (rerun 2)",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":24}"
+"2025-11-21 17:10:11",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 17:09:40",SUCCESS,sync_completed,"Sync completed: ""1985 test post (rerun 2)"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46744,""spoke_post_id"":47309,""job_id"":""rxGlSti8XhfRTg4xCSvCLph22YSFHV7n""}"
+"2025-11-21 17:09:40",INFO,syndicate_queued,"Post ""1985 test post (rerun 2)"" queued for syndication to hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""rxGlSti8XhfRTg4xCSvCLph22YSFHV7n"",""status"":""processing""},""async"":true,""job_id"":""rxGlSti8XhfRTg4xCSvCLph22YSFHV7n""}"
+"2025-11-21 17:09:40",INFO,delayed_sync_scheduled,"Scheduled delayed sync in 20 seconds to add image, Yoast data, and publish",-,"{""post_id"":46744,""spoke_count"":1}"
+"2025-11-21 17:09:40",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 17:09:39",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-11-21 17:09:39",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-11-21 17:09:39",INFO,spokes_found,"Found 1 selected spokes in POST data for first publish",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:09:39",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[1]}"
+"2025-11-21 17:09:39",INFO,debug_content,"DEBUG: Original post content: 1985 test post (rerun 2)",-,"{""full_content_length"":24}"
+"2025-11-21 17:09:39",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-11-21 17:09:39",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync",hub20spokesite,"{""post_id"":46744}"
+"2025-11-21 17:09:39",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-11-21 17:09:39",INFO,debug_content,"DEBUG: Final content being sent to spoke: 1985 test post (rerun 2)",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":24}"
+"2025-11-21 17:09:39",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-11-21 17:09:39",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-11-21 17:08:56",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 17:08:56",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46744,""post_title"":""1985 test post (rerun 2)"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-11-21 17:08:37",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46744,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-11-21 17:08:37",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46744,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
