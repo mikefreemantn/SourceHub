@@ -146,11 +146,21 @@ class SourceHub_Hub_Manager {
                 'sync_completed'
             );
             
+            // CRITICAL: Save sync_status to database NOW before checking if all creates are complete
+            // This ensures subsequent callbacks can see this completion
+            update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
+            
             // If this was a CREATE completion and post is pending completion, schedule delayed sync
             if ($action === 'create') {
                 $pending_completion = get_post_meta($hub_post_id, '_sourcehub_pending_completion', true);
                 
                 if ($pending_completion) {
+                    // Re-read sync_status from database to get latest from all callbacks
+                    $sync_status = get_post_meta($hub_post_id, '_sourcehub_sync_status', true);
+                    if (!is_array($sync_status)) {
+                        $sync_status = array();
+                    }
+                    
                     // Check if all spokes have completed their CREATE
                     $all_creates_complete = true;
                     $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
@@ -216,9 +226,10 @@ class SourceHub_Hub_Manager {
             
             error_log(sprintf('SourceHub Hub: Post %d failed to sync to %s: %s', 
                 $hub_post_id, $connection->name, $error_message));
+            
+            // Save failed status to database
+            update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
         }
-        
-        update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
         
         // Update connection's last_sync timestamp
         global $wpdb;
