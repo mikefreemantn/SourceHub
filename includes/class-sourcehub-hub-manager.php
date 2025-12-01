@@ -152,7 +152,10 @@ class SourceHub_Hub_Manager {
             
             // If this was a CREATE completion and post is pending completion, schedule delayed sync
             if ($action === 'create') {
+                error_log(sprintf('SourceHub Hub: CREATE completion for post %d, checking if delayed sync should be scheduled', $hub_post_id));
+                
                 $pending_completion = get_post_meta($hub_post_id, '_sourcehub_pending_completion', true);
+                error_log(sprintf('SourceHub Hub: pending_completion flag: %s', $pending_completion ? 'TRUE' : 'FALSE'));
                 
                 if ($pending_completion) {
                     // Re-read sync_status from database to get latest from all callbacks
@@ -165,15 +168,22 @@ class SourceHub_Hub_Manager {
                     $all_creates_complete = true;
                     $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
                     
+                    error_log(sprintf('SourceHub Hub: syndicated_spokes: %s', print_r($syndicated_spokes, true)));
+                    error_log(sprintf('SourceHub Hub: sync_status: %s', print_r($sync_status, true)));
+                    
                     if (is_array($syndicated_spokes)) {
                         foreach ($syndicated_spokes as $spoke_id) {
                             $spoke_status = $sync_status[$spoke_id] ?? null;
+                            error_log(sprintf('SourceHub Hub: Checking spoke %d - status: %s', $spoke_id, print_r($spoke_status, true)));
                             if (!$spoke_status || $spoke_status['status'] !== 'success' || ($spoke_status['action'] ?? '') !== 'create') {
                                 $all_creates_complete = false;
+                                error_log(sprintf('SourceHub Hub: Spoke %d not complete yet', $spoke_id));
                                 break;
                             }
                         }
                     }
+                    
+                    error_log(sprintf('SourceHub Hub: all_creates_complete: %s', $all_creates_complete ? 'TRUE' : 'FALSE'));
                     
                     // If all CREATEs are done, schedule the delayed sync
                     if ($all_creates_complete) {
