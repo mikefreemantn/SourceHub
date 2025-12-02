@@ -1326,6 +1326,12 @@ class SourceHub_Hub_Manager {
 
         // For first publish: Create draft first, then schedule delayed sync for image+Yoast+publish
         // This prevents duplicate images and ensures Yoast data is ready
+        
+        // CRITICAL: Mark as pending completion BEFORE sending requests
+        // This ensures callbacks can see the flag when they arrive (even if spoke completes in <1 second)
+        update_post_meta($post_id, '_sourcehub_pending_completion', true);
+        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($spoke_ids));
+        
         SourceHub_Logger::info(
             'Creating draft posts on spoke sites (no image yet)',
             array('spoke_ids' => $spoke_ids),
@@ -1403,10 +1409,6 @@ class SourceHub_Hub_Manager {
             }
         }
 
-        // Mark as pending completion (not fully syndicated yet - waiting for image/Yoast)
-        update_post_meta($post_id, '_sourcehub_pending_completion', true);
-        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
-        
         // CRITICAL: Re-read sync_status from database before saving to avoid overwriting callback updates
         // If a spoke completed quickly, its callback may have already updated the status to 'success'
         // We need to merge our 'processing' statuses with any 'success' statuses from callbacks
