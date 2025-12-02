@@ -47,6 +47,16 @@ class SourceHub_Hub_Manager {
         // Handle delayed syncs (for Yoast and Newspaper meta)
         add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
         
+        // TEMPORARY: Manual trigger for testing
+        add_action('admin_init', function() {
+            if (isset($_GET['trigger_delayed_sync']) && isset($_GET['post_id'])) {
+                $post_id = intval($_GET['post_id']);
+                error_log('MANUAL TRIGGER: Calling handle_delayed_sync for post ' . $post_id);
+                $this->handle_delayed_sync($post_id);
+                wp_die('Delayed sync triggered for post ' . $post_id . '. Check logs.');
+            }
+        });
+        
         // REST API for async callbacks
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         
@@ -1821,6 +1831,15 @@ class SourceHub_Hub_Manager {
             'page_template' => $page_template,
             'hub_url' => home_url()
         );
+        
+        // For UPDATE requests, include the spoke_post_id from sync_status
+        // This is CRITICAL - without it, the spoke doesn't know which post to update
+        $sync_status = get_post_meta($post->ID, '_sourcehub_sync_status', true);
+        if (is_array($sync_status) && isset($sync_status[$connection->id]['spoke_post_id'])) {
+            $data['spoke_post_id'] = $sync_status[$connection->id]['spoke_post_id'];
+            error_log(sprintf('SourceHub: Including spoke_post_id %d for connection %s in update request', 
+                $data['spoke_post_id'], $connection->name));
+        }
 
         // Add author information
         $author = get_userdata($post->post_author);
