@@ -160,6 +160,10 @@ class SourceHub_Hub_Manager {
                 error_log(sprintf('SourceHub Hub: pending_completion flag: %s', $pending_completion ? 'TRUE' : 'FALSE'));
                 
                 if ($pending_completion) {
+                    // CRITICAL: Clear object cache to force fresh read from database
+                    // This prevents race conditions where we read stale cached data
+                    wp_cache_delete($hub_post_id, 'post_meta');
+                    
                     // Re-read sync_status from database to get latest from all callbacks
                     $sync_status = get_post_meta($hub_post_id, '_sourcehub_sync_status', true);
                     if (!is_array($sync_status)) {

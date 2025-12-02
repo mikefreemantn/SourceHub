@@ -2,6 +2,15 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.3] - 2025-12-02
+
+### Fixed
+- **Critical Race Condition in Delayed Sync**: Fixed object cache issue preventing delayed sync from triggering
+  - Added `wp_cache_delete()` to force fresh read of sync status from database
+  - Prevents stale cached data from causing "all creates complete" check to fail
+  - Resolves issue where second spoke completion couldn't detect first spoke's success
+  - Ensures delayed sync (image + Yoast + publish) triggers reliably when all draft creates complete
+
 ## [1.0.2] - 2025-01-28
 
 ### Added
