@@ -47,21 +47,13 @@ class SourceHub_Hub_Manager {
         // Handle delayed syncs (for Yoast and Newspaper meta)
         add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
         
-        // TEMPORARY: Manual trigger for testing
-        add_action('admin_init', function() {
-            if (isset($_GET['trigger_delayed_sync']) && isset($_GET['post_id'])) {
-                $post_id = intval($_GET['post_id']);
-                error_log('MANUAL TRIGGER: Calling handle_delayed_sync for post ' . $post_id);
-                $this->handle_delayed_sync($post_id);
-                wp_die('Delayed sync triggered for post ' . $post_id . '. Check logs.');
-            }
-        });
-        
         // REST API for async callbacks
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
+        add_action('wp_ajax_sourcehub_delayed_sync', array($this, 'ajax_delayed_sync'));
+        add_action('wp_ajax_nopriv_sourcehub_delayed_sync', array($this, 'ajax_delayed_sync'));
         
         // Schedule timeout check for stuck processing jobs
         if (!wp_next_scheduled('sourcehub_check_timeouts')) {
@@ -195,44 +187,29 @@ class SourceHub_Hub_Manager {
                     
                     error_log(sprintf('SourceHub Hub: all_creates_complete: %s', $all_creates_complete ? 'TRUE' : 'FALSE'));
                     
-                    // If all CREATEs are done, schedule the delayed sync
+                    // If all CREATEs are done, trigger delayed sync immediately via background request
                     if ($all_creates_complete) {
-                        $scheduled = wp_next_scheduled('sourcehub_delayed_sync', array($hub_post_id));
-                        if (!$scheduled) {
-                            wp_schedule_single_event(time() + 20, 'sourcehub_delayed_sync', array($hub_post_id));
-                            
-                            SourceHub_Logger::info(
-                                'All draft creates completed - scheduling delayed sync in 20 seconds to add image, Yoast data, and publish',
-                                array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
-                                $hub_post_id,
-                                null,
-                                'delayed_sync_scheduled'
-                            );
-                            
-                            error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduled delayed sync', $hub_post_id));
-                            
-                            // For local development, manually spawn cron since it may not run automatically
-                            if (defined('WP_DEBUG') && WP_DEBUG) {
-                                add_action('admin_footer', function() use ($hub_post_id) {
-                                    ?>
-                                    <script>
-                                    console.log('SourceHub: Scheduling manual cron trigger in 21 seconds for post <?php echo $hub_post_id; ?>');
-                                    setTimeout(function() {
-                                        console.log('SourceHub: Triggering WP Cron manually');
-                                        fetch('<?php echo site_url('wp-cron.php'); ?>?doing_wp_cron', {
-                                            method: 'GET',
-                                            cache: 'no-cache'
-                                        }).then(function() {
-                                            console.log('SourceHub: WP Cron triggered successfully');
-                                        }).catch(function(error) {
-                                            console.error('SourceHub: Failed to trigger WP Cron:', error);
-                                        });
-                                    }, 21000);
-                                    </script>
-                                    <?php
-                                });
-                            }
-                        }
+                        SourceHub_Logger::info(
+                            'All draft creates completed - triggering delayed sync in background to add image, Yoast data, and publish',
+                            array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
+                            $hub_post_id,
+                            null,
+                            'delayed_sync_triggered'
+                        );
+                        
+                        error_log(sprintf('SourceHub Hub: All creates complete for post %d, triggering delayed sync', $hub_post_id));
+                        
+                        // Trigger delayed sync via background HTTP request (non-blocking)
+                        // This ensures it executes regardless of WordPress cron status
+                        wp_remote_post(admin_url('admin-ajax.php'), array(
+                            'timeout' => 0.01, // Non-blocking - don't wait for response
+                            'blocking' => false,
+                            'body' => array(
+                                'action' => 'sourcehub_delayed_sync',
+                                'post_id' => $hub_post_id,
+                                'nonce' => wp_create_nonce('sourcehub_delayed_sync_' . $hub_post_id)
+                            )
+                        ));
                     }
                 }
             }
@@ -2420,6 +2397,28 @@ class SourceHub_Hub_Manager {
         $this->pending_syncs = array();
     }
 
+    /**
+     * Handle AJAX delayed sync request (triggered automatically after CREATE completes)
+     */
+    public function ajax_delayed_sync() {
+        $post_id = intval($_POST['post_id'] ?? 0);
+        $nonce = $_POST['nonce'] ?? '';
+        
+        // Verify nonce
+        if (!wp_verify_nonce($nonce, 'sourcehub_delayed_sync_' . $post_id)) {
+            error_log('SourceHub: Delayed sync AJAX - invalid nonce for post ' . $post_id);
+            wp_die('Invalid nonce', 403);
+        }
+        
+        error_log('SourceHub: Delayed sync AJAX triggered for post ' . $post_id);
+        
+        // Call the delayed sync handler
+        $this->handle_delayed_sync($post_id);
+        
+        // Don't send response - this is a fire-and-forget background request
+        wp_die('', 200);
+    }
+    
     /**
      * Handle AJAX sync post request (update existing)
      */
