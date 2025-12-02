@@ -2,6 +2,16 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.4] - 2025-12-02
+
+### Fixed
+- **Critical Lock Timing Issue**: Fixed sync lock collision preventing delayed sync from executing
+  - Changed from immediate background execution to 2-second scheduled delay
+  - Allows CREATE sync locks to be released before UPDATE operations begin
+  - Prevents "delayed_sync_locked" errors that left posts in draft status
+  - Ensures delayed sync (image + Yoast + publish) executes without lock conflicts
+  - Removed AJAX handler in favor of WordPress cron with short delay
+
 ## [1.9.9.3] - 2025-12-02
 
 ### Fixed

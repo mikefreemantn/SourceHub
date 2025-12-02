@@ -52,8 +52,6 @@ class SourceHub_Hub_Manager {
         
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
-        add_action('wp_ajax_sourcehub_delayed_sync', array($this, 'ajax_delayed_sync'));
-        add_action('wp_ajax_nopriv_sourcehub_delayed_sync', array($this, 'ajax_delayed_sync'));
         
         // Schedule timeout check for stuck processing jobs
         if (!wp_next_scheduled('sourcehub_check_timeouts')) {
@@ -191,29 +189,21 @@ class SourceHub_Hub_Manager {
                     
                     error_log(sprintf('SourceHub Hub: all_creates_complete: %s', $all_creates_complete ? 'TRUE' : 'FALSE'));
                     
-                    // If all CREATEs are done, trigger delayed sync immediately via background request
+                    // If all CREATEs are done, schedule delayed sync with short delay to allow locks to clear
                     if ($all_creates_complete) {
                         SourceHub_Logger::info(
-                            'All draft creates completed - triggering delayed sync in background to add image, Yoast data, and publish',
+                            'All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish',
                             array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
                             $hub_post_id,
                             null,
-                            'delayed_sync_triggered'
+                            'delayed_sync_scheduled'
                         );
                         
-                        error_log(sprintf('SourceHub Hub: All creates complete for post %d, triggering delayed sync', $hub_post_id));
+                        error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
                         
-                        // Trigger delayed sync via background HTTP request (non-blocking)
-                        // This ensures it executes regardless of WordPress cron status
-                        wp_remote_post(admin_url('admin-ajax.php'), array(
-                            'timeout' => 0.01, // Non-blocking - don't wait for response
-                            'blocking' => false,
-                            'body' => array(
-                                'action' => 'sourcehub_delayed_sync',
-                                'post_id' => $hub_post_id,
-                                'nonce' => wp_create_nonce('sourcehub_delayed_sync_' . $hub_post_id)
-                            )
-                        ));
+                        // Schedule delayed sync with 2-second delay to ensure sync locks are released
+                        // This prevents lock collision between CREATE and UPDATE operations
+                        wp_schedule_single_event(time() + 2, 'sourcehub_delayed_sync', array($hub_post_id));
                     }
                 }
             }
@@ -2401,28 +2391,6 @@ class SourceHub_Hub_Manager {
         $this->pending_syncs = array();
     }
 
-    /**
-     * Handle AJAX delayed sync request (triggered automatically after CREATE completes)
-     */
-    public function ajax_delayed_sync() {
-        $post_id = intval($_POST['post_id'] ?? 0);
-        $nonce = $_POST['nonce'] ?? '';
-        
-        // Verify nonce
-        if (!wp_verify_nonce($nonce, 'sourcehub_delayed_sync_' . $post_id)) {
-            error_log('SourceHub: Delayed sync AJAX - invalid nonce for post ' . $post_id);
-            wp_die('Invalid nonce', 403);
-        }
-        
-        error_log('SourceHub: Delayed sync AJAX triggered for post ' . $post_id);
-        
-        // Call the delayed sync handler
-        $this->handle_delayed_sync($post_id);
-        
-        // Don't send response - this is a fire-and-forget background request
-        wp_die('', 200);
-    }
-    
     /**
      * Handle AJAX sync post request (update existing)
      */
