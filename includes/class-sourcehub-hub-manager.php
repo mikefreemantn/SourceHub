@@ -201,9 +201,24 @@ class SourceHub_Hub_Manager {
                         
                         error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
                         
-                        // Schedule delayed sync with 2-second delay to ensure sync locks are released
-                        // This prevents lock collision between CREATE and UPDATE operations
-                        wp_schedule_single_event(time() + 2, 'sourcehub_delayed_sync', array($hub_post_id));
+                        // Schedule delayed sync with 2-second delay using Action Scheduler
+                        // Action Scheduler is more reliable than wp-cron and works in all environments
+                        $scheduled_time = time() + 2;
+                        
+                        // Use Action Scheduler for bulletproof execution
+                        $action_id = as_schedule_single_action(
+                            $scheduled_time,
+                            'sourcehub_delayed_sync',
+                            array('post_id' => $hub_post_id),
+                            'sourcehub'
+                        );
+                        
+                        if ($action_id) {
+                            error_log(sprintf('SourceHub Hub: Action Scheduler - delayed sync scheduled (ID: %d) for %s', 
+                                $action_id, date('Y-m-d H:i:s', $scheduled_time)));
+                        } else {
+                            error_log('SourceHub Hub: ERROR - Failed to schedule delayed sync with Action Scheduler!');
+                        }
                     }
                 }
             }
@@ -2212,9 +2227,20 @@ class SourceHub_Hub_Manager {
     
     /**
      * Handle delayed sync
+     * 
+     * @param int|array $post_id Post ID (from wp-cron) or array with 'post_id' key (from Action Scheduler)
      */
     public function handle_delayed_sync($post_id) {
-        error_log('SourceHub: handle_delayed_sync called for post ' . $post_id);
+        // Action Scheduler passes args as array, wp-cron passes as direct param
+        if (is_array($post_id) && isset($post_id['post_id'])) {
+            $post_id = $post_id['post_id'];
+        }
+        
+        error_log('SourceHub: ========================================');
+        error_log('SourceHub: handle_delayed_sync CALLED for post ' . $post_id);
+        error_log('SourceHub: Current time: ' . date('Y-m-d H:i:s'));
+        error_log('SourceHub: Triggered by: Action Scheduler');
+        error_log('SourceHub: ========================================');
         
         // Check if ANY sync is already running (unified lock check)
         $sync_lock_key = 'sourcehub_sync_lock_' . $post_id;

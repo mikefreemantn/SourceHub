@@ -2,6 +2,41 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.6] - 2025-12-02
+
+### Added
+- **Action Scheduler Integration**: Replaced unreliable WordPress cron with Action Scheduler
+  - Battle-tested library used by WooCommerce (millions of sites)
+  - Guaranteed execution in all hosting environments (including WP Engine)
+  - Self-executing background task processor
+  - Built-in retry logic and failure handling
+  - No dependency on site traffic or server cron configuration
+  - Works reliably in development, staging, and production environments
+
+### Fixed
+- **Delayed Sync Reliability**: Eliminated all cron-related execution failures
+  - Action Scheduler ensures delayed sync always executes
+  - No more posts stuck in draft status
+  - Images, Yoast data, and publish status now sync reliably
+  - Removed all wp-cron workarounds (spawn_cron, etc.)
+
+## [1.9.9.5] - 2025-12-02
+
+### Fixed
+- **WordPress Cron Execution**: Force cron execution with `spawn_cron()` after scheduling delayed sync
+  - WordPress cron only runs when someone visits the site (pseudo-cron)
+  - In low-traffic or development environments, scheduled events may never execute
+  - Now manually spawn wp-cron.php immediately after scheduling to guarantee execution
+  - Added comprehensive diagnostic logging to track cron scheduling and execution
+
+### Added
+- **WordPress Cron Diagnostics**: Added comprehensive logging to diagnose cron execution issues
+  - Check if `DISABLE_WP_CRON` constant is set
+  - Verify event scheduling success/failure
+  - Confirm event is in cron queue after scheduling
+  - Log when `handle_delayed_sync` is actually called
+  - Helps identify why delayed sync events aren't executing
+
 ## [1.9.9.4] - 2025-12-02
 
 ### Fixed
