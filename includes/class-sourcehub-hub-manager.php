@@ -1406,6 +1406,20 @@ class SourceHub_Hub_Manager {
         // Mark as pending completion (not fully syndicated yet - waiting for image/Yoast)
         update_post_meta($post_id, '_sourcehub_pending_completion', true);
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
+        
+        // CRITICAL: Re-read sync_status from database before saving to avoid overwriting callback updates
+        // If a spoke completed quickly, its callback may have already updated the status to 'success'
+        // We need to merge our 'processing' statuses with any 'success' statuses from callbacks
+        $current_sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (is_array($current_sync_status)) {
+            foreach ($current_sync_status as $spoke_id => $spoke_data) {
+                // If callback already marked this spoke as success, keep that status
+                if (isset($spoke_data['status']) && $spoke_data['status'] === 'success') {
+                    $sync_status[$spoke_id] = $spoke_data;
+                }
+            }
+        }
+        
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
@@ -1574,6 +1588,17 @@ class SourceHub_Hub_Manager {
             }
         }
 
+        // CRITICAL: Re-read sync_status from database before saving to avoid overwriting callback updates
+        $current_sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (is_array($current_sync_status)) {
+            foreach ($current_sync_status as $spoke_id => $spoke_data) {
+                // If callback already marked this spoke as success, keep that status
+                if (isset($spoke_data['status']) && $spoke_data['status'] === 'success') {
+                    $sync_status[$spoke_id] = $spoke_data;
+                }
+            }
+        }
+        
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
