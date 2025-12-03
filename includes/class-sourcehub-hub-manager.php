@@ -200,6 +200,7 @@ class SourceHub_Hub_Manager {
                         );
                         
                         error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
+                        error_log('SourceHub Hub: *** REACHED SCHEDULING CODE - v1.9.9.7 ***');
                         
                         // Schedule delayed sync with 2-second delay using Action Scheduler
                         // Action Scheduler is more reliable than wp-cron and works in all environments
@@ -2255,22 +2256,18 @@ class SourceHub_Hub_Manager {
         error_log('SourceHub: Triggered by: Action Scheduler');
         error_log('SourceHub: ========================================');
         
-        // Check if ANY sync is already running (unified lock check)
+        // Check if main sync is already running
+        // NOTE: We don't check delayed_sync_lock here because this IS the delayed sync
         $sync_lock_key = 'sourcehub_sync_lock_' . $post_id;
-        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
-        $yoast_lock_key = 'sourcehub_yoast_sync_lock_' . $post_id;
-        
         $sync_lock = get_transient($sync_lock_key);
-        $delayed_lock = get_transient($delayed_sync_lock_key);
-        $yoast_lock = get_transient($yoast_lock_key);
         
-        error_log('SourceHub: Lock status - sync: ' . ($sync_lock ? $sync_lock : 'NOT SET') . ', delayed: ' . ($delayed_lock ? $delayed_lock : 'NOT SET') . ', yoast: ' . ($yoast_lock ? $yoast_lock : 'NOT SET'));
+        error_log('SourceHub: Lock status - sync_lock: ' . ($sync_lock ? $sync_lock : 'NOT SET'));
         
-        if ($sync_lock || $delayed_lock || $yoast_lock) {
-            error_log('SourceHub: Sync already running for post ' . $post_id . ' (locked), skipping delayed sync');
+        if ($sync_lock) {
+            error_log('SourceHub: Main sync still running for post ' . $post_id . ' (locked), skipping delayed sync');
             SourceHub_Logger::warning(
-                'Delayed sync blocked by existing lock',
-                array('sync_lock' => $sync_lock, 'delayed_lock' => $delayed_lock, 'yoast_lock' => $yoast_lock),
+                'Delayed sync blocked by active sync lock',
+                array('sync_lock' => $sync_lock),
                 $post_id,
                 null,
                 'delayed_sync_locked'
@@ -2278,9 +2275,7 @@ class SourceHub_Hub_Manager {
             return;
         }
         
-        // Set delayed sync lock only (update_syndicated_post will set its own sync lock)
-        set_transient($delayed_sync_lock_key, time(), 120);
-        error_log('SourceHub: Delayed sync lock set for post ' . $post_id);
+        error_log('SourceHub: No active sync lock, proceeding with delayed sync for post ' . $post_id);
         
         $post = get_post($post_id);
         if ($post) {

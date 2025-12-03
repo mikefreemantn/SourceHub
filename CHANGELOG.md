@@ -2,6 +2,16 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.8] - 2025-12-02
+
+### Fixed
+- **Critical Lock Collision Fix**: Removed delayed_sync_lock self-blocking issue
+  - `handle_delayed_sync()` was checking for `delayed_sync_lock` and blocking itself
+  - The 2-second delay caused the delayed sync to run while its own lock was still active
+  - Now only checks for main `sync_lock` to avoid blocking legitimate delayed sync execution
+  - Removed unnecessary `delayed_sync_lock` transient that was causing false positives
+  - This was the root cause of posts staying in draft mode
+
 ## [1.9.9.7] - 2025-12-02
 
 ### Fixed
