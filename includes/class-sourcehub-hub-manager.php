@@ -205,19 +205,32 @@ class SourceHub_Hub_Manager {
                         // Action Scheduler is more reliable than wp-cron and works in all environments
                         $scheduled_time = time() + 2;
                         
-                        // Use Action Scheduler for bulletproof execution
-                        $action_id = as_schedule_single_action(
-                            $scheduled_time,
-                            'sourcehub_delayed_sync',
-                            array('post_id' => $hub_post_id),
-                            'sourcehub'
-                        );
-                        
-                        if ($action_id) {
-                            error_log(sprintf('SourceHub Hub: Action Scheduler - delayed sync scheduled (ID: %d) for %s', 
-                                $action_id, date('Y-m-d H:i:s', $scheduled_time)));
+                        // Check if Action Scheduler is available
+                        if (function_exists('as_schedule_single_action')) {
+                            error_log('SourceHub Hub: Action Scheduler function exists, attempting to schedule...');
+                            
+                            // Use Action Scheduler for bulletproof execution
+                            $action_id = as_schedule_single_action(
+                                $scheduled_time,
+                                'sourcehub_delayed_sync',
+                                array('post_id' => $hub_post_id),
+                                'sourcehub'
+                            );
+                            
+                            if ($action_id) {
+                                error_log(sprintf('SourceHub Hub: Action Scheduler - delayed sync scheduled (ID: %d) for %s', 
+                                    $action_id, date('Y-m-d H:i:s', $scheduled_time)));
+                            } else {
+                                error_log('SourceHub Hub: ERROR - Action Scheduler returned false/null, falling back to wp-cron');
+                                // Fallback to wp-cron
+                                wp_schedule_single_event($scheduled_time, 'sourcehub_delayed_sync', array($hub_post_id));
+                                spawn_cron();
+                            }
                         } else {
-                            error_log('SourceHub Hub: ERROR - Failed to schedule delayed sync with Action Scheduler!');
+                            error_log('SourceHub Hub: ERROR - Action Scheduler not available! Falling back to wp-cron');
+                            // Fallback to wp-cron
+                            wp_schedule_single_event($scheduled_time, 'sourcehub_delayed_sync', array($hub_post_id));
+                            spawn_cron();
                         }
                     }
                 }

@@ -2,6 +2,15 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.7] - 2025-12-02
+
+### Fixed
+- **Action Scheduler Fallback**: Added diagnostic logging and automatic fallback to wp-cron if Action Scheduler fails
+  - Check if `as_schedule_single_action()` function exists before calling
+  - Log detailed error messages if Action Scheduler is unavailable or returns false
+  - Automatically fall back to wp-cron + spawn_cron() if Action Scheduler fails
+  - Ensures delayed sync always gets scheduled even if Action Scheduler has issues
+
 ## [1.9.9.6] - 2025-12-02
 
 ### Added
