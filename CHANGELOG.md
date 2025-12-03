@@ -2,6 +2,25 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.10] - 2025-12-02
+
+### Fixed
+- **CRITICAL: Spoke Post ID Bug**: Fixed spokes returning `true` instead of actual post ID in callbacks
+  - `update_post_from_data()` was returning `true` on success instead of the post ID
+  - This caused hub to receive `spoke_post_id: true` in completion callbacks
+  - Broke the entire delayed sync completion tracking logic
+  - Hub couldn't properly track which spokes completed their CREATE actions
+  - Now correctly returns the post ID from update operations
+  - Delayed sync can now properly detect when all creates are complete
+
+### Added
+- **Enhanced Delayed Sync Logging**: Added detailed logging to track delayed sync execution
+  - Logs when all creates are complete and delayed sync is scheduled
+  - Logs Action Scheduler scheduling details
+  - Logs delayed sync execution with full state information
+  - Shows pending_completion flag, syndicated_spokes, and sync_status
+  - Makes it easy to diagnose if delayed sync is scheduling/executing properly
+
 ## [1.9.9.9] - 2025-12-02
 
 ### Fixed

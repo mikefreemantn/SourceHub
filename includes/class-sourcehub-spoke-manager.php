@@ -812,7 +812,7 @@ class SourceHub_Spoke_Manager {
             }
         }
 
-        return true;
+        return $post_id;
     }
 
     /**

@@ -191,6 +191,12 @@ class SourceHub_Hub_Manager {
                     
                     // If all CREATEs are done, schedule delayed sync with short delay to allow locks to clear
                     if ($all_creates_complete) {
+                        error_log('SourceHub Hub: ========================================');
+                        error_log(sprintf('SourceHub Hub: ALL CREATES COMPLETE for post %d', $hub_post_id));
+                        error_log(sprintf('SourceHub Hub: Syndicated spokes: %s', print_r($syndicated_spokes, true)));
+                        error_log(sprintf('SourceHub Hub: Final sync_status: %s', print_r($sync_status, true)));
+                        error_log('SourceHub Hub: ========================================');
+                        
                         SourceHub_Logger::info(
                             'All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish',
                             array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
@@ -200,7 +206,6 @@ class SourceHub_Hub_Manager {
                         );
                         
                         error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
-                        error_log('SourceHub Hub: *** REACHED SCHEDULING CODE - v1.9.9.7 ***');
                         
                         // Schedule delayed sync with 2-second delay using Action Scheduler
                         // Action Scheduler is more reliable than wp-cron and works in all environments
@@ -2265,9 +2270,19 @@ class SourceHub_Hub_Manager {
         }
         
         error_log('SourceHub: ========================================');
+        error_log('SourceHub: *** DELAYED SYNC EXECUTING ***');
         error_log('SourceHub: handle_delayed_sync CALLED for post ' . $post_id);
         error_log('SourceHub: Current time: ' . date('Y-m-d H:i:s'));
         error_log('SourceHub: Triggered by: Action Scheduler');
+        
+        // Log what we're about to do
+        $pending_completion = get_post_meta($post_id, '_sourcehub_pending_completion', true);
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        
+        error_log(sprintf('SourceHub: pending_completion flag: %s', $pending_completion ? 'TRUE' : 'FALSE'));
+        error_log(sprintf('SourceHub: syndicated_spokes: %s', print_r($syndicated_spokes, true)));
+        error_log(sprintf('SourceHub: sync_status: %s', print_r($sync_status, true)));
         error_log('SourceHub: ========================================');
         
         // Check if main sync is already running
