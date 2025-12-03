@@ -1342,6 +1342,20 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_pending_completion', true);
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($spoke_ids));
         
+        // CRITICAL: Pre-populate sync_status with "processing" for ALL spokes BEFORE sending any requests
+        // This prevents race condition where fast spokes complete before we've set status for slower spokes
+        foreach ($spoke_ids as $spoke_id) {
+            $sync_status[$spoke_id] = array(
+                'status' => 'processing',
+                'last_sync' => current_time('mysql'),
+                'started_at' => current_time('mysql'),
+                'action' => 'create',
+                'job_id' => null
+            );
+        }
+        update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+        error_log(sprintf('SourceHub Hub: Pre-populated sync_status for %d spokes before sending requests', count($spoke_ids)));
+        
         SourceHub_Logger::info(
             'Creating draft posts on spoke sites (no image yet)',
             array('spoke_ids' => $spoke_ids),

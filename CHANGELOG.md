@@ -2,6 +2,17 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [1.9.9.9] - 2025-12-02
+
+### Fixed
+- **THE REAL FIX: Sync Status Race Condition**: Pre-populate sync_status for ALL spokes before sending requests
+  - Root cause: Fast spokes completed before slow spokes' status was written to database
+  - When first callback arrived, it only saw its own status in sync_status array
+  - Thought other spokes didn't exist, so didn't schedule delayed sync
+  - Solution: Set ALL spokes to "processing" status BEFORE sending any requests
+  - Now callbacks always see complete list of spokes in sync_status
+  - Delayed sync reliably schedules when all CREATEs complete
+
 ## [1.9.9.8] - 2025-12-02
 
 ### Fixed
