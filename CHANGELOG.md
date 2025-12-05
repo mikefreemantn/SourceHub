@@ -2,6 +2,75 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.0.1] - 2025-12-05
+
+### Fixed
+- **Duplicate Publish Protection**: Added 10-second debounce to prevent duplicate syndication from multiple publish events
+  - Problem: Users clicking "Publish" multiple times or plugins triggering duplicate status transitions caused posts to stay in draft
+  - WordPress can fire `draft → publish` transition multiple times (double-clicks, plugin conflicts, browser double-submission)
+  - This caused syndication to trigger multiple times, confusing the delayed sync logic
+  - Solution: Added debounce check that ignores duplicate publish events within 10 seconds
+  - First publish sets a transient lock for 30 seconds, subsequent publishes within 10 seconds are ignored
+  - Logs "Duplicate publish ignored (debounced)" when duplicate detected
+  - Fixes issue where "Save Draft → Leave → Publish" worked but immediate publish didn't
+
+## [2.0.0.0] - 2025-12-04
+
+### 🎉 MAJOR RELEASE: 100% Reliable Async Processing
+
+This is a **major architectural upgrade** that eliminates all wp-cron dependencies and ensures bulletproof reliability across all hosting environments.
+
+### Changed
+- **BREAKING: Spoke Job Processing Now Uses Action Scheduler**: Replaced unreliable wp-cron with Action Scheduler for all spoke-side async job processing
+  - Previously: Spokes used `wp_schedule_single_event()` + `spawn_cron()` which failed on some hosting environments (WP Engine, etc.)
+  - Now: Spokes use `as_enqueue_async_action()` - same reliable system the hub uses
+  - Result: Jobs now visible in Tools → Scheduled Actions on spoke sites for debugging
+  - No more silent failures from blocked loopback requests or disabled wp-cron
+  - Consistent behavior across all environments (test, staging, production)
+
+### Why This is v2.0.0.0
+- **Architectural Change**: Complete migration from wp-cron to Action Scheduler for spoke processing
+- **Reliability**: Eliminates the #1 cause of syndication failures in production
+- **Consistency**: Hub and spokes now use the same async processing system
+- **Visibility**: All async jobs now visible in WordPress admin for debugging
+- **No More Hodgepodge**: Single, proven async system throughout the entire plugin
+
+### Migration Notes
+- **Automatic**: No configuration changes needed
+- **Backwards Compatible**: Existing posts and connections work without modification
+- **Pending Jobs**: Any jobs stuck in wp-cron will need to be manually re-synced (one-time only)
+
+### Technical Details
+- Removed `wp_schedule_single_event()` and `spawn_cron()` from `class-sourcehub-spoke-manager.php`
+- Both `receive_post()` and `update_post()` now use Action Scheduler exclusively
+- Jobs are queued in `wp_sourcehub_sync_jobs` table and processed via Action Scheduler
+- Async processing happens immediately via Action Scheduler's async request system
+
+## [1.9.9.12] - 2025-12-04
+
+### Fixed
+- **CRITICAL: Delayed Sync Not Scheduling for Slow Spokes**: Fixed posts stuck in draft when spokes complete at different times
+  - Problem: When one spoke completed quickly but another took 30-60+ seconds, delayed sync never scheduled
+  - Root cause: Scheduling logic only checked on first callback, assumed all spokes would be done by then
+  - This worked in fast test environments (140ms response) but failed in slow production (10-60s response)
+  - When fast spoke completed first, it checked if all done → NO → didn't schedule
+  - When slow spoke completed later, it checked again but didn't schedule (assumed already done)
+  - Result: Posts stuck as drafts, never got images/Yoast/published
+  - Solution: Now checks on EVERY callback and schedules when all complete, regardless of timing
+  - Added duplicate prevention using Action Scheduler's `as_get_scheduled_actions()` to avoid race conditions
+  - Handles production environments with variable spoke performance gracefully
+
+## [1.9.9.11] - 2025-12-02
+
+### Fixed
+- **CRITICAL: Manual Save Overwrites Sync Status**: Fixed posts stuck in draft when user clicks "Save Draft" or "Publish" during delayed sync window
+  - When user manually saved post during 2-second delay, `save_post` hook fired
+  - Pre-population code unconditionally reset ALL spoke statuses to "processing"
+  - This overwrote spokes that had already completed with "success" status
+  - Result: `all_creates_complete` never became TRUE, delayed sync never fired
+  - Now preserves existing "success" statuses when pre-populating sync_status
+  - Users can now safely click "Save Draft" or "Publish" without breaking sync
+
 ## [1.9.9.10] - 2025-12-02
 
 ### Fixed

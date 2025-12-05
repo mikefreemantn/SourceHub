@@ -191,52 +191,72 @@ class SourceHub_Hub_Manager {
                     
                     // If all CREATEs are done, schedule delayed sync with short delay to allow locks to clear
                     if ($all_creates_complete) {
-                        error_log('SourceHub Hub: ========================================');
-                        error_log(sprintf('SourceHub Hub: ALL CREATES COMPLETE for post %d', $hub_post_id));
-                        error_log(sprintf('SourceHub Hub: Syndicated spokes: %s', print_r($syndicated_spokes, true)));
-                        error_log(sprintf('SourceHub Hub: Final sync_status: %s', print_r($sync_status, true)));
-                        error_log('SourceHub Hub: ========================================');
+                        // CRITICAL: Check if delayed sync is already scheduled to prevent duplicate scheduling
+                        // This handles race conditions where multiple slow spokes complete at different times
+                        $already_scheduled = false;
                         
-                        SourceHub_Logger::info(
-                            'All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish',
-                            array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
-                            $hub_post_id,
-                            null,
-                            'delayed_sync_scheduled'
-                        );
-                        
-                        error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
-                        
-                        // Schedule delayed sync with 2-second delay using Action Scheduler
-                        // Action Scheduler is more reliable than wp-cron and works in all environments
-                        $scheduled_time = time() + 2;
-                        
-                        // Check if Action Scheduler is available
-                        if (function_exists('as_schedule_single_action')) {
-                            error_log('SourceHub Hub: Action Scheduler function exists, attempting to schedule...');
+                        if (function_exists('as_get_scheduled_actions')) {
+                            $scheduled_actions = as_get_scheduled_actions(array(
+                                'hook' => 'sourcehub_delayed_sync',
+                                'args' => array('post_id' => $hub_post_id),
+                                'status' => array('pending', 'in-progress'),
+                                'per_page' => 1
+                            ));
+                            $already_scheduled = !empty($scheduled_actions);
                             
-                            // Use Action Scheduler for bulletproof execution
-                            $action_id = as_schedule_single_action(
-                                $scheduled_time,
-                                'sourcehub_delayed_sync',
-                                array('post_id' => $hub_post_id),
-                                'sourcehub'
+                            if ($already_scheduled) {
+                                error_log(sprintf('SourceHub Hub: Delayed sync already scheduled for post %d, skipping duplicate', $hub_post_id));
+                            }
+                        }
+                        
+                        if (!$already_scheduled) {
+                            error_log('SourceHub Hub: ========================================');
+                            error_log(sprintf('SourceHub Hub: ALL CREATES COMPLETE for post %d', $hub_post_id));
+                            error_log(sprintf('SourceHub Hub: Syndicated spokes: %s', print_r($syndicated_spokes, true)));
+                            error_log(sprintf('SourceHub Hub: Final sync_status: %s', print_r($sync_status, true)));
+                            error_log('SourceHub Hub: ========================================');
+                            
+                            SourceHub_Logger::info(
+                                'All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish',
+                                array('post_id' => $hub_post_id, 'spoke_count' => count($syndicated_spokes)),
+                                $hub_post_id,
+                                null,
+                                'delayed_sync_scheduled'
                             );
                             
-                            if ($action_id) {
-                                error_log(sprintf('SourceHub Hub: Action Scheduler - delayed sync scheduled (ID: %d) for %s', 
-                                    $action_id, date('Y-m-d H:i:s', $scheduled_time)));
+                            error_log(sprintf('SourceHub Hub: All creates complete for post %d, scheduling delayed sync in 2 seconds', $hub_post_id));
+                            
+                            // Schedule delayed sync with 2-second delay using Action Scheduler
+                            // Action Scheduler is more reliable than wp-cron and works in all environments
+                            $scheduled_time = time() + 2;
+                            
+                            // Check if Action Scheduler is available
+                            if (function_exists('as_schedule_single_action')) {
+                                error_log('SourceHub Hub: Action Scheduler function exists, attempting to schedule...');
+                                
+                                // Use Action Scheduler for bulletproof execution
+                                $action_id = as_schedule_single_action(
+                                    $scheduled_time,
+                                    'sourcehub_delayed_sync',
+                                    array('post_id' => $hub_post_id),
+                                    'sourcehub'
+                                );
+                                
+                                if ($action_id) {
+                                    error_log(sprintf('SourceHub Hub: Action Scheduler - delayed sync scheduled (ID: %d) for %s', 
+                                        $action_id, date('Y-m-d H:i:s', $scheduled_time)));
+                                } else {
+                                    error_log('SourceHub Hub: ERROR - Action Scheduler returned false/null, falling back to wp-cron');
+                                    // Fallback to wp-cron
+                                    wp_schedule_single_event($scheduled_time, 'sourcehub_delayed_sync', array($hub_post_id));
+                                    spawn_cron();
+                                }
                             } else {
-                                error_log('SourceHub Hub: ERROR - Action Scheduler returned false/null, falling back to wp-cron');
+                                error_log('SourceHub Hub: ERROR - Action Scheduler not available! Falling back to wp-cron');
                                 // Fallback to wp-cron
                                 wp_schedule_single_event($scheduled_time, 'sourcehub_delayed_sync', array($hub_post_id));
                                 spawn_cron();
                             }
-                        } else {
-                            error_log('SourceHub Hub: ERROR - Action Scheduler not available! Falling back to wp-cron');
-                            // Fallback to wp-cron
-                            wp_schedule_single_event($scheduled_time, 'sourcehub_delayed_sync', array($hub_post_id));
-                            spawn_cron();
                         }
                     }
                 }
@@ -1007,6 +1027,26 @@ class SourceHub_Hub_Manager {
                 return;
             }
             
+            // DEBOUNCE: Prevent duplicate publish events within 10 seconds
+            // This handles double-clicks, plugin conflicts, and browser double-submissions
+            $last_publish_time = get_transient('sourcehub_last_publish_' . $post->ID);
+            if ($last_publish_time && (time() - $last_publish_time) < 10) {
+                error_log(sprintf('SourceHub: Ignoring duplicate publish for post %d (last publish was %d seconds ago)', 
+                    $post->ID, time() - $last_publish_time));
+                SourceHub_Logger::warning(
+                    'Duplicate publish ignored (debounced)',
+                    array(
+                        'post_id' => $post->ID,
+                        'seconds_since_last' => time() - $last_publish_time
+                    ),
+                    $post->ID,
+                    null,
+                    'publish_debounced'
+                );
+                return;
+            }
+            set_transient('sourcehub_last_publish_' . $post->ID, time(), 30);
+            
             // Check if this post has NEVER been syndicated before
             $syndicated_spokes = get_post_meta($post->ID, '_sourcehub_syndicated_spokes', true);
             if (empty($syndicated_spokes) || !is_array($syndicated_spokes)) {
@@ -1349,14 +1389,18 @@ class SourceHub_Hub_Manager {
         
         // CRITICAL: Pre-populate sync_status with "processing" for ALL spokes BEFORE sending any requests
         // This prevents race condition where fast spokes complete before we've set status for slower spokes
+        // IMPORTANT: Only set to "processing" if not already "success" - preserves completed spokes
         foreach ($spoke_ids as $spoke_id) {
-            $sync_status[$spoke_id] = array(
-                'status' => 'processing',
-                'last_sync' => current_time('mysql'),
-                'started_at' => current_time('mysql'),
-                'action' => 'create',
-                'job_id' => null
-            );
+            // Don't overwrite if spoke already completed successfully
+            if (!isset($sync_status[$spoke_id]) || $sync_status[$spoke_id]['status'] !== 'success') {
+                $sync_status[$spoke_id] = array(
+                    'status' => 'processing',
+                    'last_sync' => current_time('mysql'),
+                    'started_at' => current_time('mysql'),
+                    'action' => 'create',
+                    'job_id' => null
+                );
+            }
         }
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         error_log(sprintf('SourceHub Hub: Pre-populated sync_status for %d spokes before sending requests', count($spoke_ids)));

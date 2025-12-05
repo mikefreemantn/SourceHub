@@ -1,0 +1,845 @@
+Date,Status,Action,Message,Connection,Details
+"2025-12-05 15:33:22",ERROR,timeout,"Syndication timeout for post 46823 to Cannon County Source after 5 minutes","Cannon County Source","{""connection_id"":3,""elapsed_seconds"":1825,""started_at"":""2025-12-05 09:02:57""}"
+"2025-12-05 15:33:22",ERROR,timeout,"Syndication timeout for post 46825 to Cannon County Source after 5 minutes","Cannon County Source","{""connection_id"":3,""elapsed_seconds"":1825,""started_at"":""2025-12-05 09:02:57""}"
+"2025-12-05 15:11:59",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46826,""spoke_post_id"":48982,""job_id"":""75fa89WRul4Z8g4NPCNcwoe5OSGkhbVl""}"
+"2025-12-05 15:11:27",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46826,""spoke_post_id"":48982,""job_id"":""2pxLlsVbRAMT0j07pVhB5uXwKUGFQCxo""}"
+"2025-12-05 15:11:23",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46826,""spoke_post_id"":47510,""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx""}"
+"2025-12-05 15:11:22",INFO,update_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""75fa89WRul4Z8g4NPCNcwoe5OSGkhbVl"",""status"":""processing""},""async"":true,""job_id"":""75fa89WRul4Z8g4NPCNcwoe5OSGkhbVl""}"
+"2025-12-05 15:11:20",INFO,update_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""2pxLlsVbRAMT0j07pVhB5uXwKUGFQCxo"",""status"":""processing""},""async"":true,""job_id"":""2pxLlsVbRAMT0j07pVhB5uXwKUGFQCxo""}"
+"2025-12-05 15:11:20",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:11:20",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:11:20",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:11:20",INFO,yoast_collect,"Collected Yoast data for ""Stamkos Lifts Predators Past Panthers in Overtime"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 15:11:20",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 15:11:20",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3683}"
+"2025-12-05 15:11:20",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 15:11:20",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 15:11:20",INFO,update_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""3ipwUBoNZbFg278FcSWbej16dhRKiGiy"",""status"":""processing""},""async"":true,""job_id"":""3ipwUBoNZbFg278FcSWbej16dhRKiGiy""}"
+"2025-12-05 15:11:20",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:11:20",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:11:20",INFO,yoast_collect,"Collected Yoast data for ""Stamkos Lifts Predators Past Panthers in Overtime"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 15:11:20",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 15:11:20",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3686}"
+"2025-12-05 15:11:20",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 15:11:20",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 15:11:19",INFO,update_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx"",""status"":""processing""},""async"":true,""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx""}"
+"2025-12-05 15:11:19",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:11:19",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:11:19",INFO,yoast_collect,"Collected Yoast data for ""Stamkos Lifts Predators Past Panthers in Overtime"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 15:11:19",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 15:11:19",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3686}"
+"2025-12-05 15:11:19",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 15:11:19",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 15:11:17",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46826,""spoke_count"":2}"
+"2025-12-05 15:11:17",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:11:17",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:11:17",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:11:17",INFO,yoast_collect,"Collected Yoast data for ""Stamkos Lifts Predators Past Panthers in Overtime"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 15:11:17",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 15:11:17",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3683}"
+"2025-12-05 15:11:17",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 15:11:17",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 15:10:54",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46826,""spoke_post_id"":48982,""job_id"":""2zKXLSAa3ylHBZDgVdrsXp7qoNRLy0ny""}"
+"2025-12-05 15:10:54",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46826,""spoke_count"":2}"
+"2025-12-05 15:10:54",INFO,syndicate_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""2zKXLSAa3ylHBZDgVdrsXp7qoNRLy0ny"",""status"":""processing""},""async"":true,""job_id"":""2zKXLSAa3ylHBZDgVdrsXp7qoNRLy0ny""}"
+"2025-12-05 15:10:54",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46826,""spoke_count"":2}"
+"2025-12-05 15:10:54",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 15:10:52",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 15:10:52",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 15:10:51",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46826,""spoke_post_id"":47510,""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n""}"
+"2025-12-05 15:10:51",INFO,syndicate_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n"",""status"":""processing""},""async"":true,""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n""}"
+"2025-12-05 15:10:51",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:10:51",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:10:51",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46826}"
+"2025-12-05 15:10:51",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 15:10:51",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3686}"
+"2025-12-05 15:10:50",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 15:10:50",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-05 15:10:50",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:10:50",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:10:50",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:10:50",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:10:50",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46826}"
+"2025-12-05 15:10:50",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 15:10:50",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3683}"
+"2025-12-05 15:10:50",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 15:10:50",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 15:10:11",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:10:11",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:08:22",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:08:22",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46826,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:08:08",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46826,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 15:08:08",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46826,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 15:07:38",INFO,status_transition,"Status transition: draft → trash",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""trash"",""post_type"":""post""}"
+"2025-12-05 15:07:38",INFO,status_transition,"Status transition: draft → trash",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""trash"",""post_type"":""post""}"
+"2025-12-05 15:07:38",WARNING,no_metabox_data,"No SourceHub data in POST - meta box may not have rendered",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""post_status"":""trash"",""post_type"":""post""}"
+"2025-12-05 15:07:38",WARNING,no_metabox_data,"No SourceHub data in POST - meta box may not have rendered",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""post_status"":""trash"",""post_type"":""post""}"
+"2025-12-05 15:07:08",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:07:08",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:56",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:56",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:40",INFO,status_transition,"Status transition: new → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""new"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:40",INFO,status_transition,"Status transition: new → draft",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""new"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:40",WARNING,no_metabox_data,"No SourceHub data in POST - meta box may not have rendered",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""post_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:05:40",WARNING,no_metabox_data,"No SourceHub data in POST - meta box may not have rendered",-,"{""post_id"":46825,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""post_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:03:47",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime Thriller"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46823,""spoke_post_id"":48981,""job_id"":""15YgSoqu9244Rlg1pLnVauk0K8XogcdG""}"
+"2025-12-05 15:02:58",INFO,syndicate_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime Thriller"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""15YgSoqu9244Rlg1pLnVauk0K8XogcdG"",""status"":""processing""},""async"":true,""job_id"":""15YgSoqu9244Rlg1pLnVauk0K8XogcdG""}"
+"2025-12-05 15:02:58",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46823,""spoke_count"":2}"
+"2025-12-05 15:02:58",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 15:02:57",SUCCESS,sync_completed,"Sync completed: ""Stamkos Lifts Predators Past Panthers in Overtime Thriller"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46823,""spoke_post_id"":47509,""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7""}"
+"2025-12-05 15:02:57",INFO,syndicate_queued,"Post ""Stamkos Lifts Predators Past Panthers in Overtime Thriller"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7"",""status"":""processing""},""async"":true,""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7""}"
+"2025-12-05 15:02:57",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:02:57",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:02:57",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46823}"
+"2025-12-05 15:02:57",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 15:02:57",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":3686}"
+"2025-12-05 15:02:57",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 15:02:57",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 15:02:56",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 15:02:55",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 15:02:55",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-05 15:02:55",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:02:55",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 15:02:55",INFO,debug_content,"DEBUG: Original post content: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3632}"
+"2025-12-05 15:02:55",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 15:02:55",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46823}"
+"2025-12-05 15:02:55",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 15:02:55",INFO,debug_content,"DEBUG: Final content being sent to spoke: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":3683}"
+"2025-12-05 15:02:55",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 15:02:42",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:02:42",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:01:24",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:01:24",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46823,""post_title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 15:00:15",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46823,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 15:00:15",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46823,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 14:34:38",SUCCESS,sync_completed,"Sync completed: ""Diego Pavia Makes Manning Award Cut"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46821,""spoke_post_id"":48979,""job_id"":""IZYUvPWkoYEnwyiDrrrSqdHad2ZnUxUB""}"
+"2025-12-05 14:34:29",SUCCESS,sync_completed,"Sync completed: ""Diego Pavia Makes Manning Award Cut"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46821,""spoke_post_id"":48979,""job_id"":""Mr7y88y6RtDwRJC6qgLM54Ul771tUhfC""}"
+"2025-12-05 14:34:27",SUCCESS,sync_completed,"Sync completed: ""Diego Pavia Makes Manning Award Cut"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46821,""spoke_post_id"":47507,""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk""}"
+"2025-12-05 14:34:26",INFO,update_queued,"Post ""Diego Pavia Makes Manning Award Cut"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""IZYUvPWkoYEnwyiDrrrSqdHad2ZnUxUB"",""status"":""processing""},""async"":true,""job_id"":""IZYUvPWkoYEnwyiDrrrSqdHad2ZnUxUB""}"
+"2025-12-05 14:34:25",INFO,update_queued,"Post ""Diego Pavia Makes Manning Award Cut"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""Mr7y88y6RtDwRJC6qgLM54Ul771tUhfC"",""status"":""processing""},""async"":true,""job_id"":""Mr7y88y6RtDwRJC6qgLM54Ul771tUhfC""}"
+"2025-12-05 14:34:25",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:34:25",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:34:25",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:34:25",INFO,yoast_collect,"Collected Yoast data for ""Diego Pavia Makes Manning Award Cut"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 14:34:25",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 14:34:25",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1840}"
+"2025-12-05 14:34:25",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 14:34:25",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 14:34:25",INFO,update_queued,"Post ""Diego Pavia Makes Manning Award Cut"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""7JVlMabkq6MGBbqtArMyXzsDVJ68jZRO"",""status"":""processing""},""async"":true,""job_id"":""7JVlMabkq6MGBbqtArMyXzsDVJ68jZRO""}"
+"2025-12-05 14:34:25",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:34:25",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:34:25",INFO,yoast_collect,"Collected Yoast data for ""Diego Pavia Makes Manning Award Cut"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 14:34:25",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 14:34:25",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1843}"
+"2025-12-05 14:34:25",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 14:34:25",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 14:34:23",INFO,update_queued,"Post ""Diego Pavia Makes Manning Award Cut"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk"",""status"":""processing""},""async"":true,""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk""}"
+"2025-12-05 14:34:23",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:34:23",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:34:23",INFO,yoast_collect,"Collected Yoast data for ""Diego Pavia Makes Manning Award Cut"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 14:34:23",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 14:34:23",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1843}"
+"2025-12-05 14:34:23",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 14:34:23",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 14:34:22",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46821,""spoke_count"":2}"
+"2025-12-05 14:34:22",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:34:22",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:34:22",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:34:22",INFO,yoast_collect,"Collected Yoast data for ""Diego Pavia Makes Manning Award Cut"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 14:34:22",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 14:34:22",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1840}"
+"2025-12-05 14:34:22",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 14:34:22",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 14:34:13",SUCCESS,sync_completed,"Sync completed: ""Diego Pavia Makes Manning Award Cut"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46821,""spoke_post_id"":48979,""job_id"":""uTYLJmze8i6MWVWQtdR3HqU0a4Pq19vI""}"
+"2025-12-05 14:34:13",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46821,""spoke_count"":2}"
+"2025-12-05 14:33:29",SUCCESS,sync_completed,"Sync completed: ""Diego Pavia Makes Manning Award Cut"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46821,""spoke_post_id"":47507,""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS""}"
+"2025-12-05 14:33:12",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 14:33:12",INFO,syndicate_queued,"Post ""Diego Pavia Makes Manning Award Cut"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""uTYLJmze8i6MWVWQtdR3HqU0a4Pq19vI"",""status"":""processing""},""async"":true,""job_id"":""uTYLJmze8i6MWVWQtdR3HqU0a4Pq19vI""}"
+"2025-12-05 14:33:12",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46821,""spoke_count"":2}"
+"2025-12-05 14:33:12",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 14:33:10",INFO,syndicate_queued,"Post ""Diego Pavia Makes Manning Award Cut"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS"",""status"":""processing""},""async"":true,""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS""}"
+"2025-12-05 14:33:10",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:33:10",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:33:10",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46821}"
+"2025-12-05 14:33:10",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 14:33:10",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1843}"
+"2025-12-05 14:33:10",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 14:33:09",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 14:33:08",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 14:33:08",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-05 14:33:08",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:33:08",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:33:08",INFO,debug_content,"DEBUG: Original post content: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1789}"
+"2025-12-05 14:33:08",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:33:08",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46821}"
+"2025-12-05 14:33:08",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 14:33:08",INFO,debug_content,"DEBUG: Final content being sent to spoke: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1840}"
+"2025-12-05 14:33:08",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 14:32:34",ERROR,timeout,"Syndication timeout for post 46819 to Cannon County Source after 5 minutes","Cannon County Source","{""connection_id"":3,""elapsed_seconds"":1495,""started_at"":""2025-12-05 08:07:39""}"
+"2025-12-05 14:27:31",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:27:31",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:25:12",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:25:12",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:23:12",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:23:12",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46821,""post_title"":""Diego Pavia Makes Manning Award Cut"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:22:59",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46821,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 14:22:59",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46821,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 14:08:20",SUCCESS,sync_completed,"Sync completed: ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46819,""spoke_post_id"":48978,""job_id"":""RrDU3SY4RkcASWkJEtPbIEY0zY0211Fr""}"
+"2025-12-05 14:07:40",INFO,syndicate_queued,"Post ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""RrDU3SY4RkcASWkJEtPbIEY0zY0211Fr"",""status"":""processing""},""async"":true,""job_id"":""RrDU3SY4RkcASWkJEtPbIEY0zY0211Fr""}"
+"2025-12-05 14:07:40",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46819,""spoke_count"":2}"
+"2025-12-05 14:07:40",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 14:07:39",SUCCESS,sync_completed,"Sync completed: ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46819,""spoke_post_id"":47504,""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP""}"
+"2025-12-05 14:07:39",INFO,syndicate_queued,"Post ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP"",""status"":""processing""},""async"":true,""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP""}"
+"2025-12-05 14:07:39",INFO,debug_content,"DEBUG: Original post content: Dec. 3, 2025 - Pizza Hut is keeping the holidays flavorful with the return of the fan-favorite Triple Treat Box. Now, Pizza Hut fans and holiday enthusiasts can not only enjoy the Triple Treat Box bundle, but dress like one too thanks to the launch of a limited-edition holiday onesie created in collaboration with Tipsy Elves. The limited-edition Triple Treat Box onesie is available just in time for anyone celebrating National Ugly Sweater Day on December 19th.
+
+The Triple Treat Box continues t",-,"{""full_content_length"":1775}"
+"2025-12-05 14:07:39",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:07:39",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46819}"
+"2025-12-05 14:07:39",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 14:07:39",INFO,debug_content,"DEBUG: Final content being sent to spoke: Dec. 3, 2025 - Pizza Hut is keeping the holidays flavorful with the return of the fan-favorite Triple Treat Box. Now, Pizza Hut fans and holiday enthusiasts can not only enjoy the Triple Treat Box bundle, but dress like one too thanks to the launch of a limited-edition holiday onesie created in collaboration with Tipsy Elves. The limited-edition Triple Treat Box onesie is available just in time for anyone celebrating National Ugly Sweater Day on December 19th.
+
+The Triple Treat Box continues t","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":1829}"
+"2025-12-05 14:07:39",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 14:07:39",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 14:07:38",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 14:07:37",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 14:07:37",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-05 14:07:37",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:07:37",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 14:07:37",INFO,debug_content,"DEBUG: Original post content: Dec. 3, 2025 - Pizza Hut is keeping the holidays flavorful with the return of the fan-favorite Triple Treat Box. Now, Pizza Hut fans and holiday enthusiasts can not only enjoy the Triple Treat Box bundle, but dress like one too thanks to the launch of a limited-edition holiday onesie created in collaboration with Tipsy Elves. The limited-edition Triple Treat Box onesie is available just in time for anyone celebrating National Ugly Sweater Day on December 19th.
+
+The Triple Treat Box continues t",-,"{""full_content_length"":1775}"
+"2025-12-05 14:07:37",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 14:07:37",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46819}"
+"2025-12-05 14:07:37",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 14:07:37",INFO,debug_content,"DEBUG: Final content being sent to spoke: Dec. 3, 2025 - Pizza Hut is keeping the holidays flavorful with the return of the fan-favorite Triple Treat Box. Now, Pizza Hut fans and holiday enthusiasts can not only enjoy the Triple Treat Box bundle, but dress like one too thanks to the launch of a limited-edition holiday onesie created in collaboration with Tipsy Elves. The limited-edition Triple Treat Box onesie is available just in time for anyone celebrating National Ugly Sweater Day on December 19th.
+
+The Triple Treat Box continues t","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":1826}"
+"2025-12-05 14:07:37",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 14:07:13",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:07:13",INFO,status_transition,"Status transition: draft → draft",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:04:36",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:04:36",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46819,""post_title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-05 14:01:09",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46819,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 14:01:09",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46819,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-05 13:44:07",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM""}"
+"2025-12-05 13:43:37",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD""}"
+"2025-12-05 13:43:30",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""oXVv8XQSwQGooqX2EU273B6PObIBTT4B""}"
+"2025-12-05 13:43:06",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4""}"
+"2025-12-05 13:42:59",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""I767A9smeXqICPEbAMsAi0H5sWDVLZDm""}"
+"2025-12-05 13:42:36",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS""}"
+"2025-12-05 13:42:29",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""LkDZMk1fosSlMyHAAWzBb2RTCp5Tm4Gc""}"
+"2025-12-05 13:42:28",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""yQLlDpvKZOV8HvZEWHR4gu3ajLxFDg4a""}"
+"2025-12-05 13:42:27",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""LlREL8VIz76m12fv6DI301YbfF1RUWeK""}"
+"2025-12-05 13:42:24",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""N4LtY24ZSy7nd2CweXkbspnoGf6MqW0p""}"
+"2025-12-05 13:41:25",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA""}"
+"2025-12-05 13:40:58",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""oXVv8XQSwQGooqX2EU273B6PObIBTT4B"",""status"":""processing""},""async"":true,""job_id"":""oXVv8XQSwQGooqX2EU273B6PObIBTT4B""}"
+"2025-12-05 13:40:57",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:57",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""I767A9smeXqICPEbAMsAi0H5sWDVLZDm"",""status"":""processing""},""async"":true,""job_id"":""I767A9smeXqICPEbAMsAi0H5sWDVLZDm""}"
+"2025-12-05 13:40:57",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:57",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:57",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:57",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:57",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:57",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:57",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:57",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:57",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM"",""status"":""processing""},""async"":true,""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM""}"
+"2025-12-05 13:40:57",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:57",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:57",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:57",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:57",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:57",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:57",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:56",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4"",""status"":""processing""},""async"":true,""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4""}"
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:56",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:56",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:56",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:56",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:56",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:56",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""LkDZMk1fosSlMyHAAWzBb2RTCp5Tm4Gc"",""status"":""processing""},""async"":true,""job_id"":""LkDZMk1fosSlMyHAAWzBb2RTCp5Tm4Gc""}"
+"2025-12-05 13:40:56",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:56",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:56",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:56",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:56",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:56",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:56",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD"",""status"":""processing""},""async"":true,""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD""}"
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:56",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:56",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:56",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:56",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:56",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:55",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS"",""status"":""processing""},""async"":true,""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS""}"
+"2025-12-05 13:40:55",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:55",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:55",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:55",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:55",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:55",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:55",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:55",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""yQLlDpvKZOV8HvZEWHR4gu3ajLxFDg4a"",""status"":""processing""},""async"":true,""job_id"":""yQLlDpvKZOV8HvZEWHR4gu3ajLxFDg4a""}"
+"2025-12-05 13:40:55",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:55",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:55",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:55",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:55",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:55",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:55",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:55",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:53",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA"",""status"":""processing""},""async"":true,""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA""}"
+"2025-12-05 13:40:53",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:53",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:53",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:53",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:53",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:53",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:53",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:53",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""LlREL8VIz76m12fv6DI301YbfF1RUWeK"",""status"":""processing""},""async"":true,""job_id"":""LlREL8VIz76m12fv6DI301YbfF1RUWeK""}"
+"2025-12-05 13:40:53",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:53",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:53",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:53",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:53",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:53",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:53",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:53",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:52",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:51",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA""}"
+"2025-12-05 13:40:51",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""N4LtY24ZSy7nd2CweXkbspnoGf6MqW0p"",""status"":""processing""},""async"":true,""job_id"":""N4LtY24ZSy7nd2CweXkbspnoGf6MqW0p""}"
+"2025-12-05 13:40:51",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:51",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:51",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:51",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:51",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:51",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:51",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:49",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""j9vc13eDJRFnjr3QC9ZQrvk6nV5y293r""}"
+"2025-12-05 13:40:49",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA"",""status"":""processing""},""async"":true,""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA""}"
+"2025-12-05 13:40:49",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:49",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:49",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:49",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:40:49",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:40:49",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:40:49",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:40:48",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46813,""spoke_count"":2}"
+"2025-12-05 13:40:48",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:40:48",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:40:48",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:40:48",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:48",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:40:48",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:40:48",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:40:48",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:40:09",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46813,""spoke_post_id"":47485,""job_id"":""lY7jt7lw79dRq6IDkPB2nKzLbhMgzuGE""}"
+"2025-12-05 13:40:09",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46813,""spoke_count"":2}"
+"2025-12-05 13:40:09",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""H9y4SCZbVG6pLDezCYiRTtSNxpohBGfG""}"
+"2025-12-05 13:40:09",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46813,""spoke_count"":2}"
+"2025-12-05 13:39:45",SUCCESS,sync_completed,"Sync completed: ""Nashville SC Signs Defender Maxwell Woledzi"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46813,""spoke_post_id"":48976,""job_id"":""QKPKtGxxYdkOcdwvgmI2HRHSf5yMsb7n""}"
+"2025-12-05 13:39:45",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46813,""spoke_count"":2}"
+"2025-12-05 13:39:40",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""j9vc13eDJRFnjr3QC9ZQrvk6nV5y293r"",""status"":""processing""},""async"":true,""job_id"":""j9vc13eDJRFnjr3QC9ZQrvk6nV5y293r""}"
+"2025-12-05 13:39:39",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""H9y4SCZbVG6pLDezCYiRTtSNxpohBGfG"",""status"":""processing""},""async"":true,""job_id"":""H9y4SCZbVG6pLDezCYiRTtSNxpohBGfG""}"
+"2025-12-05 13:39:39",INFO,update,"Syncing updates for post ""Nashville SC Signs Defender Maxwell Woledzi"" to 2 existing spoke sites",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:39:39",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:39:39",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:39",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:39",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:39",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:39:39",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:39:39",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:39:39",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:39:39",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""CSUmxlqIkq8mEkpddZfkpcTStEXtM6qC"",""status"":""processing""},""async"":true,""job_id"":""CSUmxlqIkq8mEkpddZfkpcTStEXtM6qC""}"
+"2025-12-05 13:39:39",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:39",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:39",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:39",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:39:39",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:39:39",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:39:39",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:39:38",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:39:37",INFO,update_queued,"Post ""Nashville SC Signs Defender Maxwell Woledzi"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""OWUgXmkGgynYXAPVYvyZLSebaDdFP637"",""status"":""processing""},""async"":true,""job_id"":""OWUgXmkGgynYXAPVYvyZLSebaDdFP637""}"
+"2025-12-05 13:39:37",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:37",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:37",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:37",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:39:37",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:39:37",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:39:36",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46813,""post_title"":""Nashville SC Signs Defender Maxwell Woledzi"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 13:39:36",INFO,status_transition,"Status transition: publish → publish",-,"{""post_id"":46813,""post_title"":""Nashville SC Signs Defender Maxwell Woledzi"",""old_status"":""publish"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-05 13:39:36",INFO,update,"Syncing updates for post ""Nashville SC Signs Defender Maxwell Woledzi"" to 2 existing spoke sites",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:39:36",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-05 13:39:36",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:36",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:36",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:36",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:39:36",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:39:36",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:39:36",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:39:29",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:39:26",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:26",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:26",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:26",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:39:26",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:39:26",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:39:24",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:39:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:39:24",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:39:24",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:39:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:39:24",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-05 13:39:24",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:38:36",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:38:36",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:38:36",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:38:36",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-05 13:38:36",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":4982}"
+"2025-12-05 13:38:36",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-05 13:38:36",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-05 13:38:21",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-05 13:38:20",INFO,debug_content,"DEBUG: Original post content: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4928}"
+"2025-12-05 13:38:20",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-05 13:38:20",INFO,yoast_collect,"Collected Yoast data for ""Nashville SC Signs Defender Maxwell Woledzi"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:38:20",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-05 13:38:20",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":4979}"
+"2025-12-05 13:38:20",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-04 22:38:26",SUCCESS,sync_completed,"Sync completed: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46815,""spoke_post_id"":48969,""job_id"":""kk0lgP7qT1UJfPNXR2aZuRVcG9WSPD6A""}"
+"2025-12-04 22:38:24",SUCCESS,sync_completed,"Sync completed: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46815,""spoke_post_id"":48969,""job_id"":""wnlXznr1bgMvwI5lsOVFQvMs8dzGjqDN""}"
+"2025-12-04 22:37:44",SUCCESS,sync_completed,"Sync completed: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46815,""spoke_post_id"":47496,""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ""}"
+"2025-12-04 22:37:43",INFO,update_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""wnlXznr1bgMvwI5lsOVFQvMs8dzGjqDN"",""status"":""processing""},""async"":true,""job_id"":""wnlXznr1bgMvwI5lsOVFQvMs8dzGjqDN""}"
+"2025-12-04 22:37:43",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-04 22:37:43",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:37:43",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:37:43",INFO,yoast_collect,"Collected Yoast data for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 22:37:43",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-04 22:37:43",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":2261}"
+"2025-12-04 22:37:43",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-04 22:37:43",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-04 22:37:43",INFO,update_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""4rSH3HXd93WCtPqCjyCIUCBVreKvDXCM"",""status"":""processing""},""async"":true,""job_id"":""4rSH3HXd93WCtPqCjyCIUCBVreKvDXCM""}"
+"2025-12-04 22:37:43",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:37:43",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:37:43",INFO,yoast_collect,"Collected Yoast data for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 22:37:43",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-04 22:37:43",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":2264}"
+"2025-12-04 22:37:43",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-04 22:37:43",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-04 22:37:43",INFO,update_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" update queued for Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""kk0lgP7qT1UJfPNXR2aZuRVcG9WSPD6A"",""status"":""processing""},""async"":true,""job_id"":""kk0lgP7qT1UJfPNXR2aZuRVcG9WSPD6A""}"
+"2025-12-04 22:37:42",INFO,update_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" update queued for Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ"",""status"":""processing""},""async"":true,""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ""}"
+"2025-12-04 22:37:42",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:37:42",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:37:42",INFO,yoast_collect,"Collected Yoast data for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" to send to Robertson County Source","Robertson County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 22:37:42",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-04 22:37:42",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":2264}"
+"2025-12-04 22:37:42",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-04 22:37:42",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-04 22:37:40",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46815,""spoke_count"":2}"
+"2025-12-04 22:37:40",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[3,4]}"
+"2025-12-04 22:37:40",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:37:40",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:37:40",INFO,yoast_collect,"Collected Yoast data for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" to send to Cannon County Source","Cannon County Source","{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 22:37:40",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-04 22:37:40",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":2261}"
+"2025-12-04 22:37:40",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-04 22:37:40",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-04 22:36:35",SUCCESS,sync_completed,"Sync completed: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" successfully synced to Robertson County Source","Robertson County Source","{""hub_post_id"":46815,""spoke_post_id"":48969,""job_id"":""b1GuwGTqa8wB6Vyt61cByj1Ml5ZmvgrB""}"
+"2025-12-04 22:36:35",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46815,""spoke_count"":2}"
+"2025-12-04 22:36:35",INFO,syndicate_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" queued for syndication to Robertson County Source","Robertson County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""b1GuwGTqa8wB6Vyt61cByj1Ml5ZmvgrB"",""status"":""processing""},""async"":true,""job_id"":""b1GuwGTqa8wB6Vyt61cByj1Ml5ZmvgrB""}"
+"2025-12-04 22:36:35",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46815,""spoke_count"":2}"
+"2025-12-04 22:36:35",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46815,""post_title"":""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-04 22:36:34",INFO,wake_up,"Spoke site is already awake","Robertson County Source","{""connection_name"":""Robertson County Source"",""response_code"":200}"
+"2025-12-04 22:36:33",SUCCESS,sync_completed,"Sync completed: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" successfully synced to Cannon County Source","Cannon County Source","{""hub_post_id"":46815,""spoke_post_id"":47496,""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb""}"
+"2025-12-04 22:36:33",INFO,syndicate_queued,"Post ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" queued for syndication to Cannon County Source","Cannon County Source","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb"",""status"":""processing""},""async"":true,""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb""}"
+"2025-12-04 22:36:33",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:36:33",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:36:33",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Robertson County Source","{""post_id"":46815}"
+"2025-12-04 22:36:33",INFO,,"Custom Smart Links processing started for: Robertson County Source",-,[]
+"2025-12-04 22:36:33",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Robertson County Source","{""connection_name"":""Robertson County Source"",""full_content_length"":2264}"
+"2025-12-04 22:36:33",INFO,wake_up,"Attempting to wake up spoke site","Robertson County Source","{""connection_name"":""Robertson County Source"",""url"":""https:\/\/robertsoncountysource.com""}"
+"2025-12-04 22:36:32",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46815,""post_title"":""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-04 22:36:32",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46815,""post_title"":""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-04 22:36:32",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[3,4]}"
+"2025-12-04 22:36:32",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[3,4]}"
+"2025-12-04 22:36:32",INFO,debug_content,"DEBUG: Original post content: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2210}"
+"2025-12-04 22:36:32",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:36:32",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Cannon County Source","{""post_id"":46815}"
+"2025-12-04 22:36:32",INFO,,"Custom Smart Links processing started for: Cannon County Source",-,[]
+"2025-12-04 22:36:32",INFO,debug_content,"DEBUG: Final content being sent to spoke: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S","Cannon County Source","{""connection_name"":""Cannon County Source"",""full_content_length"":2261}"
+"2025-12-04 22:36:32",INFO,wake_up,"Attempting to wake up spoke site","Cannon County Source","{""connection_name"":""Cannon County Source"",""url"":""https:\/\/cannoncountysource.com""}"
+"2025-12-04 22:36:32",INFO,wake_up,"Spoke site is already awake","Cannon County Source","{""connection_name"":""Cannon County Source"",""response_code"":200}"
+"2025-12-04 22:23:12",SUCCESS,sync_completed,"Sync completed: ""2000 test"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46817,""spoke_post_id"":47566,""job_id"":""Tsl3G1gXgaKM8ObL8pO1XPufUos0pSeB""}"
+"2025-12-04 22:23:12",SUCCESS,sync_completed,"Sync completed: ""2000 test"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":46817,""spoke_post_id"":46853,""job_id"":""a3dPlC1hRQ3cHIO4snNyogiyYpmoWcX8""}"
+"2025-12-04 22:23:10",INFO,update_queued,"Post ""2000 test"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""bDObOAM1eM1UCHoffaPJsD4AVbp5yYqK"",""status"":""processing""},""async"":true,""job_id"":""bDObOAM1eM1UCHoffaPJsD4AVbp5yYqK""}"
+"2025-12-04 22:23:09",INFO,update_queued,"Post ""2000 test"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""zmpSk9toAHi0hPHZ0LFaIxrrQ79wrR8O"",""status"":""processing""},""async"":true,""job_id"":""zmpSk9toAHi0hPHZ0LFaIxrrQ79wrR8O""}"
+"2025-12-04 22:23:09",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:23:09",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:23:09",WARNING,yoast_collect,"No Yoast data found for ""2000 test"" to send to Spoke 2","Spoke 2","{""post_id"":46817}"
+"2025-12-04 22:23:09",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-12-04 22:23:09",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":9}"
+"2025-12-04 22:23:09",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-12-04 22:23:09",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-12-04 22:23:08",INFO,update_queued,"Post ""2000 test"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""a3dPlC1hRQ3cHIO4snNyogiyYpmoWcX8"",""status"":""processing""},""async"":true,""job_id"":""a3dPlC1hRQ3cHIO4snNyogiyYpmoWcX8""}"
+"2025-12-04 22:23:08",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[1,6]}"
+"2025-12-04 22:23:08",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:23:08",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:23:08",WARNING,yoast_collect,"No Yoast data found for ""2000 test"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46817}"
+"2025-12-04 22:23:08",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-12-04 22:23:08",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":9}"
+"2025-12-04 22:23:08",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-12-04 22:23:08",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-12-04 22:23:07",INFO,update_queued,"Post ""2000 test"" update queued for hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""Tsl3G1gXgaKM8ObL8pO1XPufUos0pSeB"",""status"":""processing""},""async"":true,""job_id"":""Tsl3G1gXgaKM8ObL8pO1XPufUos0pSeB""}"
+"2025-12-04 22:23:07",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:23:07",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:23:07",WARNING,yoast_collect,"No Yoast data found for ""2000 test"" to send to Spoke 2","Spoke 2","{""post_id"":46817}"
+"2025-12-04 22:23:07",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-12-04 22:23:07",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":9}"
+"2025-12-04 22:23:07",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-12-04 22:23:07",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-12-04 22:23:06",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":46817,""spoke_count"":2}"
+"2025-12-04 22:23:06",INFO,update,"Updating 2 spokes",-,"{""spoke_ids"":[1,6]}"
+"2025-12-04 22:23:06",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:23:06",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:23:06",WARNING,yoast_collect,"No Yoast data found for ""2000 test"" to send to hub20spokesite",hub20spokesite,"{""post_id"":46817}"
+"2025-12-04 22:23:06",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-12-04 22:23:06",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":9}"
+"2025-12-04 22:23:06",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-12-04 22:23:06",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-12-04 22:21:59",SUCCESS,sync_completed,"Sync completed: ""2000 test"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":46817,""spoke_post_id"":46853,""job_id"":""oVKWJI1AJJNgfR614VrE7ofQkRDa4irx""}"
+"2025-12-04 22:21:59",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":46817,""spoke_count"":2}"
+"2025-12-04 22:21:59",INFO,syndicate_queued,"Post ""2000 test"" queued for syndication to Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""oVKWJI1AJJNgfR614VrE7ofQkRDa4irx"",""status"":""processing""},""async"":true,""job_id"":""oVKWJI1AJJNgfR614VrE7ofQkRDa4irx""}"
+"2025-12-04 22:21:59",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":46817,""spoke_count"":2}"
+"2025-12-04 22:21:59",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46817,""post_title"":""2000 test"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-04 22:21:58",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2025-12-04 22:21:57",SUCCESS,sync_completed,"Sync completed: ""2000 test"" successfully synced to hub20spokesite",hub20spokesite,"{""hub_post_id"":46817,""spoke_post_id"":47566,""job_id"":""T66VcOFYUOl7dm6GIlQML779L3boTcoz""}"
+"2025-12-04 22:21:57",INFO,syndicate_queued,"Post ""2000 test"" queued for syndication to hub20spokesite",hub20spokesite,"{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""T66VcOFYUOl7dm6GIlQML779L3boTcoz"",""status"":""processing""},""async"":true,""job_id"":""T66VcOFYUOl7dm6GIlQML779L3boTcoz""}"
+"2025-12-04 22:21:57",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:21:57",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:21:57",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Spoke 2","{""post_id"":46817}"
+"2025-12-04 22:21:57",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2025-12-04 22:21:57",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":9}"
+"2025-12-04 22:21:57",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""https:\/\/spoke2.wpenginepowered.com""}"
+"2025-12-04 22:21:56",INFO,wake_up,"Spoke site is already awake",hub20spokesite,"{""connection_name"":""hub20spokesite"",""response_code"":200}"
+"2025-12-04 22:21:55",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":46817,""post_title"":""2000 test"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post""}"
+"2025-12-04 22:21:55",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":46817,""post_title"":""2000 test"",""old_status"":""draft"",""new_status"":""publish""}"
+"2025-12-04 22:21:55",INFO,spokes_found,"Found 2 selected spokes in POST data for first publish",-,"{""spoke_ids"":[1,6]}"
+"2025-12-04 22:21:55",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[1,6]}"
+"2025-12-04 22:21:55",INFO,debug_content,"DEBUG: Original post content: 2000 test",-,"{""full_content_length"":9}"
+"2025-12-04 22:21:55",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2025-12-04 22:21:55",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync",hub20spokesite,"{""post_id"":46817}"
+"2025-12-04 22:21:55",INFO,,"Custom Smart Links processing started for: hub20spokesite",-,[]
+"2025-12-04 22:21:55",INFO,debug_content,"DEBUG: Final content being sent to spoke: 2000 test",hub20spokesite,"{""connection_name"":""hub20spokesite"",""full_content_length"":9}"
+"2025-12-04 22:21:55",INFO,wake_up,"Attempting to wake up spoke site",hub20spokesite,"{""connection_name"":""hub20spokesite"",""url"":""https:\/\/hub20spokesite.wpenginepowered.com""}"
+"2025-12-04 22:20:43",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46817,""post_title"":""2000 test"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-04 22:20:43",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":46817,""post_title"":""2000 test"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post""}"
+"2025-12-04 22:20:31",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46817,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"
+"2025-12-04 22:20:31",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":46817,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post""}"

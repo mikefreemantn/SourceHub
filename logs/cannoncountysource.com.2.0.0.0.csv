@@ -1,0 +1,731 @@
+Date,Status,Action,Message,Connection,Details
+"2025-12-05 15:11:23",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47511,""post_id"":47510}"
+"2025-12-05 15:11:23",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 15:11:23",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-05 15:11:23",SUCCESS,async_update,"Async update completed for ""Stamkos Lifts Predators Past Panthers in Overtime"" (5.18s)",-,"{""hub_id"":46826,""local_id"":47510,""processing_time"":5.181674957275391,""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx""}"
+"2025-12-05 15:11:23",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx"",""spoke_post_id"":47510}"
+"2025-12-05 15:11:20",INFO,job_queued,"Update job queued for processing: ""Stamkos Lifts Predators Past Panthers in Overtime""",-,"{""job_id"":""3ipwUBoNZbFg278FcSWbej16dhRKiGiy"",""hub_id"":46826,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 15:11:18",INFO,job_queued,"Update job queued for processing: ""Stamkos Lifts Predators Past Panthers in Overtime""",-,"{""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx"",""hub_id"":46826,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 15:11:18",INFO,job_processing,"Job processing started: ""Stamkos Lifts Predators Past Panthers in Overtime""",-,"{""job_id"":""hks0Lf2dlfKBRPhiwujcRa9Gs3Omibcx"",""action"":""update"",""hub_id"":46826}"
+"2025-12-05 15:11:18",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 15:10:51",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46826,""title"":""Stamkos Lifts Predators Past Panthers in Overtime""}"
+"2025-12-05 15:10:51",INFO,job_queued,"Job queued for processing: ""Stamkos Lifts Predators Past Panthers in Overtime""",-,"{""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n"",""hub_id"":46826,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-05 15:10:51",INFO,job_processing,"Job processing started: ""Stamkos Lifts Predators Past Panthers in Overtime""",-,"{""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n"",""action"":""create"",""hub_id"":46826}"
+"2025-12-05 15:10:51",INFO,debug_content,"DEBUG: Content received from hub: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3683}"
+"2025-12-05 15:10:51",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 15:10:51",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-05 15:10:51",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47510,""intended_status"":""draft""}"
+"2025-12-05 15:10:51",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 15:10:51",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47510}"
+"2025-12-05 15:10:51",SUCCESS,async_create,"Async create completed for ""Stamkos Lifts Predators Past Panthers in Overtime"" (0.32s)",-,"{""hub_id"":46826,""local_id"":47510,""processing_time"":0.3234281539916992,""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n""}"
+"2025-12-05 15:10:51",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""KbWZLiaruZb8oKUfX3mJ0N3EZ3pK1m9n"",""spoke_post_id"":47510}"
+"2025-12-05 15:02:57",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47509}"
+"2025-12-05 15:02:57",SUCCESS,async_create,"Async create completed for ""Stamkos Lifts Predators Past Panthers in Overtime Thriller"" (0.35s)",-,"{""hub_id"":46823,""local_id"":47509,""processing_time"":0.3529939651489258,""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7""}"
+"2025-12-05 15:02:57",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7"",""spoke_post_id"":47509}"
+"2025-12-05 15:02:56",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46823,""title"":""Stamkos Lifts Predators Past Panthers in Overtime Thriller""}"
+"2025-12-05 15:02:56",INFO,job_queued,"Job queued for processing: ""Stamkos Lifts Predators Past Panthers in Overtime Thriller""",-,"{""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7"",""hub_id"":46823,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-05 15:02:56",INFO,job_processing,"Job processing started: ""Stamkos Lifts Predators Past Panthers in Overtime Thriller""",-,"{""job_id"":""qT9XFw2chjsecBhPM3748OtlqKD8idi7"",""action"":""create"",""hub_id"":46823}"
+"2025-12-05 15:02:56",INFO,debug_content,"DEBUG: Content received from hub: December 4, 2025 — Steven Stamkos delivered the decisive blow in overtime as the Nashville Predators escaped Amerant Bank Arena with a hard-fought 2-1 victory over the Florida Panthers. The veteran center's game-winner at 4:03 of the extra frame capped a resilient performance that saw Nashville erase a third-period deficit to snap a difficult stretch and improve to 10-13-4 on the season.
+
+The Predators found themselves trailing after Carter Verhaeghe opened the scoring late in the first peri",-,"{""full_content_length"":3683}"
+"2025-12-05 15:02:56",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 15:02:56",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-05 15:02:56",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47509,""intended_status"":""draft""}"
+"2025-12-05 15:02:56",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 14:34:27",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47508,""post_id"":47507}"
+"2025-12-05 14:34:27",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 14:34:27",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-05 14:34:27",SUCCESS,async_update,"Async update completed for ""Diego Pavia Makes Manning Award Cut"" (3.06s)",-,"{""hub_id"":46821,""local_id"":47507,""processing_time"":3.058988094329834,""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk""}"
+"2025-12-05 14:34:27",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk"",""spoke_post_id"":47507}"
+"2025-12-05 14:34:25",INFO,job_queued,"Update job queued for processing: ""Diego Pavia Makes Manning Award Cut""",-,"{""job_id"":""7JVlMabkq6MGBbqtArMyXzsDVJ68jZRO"",""hub_id"":46821,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 14:34:24",INFO,job_processing,"Job processing started: ""Diego Pavia Makes Manning Award Cut""",-,"{""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk"",""action"":""update"",""hub_id"":46821}"
+"2025-12-05 14:34:24",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 14:34:23",INFO,job_queued,"Update job queued for processing: ""Diego Pavia Makes Manning Award Cut""",-,"{""job_id"":""MWn1BBwtMRuuziN3iQTaqYd7P3qedwLk"",""hub_id"":46821,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 14:33:29",INFO,job_processing,"Job processing started: ""Diego Pavia Makes Manning Award Cut""",-,"{""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS"",""action"":""create"",""hub_id"":46821}"
+"2025-12-05 14:33:29",INFO,debug_content,"DEBUG: Content received from hub: <strong>NASHVILLE, Tenn. —</strong> Vanderbilt football’s Diego Pavia is a finalist for a second national award with the announcement Thursday that he is one of 10 candidates for the Manning Award.
+
+The only quarterback award that takes into consideration the candidates’ bowl and playoff performance, the honor will be announced after the College Football Playoff national championship game in January. Pavia is also a finalist for the Walter Camp Player of the Year Award.
+
+One of the pr",-,"{""full_content_length"":1840}"
+"2025-12-05 14:33:29",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 14:33:29",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-05 14:33:29",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47507,""intended_status"":""draft""}"
+"2025-12-05 14:33:29",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 14:33:29",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47507}"
+"2025-12-05 14:33:29",SUCCESS,async_create,"Async create completed for ""Diego Pavia Makes Manning Award Cut"" (0.36s)",-,"{""hub_id"":46821,""local_id"":47507,""processing_time"":0.35814595222473145,""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS""}"
+"2025-12-05 14:33:29",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS"",""spoke_post_id"":47507}"
+"2025-12-05 14:33:10",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46821,""title"":""Diego Pavia Makes Manning Award Cut""}"
+"2025-12-05 14:33:10",INFO,job_queued,"Job queued for processing: ""Diego Pavia Makes Manning Award Cut""",-,"{""job_id"":""KEGRGRi7Ch4Gu65V1ORAGVXAAAjfGnrS"",""hub_id"":46821,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-05 14:07:39",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47504}"
+"2025-12-05 14:07:39",SUCCESS,async_create,"Async create completed for ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie"" (0.31s)",-,"{""hub_id"":46819,""local_id"":47504,""processing_time"":0.3109700679779053,""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP""}"
+"2025-12-05 14:07:39",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP"",""spoke_post_id"":47504}"
+"2025-12-05 14:07:38",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46819,""title"":""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie""}"
+"2025-12-05 14:07:38",INFO,job_queued,"Job queued for processing: ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie""",-,"{""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP"",""hub_id"":46819,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-05 14:07:38",INFO,job_processing,"Job processing started: ""Pizza Hut Introduces New Limited-Edition Tipsy Elves Triple Treat Box Onesie""",-,"{""job_id"":""DwBe0XWVhnAXiQvkXdVguqHTciCIprVP"",""action"":""create"",""hub_id"":46819}"
+"2025-12-05 14:07:38",INFO,debug_content,"DEBUG: Content received from hub: Dec. 3, 2025 - Pizza Hut is keeping the holidays flavorful with the return of the fan-favorite Triple Treat Box. Now, Pizza Hut fans and holiday enthusiasts can not only enjoy the Triple Treat Box bundle, but dress like one too thanks to the launch of a limited-edition holiday onesie created in collaboration with Tipsy Elves. The limited-edition Triple Treat Box onesie is available just in time for anyone celebrating National Ugly Sweater Day on December 19th.
+
+The Triple Treat Box continues t",-,"{""full_content_length"":1826}"
+"2025-12-05 14:07:38",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-05 14:07:38",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-05 14:07:38",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47504,""intended_status"":""draft""}"
+"2025-12-05 14:07:38",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-05 13:44:07",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:44:07",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (30.15s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":30.14713478088379,""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM""}"
+"2025-12-05 13:44:07",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM"",""spoke_post_id"":47485}"
+"2025-12-05 13:43:37",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD"",""spoke_post_id"":47485}"
+"2025-12-05 13:43:37",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:43:37",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:43:36",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:43:36",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (30.14s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":30.137218952178955,""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD""}"
+"2025-12-05 13:43:06",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:43:06",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (30.14s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":30.138917922973633,""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4""}"
+"2025-12-05 13:43:06",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4"",""spoke_post_id"":47485}"
+"2025-12-05 13:43:06",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:43:06",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:42:36",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS"",""spoke_post_id"":47485}"
+"2025-12-05 13:42:36",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:42:36",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:42:35",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:42:35",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (30.41s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":30.406831979751587,""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS""}"
+"2025-12-05 13:42:05",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:42:05",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:41:25",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA"",""spoke_post_id"":47485}"
+"2025-12-05 13:41:24",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:41:24",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (30.17s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":30.17351984977722,""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA""}"
+"2025-12-05 13:40:57",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""dGMxJKOPBGDfK79baJftihrxhz71CEtM"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:56",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""nZYsQXOfIU1LYXcvXQy0XnhdVJyLyVQ4"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:56",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""zbJRvduxWmWiqppCtai3MFtnbUlkQERD"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:55",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""1nEBADXKKtpLUnlXmEchy0Q5WB9YbVGS"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:54",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:40:54",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:40:53",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""ajeb1qZSBTmLVXe00q0GVOszDwvCzpkA"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:51",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA"",""spoke_post_id"":47485}"
+"2025-12-05 13:40:50",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:50",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (1.74s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":1.7410500049591064,""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA""}"
+"2025-12-05 13:40:49",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:40:49",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:40:48",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""SjkwshTByPSdRD1NFUFPEvTU4LYsneIA"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:40:09",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""lY7jt7lw79dRq6IDkPB2nKzLbhMgzuGE"",""spoke_post_id"":47485}"
+"2025-12-05 13:40:08",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47503,""post_id"":47485}"
+"2025-12-05 13:40:08",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-05 13:40:08",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-05 13:40:08",SUCCESS,async_update,"Async update completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (31.64s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":31.642570972442627,""job_id"":""lY7jt7lw79dRq6IDkPB2nKzLbhMgzuGE""}"
+"2025-12-05 13:39:39",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""CSUmxlqIkq8mEkpddZfkpcTStEXtM6qC"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:39:37",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""lY7jt7lw79dRq6IDkPB2nKzLbhMgzuGE"",""action"":""update"",""hub_id"":46813}"
+"2025-12-05 13:39:37",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-05 13:39:37",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""OWUgXmkGgynYXAPVYvyZLSebaDdFP637"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:39:25",INFO,job_queued,"Update job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""lY7jt7lw79dRq6IDkPB2nKzLbhMgzuGE"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-05 13:38:21",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46813,""title"":""Nashville SC Signs Defender Maxwell Woledzi""}"
+"2025-12-05 13:38:21",INFO,duplicate_prevented,"Duplicate prevented: ""Nashville SC Signs Defender Maxwell Woledzi"" already exists (retry detected)",-,"{""hub_id"":46813,""local_id"":47485,""hub_url"":""https:\/\/hub2a.wpenginepowered.com""}"
+"2025-12-04 22:37:44",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47497,""post_id"":47496}"
+"2025-12-04 22:37:44",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 22:37:44",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-04 22:37:44",SUCCESS,async_update,"Async update completed for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" (2.82s)",-,"{""hub_id"":46815,""local_id"":47496,""processing_time"":2.817909002304077,""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ""}"
+"2025-12-04 22:37:44",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ"",""spoke_post_id"":47496}"
+"2025-12-04 22:37:43",INFO,job_queued,"Update job queued for processing: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""",-,"{""job_id"":""4rSH3HXd93WCtPqCjyCIUCBVreKvDXCM"",""hub_id"":46815,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 22:37:41",INFO,job_queued,"Update job queued for processing: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""",-,"{""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ"",""hub_id"":46815,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 22:37:41",INFO,job_processing,"Job processing started: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""",-,"{""job_id"":""iF0SArjl6gZJ4eUJ7kQUOsajmpFNflSQ"",""action"":""update"",""hub_id"":46815}"
+"2025-12-04 22:37:41",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 22:36:33",INFO,job_processing,"Job processing started: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""",-,"{""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb"",""action"":""create"",""hub_id"":46815}"
+"2025-12-04 22:36:33",INFO,debug_content,"DEBUG: Content received from hub: <div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 4, 2025)</strong> – GEODIS Park and Nashville Soccer Club announced today the hiring of Nashville native Morgan Pitt as the venue and club’s Director of Booking. In her role Pitt, who most recently served as Senior Concerts Booking Manager for Nashville’s world-famous Ryman Auditorium, will spearhead the booking of concerts and entertainment events at both GEODIS Park and Wicks Family Field at Joe Davis S",-,"{""full_content_length"":2261}"
+"2025-12-04 22:36:33",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 22:36:33",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-04 22:36:33",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47496,""intended_status"":""draft""}"
+"2025-12-04 22:36:33",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 22:36:33",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47496}"
+"2025-12-04 22:36:33",SUCCESS,async_create,"Async create completed for ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC"" (0.23s)",-,"{""hub_id"":46815,""local_id"":47496,""processing_time"":0.23327088356018066,""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb""}"
+"2025-12-04 22:36:33",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb"",""spoke_post_id"":47496}"
+"2025-12-04 22:36:32",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46815,""title"":""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""}"
+"2025-12-04 22:36:32",INFO,job_queued,"Job queued for processing: ""Morgan Pitt Named Director of Booking for GEODIS Park and Nashville SC""",-,"{""job_id"":""04Kth8rTMIPfUJtRXpUfEALsCcCzamMb"",""hub_id"":46815,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-04 19:44:17",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""2KjO4ChqbChuXWwD8t72IkZcuja2Ag4Z"",""spoke_post_id"":47485}"
+"2025-12-04 19:44:16",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46813,""title"":""Nashville SC Signs Defender Maxwell Woledzi""}"
+"2025-12-04 19:44:16",INFO,job_queued,"Job queued for processing: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""2KjO4ChqbChuXWwD8t72IkZcuja2Ag4Z"",""hub_id"":46813,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-04 19:44:16",INFO,job_processing,"Job processing started: ""Nashville SC Signs Defender Maxwell Woledzi""",-,"{""job_id"":""2KjO4ChqbChuXWwD8t72IkZcuja2Ag4Z"",""action"":""create"",""hub_id"":46813}"
+"2025-12-04 19:44:16",INFO,debug_content,"DEBUG: Content received from hub: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Dec. 2, 2025)</strong> – Nashville Soccer Club announced today the signing of Ghanaian defender Maxwell Woledzi, who will occupy an international roster spot, in a transfer from Fredrikstad FK, one of the top clubs in Norway’s Eliteserien, through the 2028 season with an option for 2029 pending receipt of his International Transfer Certificate (ITC) and P-1 Visa.
+
+</di",-,"{""full_content_length"":4979}"
+"2025-12-04 19:44:16",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:44:16",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-04 19:44:16",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47485,""intended_status"":""draft""}"
+"2025-12-04 19:44:16",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:44:16",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47485}"
+"2025-12-04 19:44:16",SUCCESS,async_create,"Async create completed for ""Nashville SC Signs Defender Maxwell Woledzi"" (0.36s)",-,"{""hub_id"":46813,""local_id"":47485,""processing_time"":0.3578610420227051,""job_id"":""2KjO4ChqbChuXWwD8t72IkZcuja2Ag4Z""}"
+"2025-12-04 19:34:10",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 19:34:10",SUCCESS,async_update,"Async update completed for ""Game Preview: Titans Travel To Cleveland To Face Browns"" (0.60s)",-,"{""hub_id"":46811,""local_id"":47481,""processing_time"":0.5992128849029541,""job_id"":""Y89s3ShdkZMEnXcrpnEseiLsLbPfhobN""}"
+"2025-12-04 19:34:10",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""Y89s3ShdkZMEnXcrpnEseiLsLbPfhobN"",""spoke_post_id"":47481}"
+"2025-12-04 19:34:09",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47482,""post_id"":47481}"
+"2025-12-04 19:34:09",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 19:34:09",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-04 19:34:09",SUCCESS,async_update,"Async update completed for ""Game Preview: Titans Travel To Cleveland To Face Browns"" (4.32s)",-,"{""hub_id"":46811,""local_id"":47481,""processing_time"":4.31731104850769,""job_id"":""fIfk3N4OjFMG0rZdUcfetGtQGx2gy6IL""}"
+"2025-12-04 19:34:09",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""fIfk3N4OjFMG0rZdUcfetGtQGx2gy6IL"",""spoke_post_id"":47481}"
+"2025-12-04 19:34:09",INFO,job_processing,"Job processing started: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""Y89s3ShdkZMEnXcrpnEseiLsLbPfhobN"",""action"":""update"",""hub_id"":46811}"
+"2025-12-04 19:34:09",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:34:04",INFO,job_processing,"Job processing started: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""fIfk3N4OjFMG0rZdUcfetGtQGx2gy6IL"",""action"":""update"",""hub_id"":46811}"
+"2025-12-04 19:34:04",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:33:46",INFO,job_queued,"Update job queued for processing: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""Y89s3ShdkZMEnXcrpnEseiLsLbPfhobN"",""hub_id"":46811,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 19:33:43",INFO,job_queued,"Update job queued for processing: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""fIfk3N4OjFMG0rZdUcfetGtQGx2gy6IL"",""hub_id"":46811,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 19:32:32",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-04 19:32:32",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47481,""intended_status"":""draft""}"
+"2025-12-04 19:32:32",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:32:32",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47481}"
+"2025-12-04 19:32:32",SUCCESS,async_create,"Async create completed for ""Game Preview: Titans Travel To Cleveland To Face Browns"" (0.36s)",-,"{""hub_id"":46811,""local_id"":47481,""processing_time"":0.3598949909210205,""job_id"":""qigNk4XjBIQrXcXCjt7maDsvkwMpreZL""}"
+"2025-12-04 19:32:32",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""qigNk4XjBIQrXcXCjt7maDsvkwMpreZL"",""spoke_post_id"":47481}"
+"2025-12-04 19:32:31",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46811,""title"":""Game Preview: Titans Travel To Cleveland To Face Browns""}"
+"2025-12-04 19:32:31",INFO,job_queued,"Job queued for processing: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""qigNk4XjBIQrXcXCjt7maDsvkwMpreZL"",""hub_id"":46811,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-04 19:32:31",INFO,job_processing,"Job processing started: ""Game Preview: Titans Travel To Cleveland To Face Browns""",-,"{""job_id"":""qigNk4XjBIQrXcXCjt7maDsvkwMpreZL"",""action"":""create"",""hub_id"":46811}"
+"2025-12-04 19:32:31",INFO,debug_content,"DEBUG: Content received from hub: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+NASHVILLE — The Tennessee Titans (1-11) travel to Cleveland this week to face the Browns (3-9) in their first road game since October. Kickoff at Huntington Bank Field (capacity 67,827) is scheduled for 1 p.m. EST/12 p.m. CST on Sunday, Dec. 7. This week's matchup marks the 70th all-time meeting, including playoffs, between the former AFC Central division rivals. The Browns hold a 37-32 lead in the series, including a 27-3 Browns victory i",-,"{""full_content_length"":5562}"
+"2025-12-04 19:32:31",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-04 19:25:58",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:25:58",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:22:28",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 19:22:27",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 19:18:37",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:18:37",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:16:46",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 19:16:46",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 19:15:58",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:15:58",INFO,,"Plugin activated",-,[]
+"2025-12-04 19:15:33",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 19:15:33",INFO,,"Plugin deactivated",-,[]
+"2025-12-04 18:04:01",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47478,""post_id"":47477}"
+"2025-12-04 18:04:01",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-12-04 18:04:01",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-12-04 18:04:01",SUCCESS,async_update,"Async update completed for ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays"" (2.84s)",-,"{""hub_id"":46810,""local_id"":47477,""processing_time"":2.8376340866088867,""job_id"":""dKbsVTcjhuOg1smqiqe7Pd1uYRZsGtbb""}"
+"2025-12-04 18:04:01",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""dKbsVTcjhuOg1smqiqe7Pd1uYRZsGtbb"",""spoke_post_id"":47477}"
+"2025-12-04 18:03:59",INFO,job_queued,"Update job queued for processing: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""k8NSWvf73E9FxHvKBBto8KZmeSZ5qJoF"",""hub_id"":46810,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 18:03:58",INFO,job_processing,"Job processing started: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""dKbsVTcjhuOg1smqiqe7Pd1uYRZsGtbb"",""action"":""update"",""hub_id"":46810}"
+"2025-12-04 18:03:58",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-04 18:03:56",INFO,job_queued,"Update job queued for processing: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""dKbsVTcjhuOg1smqiqe7Pd1uYRZsGtbb"",""hub_id"":46810,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-12-04 17:57:46",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""aTNNkHrJhjnqATNk4TPJAeU75QozLKSc"",""spoke_post_id"":47477}"
+"2025-12-04 17:57:44",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47477}"
+"2025-12-04 17:57:44",SUCCESS,async_create,"Async create completed for ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays"" (0.81s)",-,"{""hub_id"":46810,""local_id"":47477,""processing_time"":0.8053398132324219,""job_id"":""aTNNkHrJhjnqATNk4TPJAeU75QozLKSc""}"
+"2025-12-04 17:57:43",INFO,job_processing,"Job processing started: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""aTNNkHrJhjnqATNk4TPJAeU75QozLKSc"",""action"":""create"",""hub_id"":46810}"
+"2025-12-04 17:57:43",INFO,debug_content,"DEBUG: Content received from hub: <a title=""Jason’s Deli"" href=""https://www.jasonsdeli.com/"" target=""_blank"" rel=""noopener nofollow""><strong><u>Jason’s Deli</u></strong></a> is charming guests with the return of its beloved “12 Days of Deli-cious,” featuring 12 consecutive days of flavorful specials, bonus points, and the introduction of the Flavor Passport that extends rewards into the new year.
+
+From Dec. 12–23, each day offers something unique for everyone to enjoy:
+<ul>
+ 	<li>12 – Free Pumpkin Spice Coffee Ca",-,"{""full_content_length"":2650}"
+"2025-12-04 17:57:43",INFO,find_author,"Found matching author by email: mike@manovermachine.com",-,"{""matched_user_id"":38,""display_name"":""manovermachine""}"
+"2025-12-04 17:57:43",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-04 17:57:43",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47477,""intended_status"":""draft""}"
+"2025-12-04 17:57:43",INFO,find_author,"Found matching author by email: mike@manovermachine.com",-,"{""matched_user_id"":38,""display_name"":""manovermachine""}"
+"2025-12-04 17:57:41",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46810,""title"":""Jason\u2019s Deli Serves Up 12 Days of Deli-cious for the Holidays""}"
+"2025-12-04 17:57:41",INFO,job_queued,"Job queued for processing: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""aTNNkHrJhjnqATNk4TPJAeU75QozLKSc"",""hub_id"":46810,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-04 17:35:40",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""wyenpntiXY8PLizvLqrmnEaWZEm9MrCA"",""spoke_post_id"":47472}"
+"2025-12-04 17:35:39",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46805,""title"":""Jason\u2019s Deli Serves Up 12 Days of Deli-cious for the Holidays""}"
+"2025-12-04 17:35:39",INFO,job_queued,"Job queued for processing: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""wyenpntiXY8PLizvLqrmnEaWZEm9MrCA"",""hub_id"":46805,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-04 17:35:39",INFO,job_processing,"Job processing started: ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays""",-,"{""job_id"":""wyenpntiXY8PLizvLqrmnEaWZEm9MrCA"",""action"":""create"",""hub_id"":46805}"
+"2025-12-04 17:35:39",INFO,debug_content,"DEBUG: Content received from hub: <a title=""Jason’s Deli"" href=""https://www.jasonsdeli.com/"" target=""_blank"" rel=""noopener nofollow""><strong><u>Jason’s Deli</u></strong></a> is charming guests with the return of its beloved “12 Days of Deli-cious,” featuring 12 consecutive days of flavorful specials, bonus points, and the introduction of the Flavor Passport that extends rewards into the new year.
+
+From Dec. 12–23, each day offers something unique for everyone to enjoy:
+<ul>
+ 	<li>12 – Free Pumpkin Spice Coffee Ca",-,"{""full_content_length"":2646}"
+"2025-12-04 17:35:39",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-04 17:35:39",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-04 17:35:39",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47472,""intended_status"":""draft""}"
+"2025-12-04 17:35:39",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-04 17:35:39",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47472}"
+"2025-12-04 17:35:39",SUCCESS,async_create,"Async create completed for ""Jason’s Deli Serves Up 12 Days of Deli-cious for the Holidays"" (0.31s)",-,"{""hub_id"":46805,""local_id"":47472,""processing_time"":0.30787205696105957,""job_id"":""wyenpntiXY8PLizvLqrmnEaWZEm9MrCA""}"
+"2025-12-02 14:11:49",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""cu4gH9BLmWnyoMXsSk0eh6s9ifIjkeIn"",""spoke_post_id"":47408}"
+"2025-12-02 14:11:48",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46776,""title"":""Papa Murphy\u2019s Launches Papa\u2019s Picks""}"
+"2025-12-02 14:11:48",INFO,job_queued,"Job queued for processing: ""Papa Murphy’s Launches Papa’s Picks""",-,"{""job_id"":""cu4gH9BLmWnyoMXsSk0eh6s9ifIjkeIn"",""hub_id"":46776,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-12-02 14:11:48",INFO,job_processing,"Job processing started: ""Papa Murphy’s Launches Papa’s Picks""",-,"{""job_id"":""cu4gH9BLmWnyoMXsSk0eh6s9ifIjkeIn"",""action"":""create"",""hub_id"":46776}"
+"2025-12-02 14:11:48",INFO,debug_content,"DEBUG: Content received from hub: <a title=""Papa Murphy’s Take ‘n’ Bake Pizza"" href=""https://www.papamurphys.com/"" target=""_blank"" rel=""noopener nofollow""><strong><u>Papa Murphy’s Take ‘n’ Bake</u></strong></a> is raising the bar with the launch of Papa’s Picks, a value offering featuring two bold, mouth-watering options: 4-Cheese and Double Shredded Pepperoni. Available starting November 24th, these pizzas bring classic ingredients with elevated flavor to families and pizza lovers looking for a quick, delicious m",-,"{""full_content_length"":1711}"
+"2025-12-02 14:11:48",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-02 14:11:48",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-02 14:11:48",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47408,""intended_status"":""draft""}"
+"2025-12-02 14:11:48",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-12-02 14:11:48",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47408}"
+"2025-12-02 14:11:48",SUCCESS,async_create,"Async create completed for ""Papa Murphy’s Launches Papa’s Picks"" (0.29s)",-,"{""hub_id"":46776,""local_id"":47408,""processing_time"":0.29324793815612793,""job_id"":""cu4gH9BLmWnyoMXsSk0eh6s9ifIjkeIn""}"
+"2025-12-02 04:05:38",INFO,,"Plugin activated",-,[]
+"2025-12-02 04:05:38",INFO,,"Plugin activated",-,[]
+"2025-12-02 04:03:53",INFO,,"Plugin deactivated",-,[]
+"2025-12-02 04:03:53",INFO,,"Plugin deactivated",-,[]
+"2025-12-01 13:11:16",INFO,job_processing,"Job processing started: ""Powerball Jackpot Reaches $740 Million for December 1 Drawing""",-,"{""job_id"":""tULurCDwtqKICDAC8Ti5yY9YLlOzUbEz"",""action"":""create"",""hub_id"":46766}"
+"2025-12-01 13:11:16",INFO,debug_content,"DEBUG: Content received from hub: The Powerball jackpot has climbed to an estimated $740 million for the Monday, December 1, 2025 drawing after no ticket matched all six numbers in Saturday night's draw. The cash value for Monday's drawing stands at $346.1 million.
+
+<strong>Latest Drawing Results</strong>
+
+The winning numbers from the Saturday, November 29, 2025 drawing were 19, 22, 30, 32, 59, and Powerball 1. The Power Play multiplier was 2x.
+
+While no ticket claimed the grand prize, one player in Florida matched all fiv",-,"{""full_content_length"":1103}"
+"2025-12-01 13:11:16",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-01 13:11:16",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-12-01 13:11:16",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47364,""intended_status"":""draft""}"
+"2025-12-01 13:11:16",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-12-01 13:11:16",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47364}"
+"2025-12-01 13:11:16",SUCCESS,async_create,"Async create completed for ""Powerball Jackpot Reaches $740 Million for December 1 Drawing"" (0.27s)",-,"{""hub_id"":46766,""local_id"":47364,""processing_time"":0.2679281234741211,""job_id"":""tULurCDwtqKICDAC8Ti5yY9YLlOzUbEz""}"
+"2025-12-01 13:11:16",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""tULurCDwtqKICDAC8Ti5yY9YLlOzUbEz"",""spoke_post_id"":47364}"
+"2025-12-01 13:11:15",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46766,""title"":""Powerball Jackpot Reaches $740 Million for December 1 Drawing""}"
+"2025-12-01 13:11:15",INFO,job_queued,"Job queued for processing: ""Powerball Jackpot Reaches $740 Million for December 1 Drawing""",-,"{""job_id"":""tULurCDwtqKICDAC8Ti5yY9YLlOzUbEz"",""hub_id"":46766,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-26 18:06:36",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""OxdXsZnb7dBQ9YvIidXqYSGfXw7TNFlf"",""spoke_post_id"":47303}"
+"2025-11-26 18:06:35",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46763,""title"":""Smashville Women's Collegiate Hockey Showcase Returns to Ford Ice Center Bellevue""}"
+"2025-11-26 18:06:35",INFO,job_queued,"Job queued for processing: ""Smashville Women's Collegiate Hockey Showcase Returns to Ford Ice Center Bellevue""",-,"{""job_id"":""OxdXsZnb7dBQ9YvIidXqYSGfXw7TNFlf"",""hub_id"":46763,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-26 18:06:35",INFO,job_processing,"Job processing started: ""Smashville Women's Collegiate Hockey Showcase Returns to Ford Ice Center Bellevue""",-,"{""job_id"":""OxdXsZnb7dBQ9YvIidXqYSGfXw7TNFlf"",""action"":""create"",""hub_id"":46763}"
+"2025-11-26 18:06:35",INFO,debug_content,"DEBUG: Content received from hub: Nashville, Tenn. (Nov. 26, 2025) – The SMASHVILLE Women’s Collegiate Hockey Showcase returns to Ford Ice Center Bellevue for a fifth straight year from Nov. 28-30. This year’s event welcomes three NCAA Division I teams, including the No. 1-ranked and reigning national champion Wisconsin Badgers, the Mercyhurst University Lakers and Stonehill College Skyhawks. Mercyhurst is making its second appearance in the Showcase after first competing in 2021.
+
+The 2025 SMASHVILLE Women’s Collegiat",-,"{""full_content_length"":2829}"
+"2025-11-26 18:06:35",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-26 18:06:35",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-26 18:06:35",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47303,""intended_status"":""draft""}"
+"2025-11-26 18:06:35",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-26 18:06:35",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47303}"
+"2025-11-26 18:06:35",SUCCESS,async_create,"Async create completed for ""Smashville Women's Collegiate Hockey Showcase Returns to Ford Ice Center Bellevue"" (0.33s)",-,"{""hub_id"":46763,""local_id"":47303,""processing_time"":0.3295459747314453,""job_id"":""OxdXsZnb7dBQ9YvIidXqYSGfXw7TNFlf""}"
+"2025-11-26 15:49:18",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47299}"
+"2025-11-26 15:49:18",SUCCESS,async_create,"Async create completed for ""Chipotle Featues BOGO Offer on Thanksgiving Eve"" (0.29s)",-,"{""hub_id"":46761,""local_id"":47299,""processing_time"":0.28631114959716797,""job_id"":""2ymTidee5a93zGkbVh5yMZm4FZ4MGOS8""}"
+"2025-11-26 15:49:18",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""2ymTidee5a93zGkbVh5yMZm4FZ4MGOS8"",""spoke_post_id"":47299}"
+"2025-11-26 15:49:17",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46761,""title"":""Chipotle Featues BOGO Offer on Thanksgiving Eve""}"
+"2025-11-26 15:49:17",INFO,job_queued,"Job queued for processing: ""Chipotle Featues BOGO Offer on Thanksgiving Eve""",-,"{""job_id"":""2ymTidee5a93zGkbVh5yMZm4FZ4MGOS8"",""hub_id"":46761,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-26 15:49:17",INFO,job_processing,"Job processing started: ""Chipotle Featues BOGO Offer on Thanksgiving Eve""",-,"{""job_id"":""2ymTidee5a93zGkbVh5yMZm4FZ4MGOS8"",""action"":""create"",""hub_id"":46761}"
+"2025-11-26 15:49:17",INFO,debug_content,"DEBUG: Content received from hub: <span class=""legendSpanClass""><span class=""xn-chron"">Nov. 20, 2025</span></span> - Chipotle Mexican Grill (NYSE: CMG) today announced it will help fuel Thanksgiving Eve gatherings among friends and family with an in-restaurant ""Back Home BOGO"" offer on <span class=""xn-chron"">Wednesday, November 26</span>, from <span class=""xn-chron"">4 p.m.</span> to close local time.<sup>1 </sup>
+
+<b>Chipotle: The First Stop for Thanksgiving Eve
+</b>Often known as the biggest reunion night of the year, the",-,"{""full_content_length"":5945}"
+"2025-11-26 15:49:17",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-26 15:49:17",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-26 15:49:17",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47299,""intended_status"":""draft""}"
+"2025-11-26 15:49:17",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 22:06:35",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47266,""post_id"":47238}"
+"2025-11-24 22:06:35",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 22:06:35",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" (15.67s)",-,"{""hub_id"":46754,""local_id"":true,""processing_time"":15.669179916381836,""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp""}"
+"2025-11-24 22:06:35",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp"",""spoke_post_id"":true}"
+"2025-11-24 22:06:21",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""veLDODdwyv4Nov3PgUDIwqkc9jldzJAg"",""hub_id"":46754,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 22:06:19",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp"",""hub_id"":46754,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 22:06:19",INFO,job_processing,"Job processing started: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""AyNJfcYEe298VTemKzdwJLyMkPhWM7Mp"",""action"":""update"",""hub_id"":46754}"
+"2025-11-24 22:06:19",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:34:55",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47239,""post_id"":47238}"
+"2025-11-24 15:34:55",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:34:55",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-24 15:34:55",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" (2.99s)",-,"{""hub_id"":46754,""local_id"":true,""processing_time"":2.990339994430542,""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE""}"
+"2025-11-24 15:34:55",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE"",""spoke_post_id"":true}"
+"2025-11-24 15:34:52",INFO,job_processing,"Job processing started: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE"",""action"":""update"",""hub_id"":46754}"
+"2025-11-24 15:34:52",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:34:40",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""e4WZWhvhJRHC5LkCslsp6gtKx56pdqdE"",""hub_id"":46754,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 15:33:46",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47238}"
+"2025-11-24 15:33:46",SUCCESS,async_create,"Async create completed for ""Powerball Jackpot Reaches $654 Million for November 24 Drawing"" (0.33s)",-,"{""hub_id"":46754,""local_id"":47238,""processing_time"":0.3271050453186035,""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7""}"
+"2025-11-24 15:33:46",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7"",""spoke_post_id"":47238}"
+"2025-11-24 15:33:45",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46754,""title"":""Powerball Jackpot Reaches $654 Million for November 24 Drawing""}"
+"2025-11-24 15:33:45",INFO,job_queued,"Job queued for processing: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7"",""hub_id"":46754,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-24 15:33:45",INFO,job_processing,"Job processing started: ""Powerball Jackpot Reaches $654 Million for November 24 Drawing""",-,"{""job_id"":""XIB12eSnxPxhbbunHBK6xUUS6Q1cFmT7"",""action"":""create"",""hub_id"":46754}"
+"2025-11-24 15:33:45",INFO,debug_content,"DEBUG: Content received from hub: The Powerball jackpot continues its upward trajectory after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $654 million for tonight's drawing on Monday, November 24, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 22, 2025, were 28, 32, 36, 51, and 69, with Powerball number 2. The Power Play multiplier was 2x. While no one claimed the jackpot, two tickets sold in Georgia and Oklahoma each matched all ",-,"{""full_content_length"":1204}"
+"2025-11-24 15:33:45",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:33:45",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-24 15:33:45",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47238,""intended_status"":""draft""}"
+"2025-11-24 15:33:45",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:08:01",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47233,""post_id"":47232}"
+"2025-11-24 15:08:01",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 15:08:01",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-24 15:08:01",SUCCESS,async_update,"Async update completed for ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" (33.21s)",-,"{""hub_id"":46752,""local_id"":true,""processing_time"":33.212453842163086,""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT""}"
+"2025-11-24 15:08:01",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT"",""spoke_post_id"":true}"
+"2025-11-24 15:07:28",INFO,job_processing,"Job processing started: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston""",-,"{""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT"",""action"":""update"",""hub_id"":46752}"
+"2025-11-24 15:07:28",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:07:27",INFO,job_queued,"Update job queued for processing: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston""",-,"{""job_id"":""5xcSZwLRtUEJphgBZ0S116ds6TQtk0VT"",""hub_id"":46752,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 15:06:16",SUCCESS,async_create,"Async create completed for ""Middle Tennessee Dominates Second Half to Defeat Sam Houston"" (0.48s)",-,"{""hub_id"":46752,""local_id"":47232,""processing_time"":0.4781789779663086,""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz""}"
+"2025-11-24 15:06:16",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz"",""spoke_post_id"":47232}"
+"2025-11-24 15:06:15",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46752,""title"":""Middle Tennessee Dominates Second Half to Defeat Sam Houston""}"
+"2025-11-24 15:06:15",INFO,job_queued,"Job queued for processing: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston""",-,"{""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz"",""hub_id"":46752,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-24 15:06:15",INFO,job_processing,"Job processing started: ""Middle Tennessee Dominates Second Half to Defeat Sam Houston""",-,"{""job_id"":""bD5QTfQgFUzFwHWzPOEcVPQ1FkS8cqKz"",""action"":""create"",""hub_id"":46752}"
+"2025-11-24 15:06:15",INFO,debug_content,"DEBUG: Content received from hub: November 22, 2025 at Murfreesboro, Tennessee – Middle Tennessee State overcame a sluggish start to defeat Sam Houston 31-17 at Floyd Stadium, earning their second victory of the season. The Blue Raiders outscored the Bearkats 21-7 in the second half to pull away from a 10-10 halftime tie before an announced crowd of 7,605.
+
+Sam Houston struck first when Chris Reed hauled in a 54-yard touchdown pass from Landyn Locke in the opening quarter, capping a six-play, 93-yard drive that gave the visi",-,"{""full_content_length"":3295}"
+"2025-11-24 15:06:15",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:06:15",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-24 15:06:15",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47232,""intended_status"":""draft""}"
+"2025-11-24 15:06:15",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 15:06:15",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47232}"
+"2025-11-24 14:30:27",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47230,""post_id"":47228}"
+"2025-11-24 14:30:27",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 14:30:27",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-24 14:30:27",SUCCESS,async_update,"Async update completed for ""Crumbl Weekly Menu Through November 29, 2025"" (2.82s)",-,"{""hub_id"":46750,""local_id"":true,""processing_time"":2.8165149688720703,""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e""}"
+"2025-11-24 14:30:27",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e"",""spoke_post_id"":true}"
+"2025-11-24 14:30:24",INFO,job_queued,"Update job queued for processing: ""Crumbl Weekly Menu Through November 29, 2025""",-,"{""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e"",""hub_id"":46750,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 14:30:24",INFO,job_processing,"Job processing started: ""Crumbl Weekly Menu Through November 29, 2025""",-,"{""job_id"":""raci6X1ZlZWoI2jNvpVC1uB7Rz5DJX3e"",""action"":""update"",""hub_id"":46750}"
+"2025-11-24 14:30:24",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-24 14:30:01",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47228}"
+"2025-11-24 14:30:01",SUCCESS,async_create,"Async create completed for ""Crumbl Weekly Menu Through November 29, 2025"" (0.41s)",-,"{""hub_id"":46750,""local_id"":47228,""processing_time"":0.4106290340423584,""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax""}"
+"2025-11-24 14:30:01",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax"",""spoke_post_id"":47228}"
+"2025-11-24 14:30:00",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46750,""title"":""Crumbl Weekly Menu Through November 29, 2025""}"
+"2025-11-24 14:30:00",INFO,job_queued,"Job queued for processing: ""Crumbl Weekly Menu Through November 29, 2025""",-,"{""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax"",""hub_id"":46750,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-24 14:30:00",INFO,job_processing,"Job processing started: ""Crumbl Weekly Menu Through November 29, 2025""",-,"{""job_id"":""iL7lsuXmVq5fLwSxxJubwtO6gvizp6ax"",""action"":""create"",""hub_id"":46750}"
+"2025-11-24 14:30:00",INFO,debug_content,"DEBUG: Content received from hub: Crumbl’s latest limited-time desserts are from November 24-29, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.
+
+<strong>BISCOFF® PIE</strong>
+A Biscoff®–infused cream cheese pie filling served on a crunchy Biscoff® crust, finished with a pool of smooth Biscoff® spread, dollops of fresh whipped cream, and a crunchy Biscoff® cookie.
+
+<s",-,"{""full_content_length"":1943}"
+"2025-11-24 14:30:00",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-24 14:30:00",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-24 14:30:00",INFO,newspaper_update,"Updated Newspaper theme meta fields: td_post_video",-,"{""fields"":[""td_post_video""]}"
+"2025-11-24 14:30:00",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47228,""intended_status"":""draft""}"
+"2025-11-24 14:30:00",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-24 13:59:40",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47227,""post_id"":47226}"
+"2025-11-24 13:59:40",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:59:40",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-24 13:59:40",SUCCESS,async_update,"Async update completed for ""Nashville SC Announces 2026 MLS Regular Season Schedule"" (3.11s)",-,"{""hub_id"":46748,""local_id"":true,""processing_time"":3.1080410480499268,""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7""}"
+"2025-11-24 13:59:40",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7"",""spoke_post_id"":true}"
+"2025-11-24 13:59:37",INFO,job_processing,"Job processing started: ""Nashville SC Announces 2026 MLS Regular Season Schedule""",-,"{""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7"",""action"":""update"",""hub_id"":46748}"
+"2025-11-24 13:59:37",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:59:36",INFO,job_queued,"Update job queued for processing: ""Nashville SC Announces 2026 MLS Regular Season Schedule""",-,"{""job_id"":""4AJEGspUFBsLoB9cvgMdtfK06zzdbEu7"",""hub_id"":46748,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 13:58:25",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47226}"
+"2025-11-24 13:58:25",SUCCESS,async_create,"Async create completed for ""Nashville SC Announces 2026 MLS Regular Season Schedule"" (0.26s)",-,"{""hub_id"":46748,""local_id"":47226,""processing_time"":0.25941991806030273,""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n""}"
+"2025-11-24 13:58:25",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n"",""spoke_post_id"":47226}"
+"2025-11-24 13:58:24",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46748,""title"":""Nashville SC Announces 2026 MLS Regular Season Schedule""}"
+"2025-11-24 13:58:24",INFO,job_queued,"Job queued for processing: ""Nashville SC Announces 2026 MLS Regular Season Schedule""",-,"{""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n"",""hub_id"":46748,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-24 13:58:24",INFO,job_processing,"Job processing started: ""Nashville SC Announces 2026 MLS Regular Season Schedule""",-,"{""job_id"":""yPWBcSg6c75a3TuPQl5hiE0WnUfmIH7n"",""action"":""create"",""hub_id"":46748}"
+"2025-11-24 13:58:24",INFO,debug_content,"DEBUG: Content received from hub: <div class=""body-part d3-l-col__col-12"">
+<div class=""oc-c-body-part oc-c-body-part--text "">
+
+<strong>NASHVILLE, Tenn. (Nov. 20, 2025)</strong> – Nashville Soccer Club, in conjunction with Major League Soccer, announced today its schedule for the 2026 MLS regular season. The Boys in Gold will kick off their seventh MLS season when they host the New England Revolution at GEODIS Park on Saturday, Feb. 21 at 7:30 p.m. CT during MLS is Back Weekend and conclude its 34-match schedule on the road",-,"{""full_content_length"":9339}"
+"2025-11-24 13:58:24",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:58:24",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-24 13:58:24",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47226,""intended_status"":""draft""}"
+"2025-11-24 13:58:24",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:43:07",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47225,""post_id"":47224}"
+"2025-11-24 13:43:07",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-24 13:43:07",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-24 13:43:07",SUCCESS,async_update,"Async update completed for ""Titans Come Up Short in 30-24 Loss to Seahawks"" (31.51s)",-,"{""hub_id"":46747,""local_id"":true,""processing_time"":31.51263689994812,""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu""}"
+"2025-11-24 13:43:07",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu"",""spoke_post_id"":true}"
+"2025-11-24 13:42:36",INFO,job_processing,"Job processing started: ""Titans Come Up Short in 30-24 Loss to Seahawks""",-,"{""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu"",""action"":""update"",""hub_id"":46747}"
+"2025-11-24 13:42:36",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:41:44",INFO,job_queued,"Update job queued for processing: ""Titans Come Up Short in 30-24 Loss to Seahawks""",-,"{""job_id"":""8O3htRNbgv4jGs94BAyJl8tAV9UQS1fu"",""hub_id"":46747,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-24 13:41:11",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4"",""spoke_post_id"":47224}"
+"2025-11-24 13:41:10",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46747,""title"":""Titans Come Up Short in 30-24 Loss to Seahawks""}"
+"2025-11-24 13:41:10",INFO,job_queued,"Job queued for processing: ""Titans Come Up Short in 30-24 Loss to Seahawks""",-,"{""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4"",""hub_id"":46747,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-24 13:41:10",INFO,job_processing,"Job processing started: ""Titans Come Up Short in 30-24 Loss to Seahawks""",-,"{""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4"",""action"":""create"",""hub_id"":46747}"
+"2025-11-24 13:41:10",INFO,debug_content,"DEBUG: Content received from hub: <div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+<strong>NASHVILLE</strong> – The Titans, and their fans, got a jolt of excitement with a highlight-reel punt return in the third quarter on Sunday.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Unfortunately, the team didn't make enough plays around it in a 30-24 loss to the Seahawks.
+
+</div>
+<div class=""nfl-c-body-part nfl-c-body-part--text"">
+
+Chimere Dike's 90-yard punt return for a touchdown was Tennessee's big",-,"{""full_content_length"":7873}"
+"2025-11-24 13:41:10",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:41:10",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-24 13:41:10",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47224,""intended_status"":""draft""}"
+"2025-11-24 13:41:10",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-24 13:41:10",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47224}"
+"2025-11-24 13:41:10",SUCCESS,async_create,"Async create completed for ""Titans Come Up Short in 30-24 Loss to Seahawks"" (0.28s)",-,"{""hub_id"":46747,""local_id"":47224,""processing_time"":0.2799110412597656,""job_id"":""1BF0xzeIRBcGwTmijDvO0I3qug9bUzB4""}"
+"2025-11-19 20:45:59",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47133,""post_id"":47129}"
+"2025-11-19 20:45:59",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-19 20:45:59",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $593 Million"" (1.40s)",-,"{""hub_id"":46672,""local_id"":true,""processing_time"":1.4021780490875244,""job_id"":""wxN6hp5maEKx5Lq93CJzXXbtD8raYSi2""}"
+"2025-11-19 20:45:59",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""wxN6hp5maEKx5Lq93CJzXXbtD8raYSi2"",""spoke_post_id"":true}"
+"2025-11-19 20:45:58",INFO,job_processing,"Job processing started: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""wxN6hp5maEKx5Lq93CJzXXbtD8raYSi2"",""action"":""update"",""hub_id"":46672}"
+"2025-11-19 20:45:58",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:45:55",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47132,""post_id"":47129}"
+"2025-11-19 20:45:55",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-19 20:45:55",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-19 20:45:55",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $593 Million"" (1.55s)",-,"{""hub_id"":46672,""local_id"":true,""processing_time"":1.5549769401550293,""job_id"":""Z7Zft39GkpQjr5zoOQu4cZ0bTfXOs2sF""}"
+"2025-11-19 20:45:55",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""wxN6hp5maEKx5Lq93CJzXXbtD8raYSi2"",""hub_id"":46672,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:45:55",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""Z7Zft39GkpQjr5zoOQu4cZ0bTfXOs2sF"",""spoke_post_id"":true}"
+"2025-11-19 20:45:53",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""Z7Zft39GkpQjr5zoOQu4cZ0bTfXOs2sF"",""hub_id"":46672,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:45:53",INFO,job_processing,"Job processing started: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""Z7Zft39GkpQjr5zoOQu4cZ0bTfXOs2sF"",""action"":""update"",""hub_id"":46672}"
+"2025-11-19 20:45:53",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:45:36",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47129,""status"":""publish""}"
+"2025-11-19 20:45:36",SUCCESS,async_create,"Async create completed for ""Powerball Jackpot Climbs to $593 Million"" (3.98s)",-,"{""hub_id"":46672,""local_id"":47129,""processing_time"":3.976046085357666,""job_id"":""wDwrJaLOdssr6kGEE2dpLXIhY4dB2fAo""}"
+"2025-11-19 20:45:36",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""wDwrJaLOdssr6kGEE2dpLXIhY4dB2fAo"",""spoke_post_id"":47129}"
+"2025-11-19 20:45:34",INFO,job_queued,"Update job queued for processing: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""pvigEhx31gJx5SwsOAe7Ivh0ffCWyHNN"",""hub_id"":46672,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:45:34",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47131,""post_id"":47129}"
+"2025-11-19 20:45:34",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47129}"
+"2025-11-19 20:45:33",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47130,""post_id"":47129}"
+"2025-11-19 20:45:33",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-19 20:45:33",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47129,""intended_status"":""publish""}"
+"2025-11-19 20:45:33",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:45:32",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46672,""title"":""Powerball Jackpot Climbs to $593 Million""}"
+"2025-11-19 20:45:32",INFO,job_queued,"Job queued for processing: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""wDwrJaLOdssr6kGEE2dpLXIhY4dB2fAo"",""hub_id"":46672,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-19 20:45:32",INFO,job_processing,"Job processing started: ""Powerball Jackpot Climbs to $593 Million""",-,"{""job_id"":""wDwrJaLOdssr6kGEE2dpLXIhY4dB2fAo"",""action"":""create"",""hub_id"":46672}"
+"2025-11-19 20:45:32",INFO,debug_content,"DEBUG: Content received from hub: The Powerball jackpot continues its remarkable surge after no ticket matched all six numbers in Monday night's drawing, pushing the grand prize to an estimated $593 million for tonight's drawing on Wednesday, November 19, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Monday, November 17, 2025, were 7, 33, 50, 57, and 66, with Powerball number 23. The Power Play multiplier was 5x. While no one claimed the jackpot, one ticket sold in West Virginia matched all five white ball",-,"{""full_content_length"":1065}"
+"2025-11-19 20:45:32",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:08:19",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47125,""post_id"":47121}"
+"2025-11-19 20:08:19",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-19 20:08:19",SUCCESS,async_update,"Async update completed for ""White Castle Comes in Clutch for the Holidays"" (1.88s)",-,"{""hub_id"":46670,""local_id"":true,""processing_time"":1.881756067276001,""job_id"":""a1nFcfIHtbDno722lcCGMzpelI0Ls1hD""}"
+"2025-11-19 20:08:19",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""a1nFcfIHtbDno722lcCGMzpelI0Ls1hD"",""spoke_post_id"":true}"
+"2025-11-19 20:08:17",INFO,job_processing,"Job processing started: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""a1nFcfIHtbDno722lcCGMzpelI0Ls1hD"",""action"":""update"",""hub_id"":46670}"
+"2025-11-19 20:08:17",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:08:15",INFO,job_queued,"Update job queued for processing: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""a1nFcfIHtbDno722lcCGMzpelI0Ls1hD"",""hub_id"":46670,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:08:14",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""mb92dbdw2LO8E2UoqPyiPdzZ9L44596B"",""spoke_post_id"":true}"
+"2025-11-19 20:08:13",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47124,""post_id"":47121}"
+"2025-11-19 20:08:13",INFO,yoast_receive,"Received Yoast data from hub (2 fields)",-,"{""yoast_fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""],""has_metadesc"":true,""has_focuskw"":true}"
+"2025-11-19 20:08:13",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-19 20:08:13",SUCCESS,async_update,"Async update completed for ""White Castle Comes in Clutch for the Holidays"" (2.21s)",-,"{""hub_id"":46670,""local_id"":true,""processing_time"":2.2114269733428955,""job_id"":""mb92dbdw2LO8E2UoqPyiPdzZ9L44596B""}"
+"2025-11-19 20:08:11",INFO,job_queued,"Update job queued for processing: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""mb92dbdw2LO8E2UoqPyiPdzZ9L44596B"",""hub_id"":46670,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:08:11",INFO,job_processing,"Job processing started: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""mb92dbdw2LO8E2UoqPyiPdzZ9L44596B"",""action"":""update"",""hub_id"":46670}"
+"2025-11-19 20:08:11",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:07:56",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""oeaBwJH3EWfr1ShTjxKHTWZBcBzLOMqg"",""spoke_post_id"":47121}"
+"2025-11-19 20:07:55",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47121,""status"":""publish""}"
+"2025-11-19 20:07:55",SUCCESS,async_create,"Async create completed for ""White Castle Comes in Clutch for the Holidays"" (3.37s)",-,"{""hub_id"":46670,""local_id"":47121,""processing_time"":3.365894079208374,""job_id"":""oeaBwJH3EWfr1ShTjxKHTWZBcBzLOMqg""}"
+"2025-11-19 20:07:54",INFO,job_queued,"Update job queued for processing: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""0oMszcViYW2PHeanIraOrbmMj6EP29Ga"",""hub_id"":46670,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""update""}"
+"2025-11-19 20:07:54",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47123,""post_id"":47121}"
+"2025-11-19 20:07:54",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47121}"
+"2025-11-19 20:07:53",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47122,""post_id"":47121}"
+"2025-11-19 20:07:53",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-19 20:07:53",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47121,""intended_status"":""publish""}"
+"2025-11-19 20:07:53",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-19 20:07:52",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""hub_id"":46670,""title"":""White Castle Comes in Clutch for the Holidays""}"
+"2025-11-19 20:07:52",INFO,job_queued,"Job queued for processing: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""oeaBwJH3EWfr1ShTjxKHTWZBcBzLOMqg"",""hub_id"":46670,""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""action"":""create""}"
+"2025-11-19 20:07:52",INFO,job_processing,"Job processing started: ""White Castle Comes in Clutch for the Holidays""",-,"{""job_id"":""oeaBwJH3EWfr1ShTjxKHTWZBcBzLOMqg"",""action"":""create"",""hub_id"":46670}"
+"2025-11-19 20:07:52",INFO,debug_content,"DEBUG: Content received from hub: <span class=""legendSpanClass"">Nov. 17, 2025</span> - This holiday season, White Castle is bringing the <a href=""https://edge.prnewswire.com/c/link/?t=0&amp;l=en&amp;o=4560389-1&amp;h=1665407476&amp;u=https%3A%2F%2Fwww.whitecastle.com%2FClutch-Holidays&amp;a=Clutch+plays+for+the+holidays"" target=""_blank"" rel=""nofollow noopener"">Clutch plays for the holidays</a>, offering delicious meals, fun recipes, unique gifts and sweet savings to make the holidays merry, bright and downright craveable. Whethe",-,"{""full_content_length"":6347}"
+"2025-11-19 20:07:52",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-18 15:56:25",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""8uD2YptkVQrOjQ7FHEi5RAjb5cYk3wWz"",""spoke_post_id"":true}"
+"2025-11-18 15:56:24",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47092,""post_id"":47088}"
+"2025-11-18 15:56:24",SUCCESS,async_update,"Async update completed for ""Banana Ball Returns to First Horizon Park"" (1.54s)",-,"{""hub_id"":46653,""local_id"":true,""processing_time"":1.5445959568023682,""job_id"":""8uD2YptkVQrOjQ7FHEi5RAjb5cYk3wWz""}"
+"2025-11-18 15:56:23",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-18 15:56:14",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""4pfyXCvujykl8AK7zry3LBYnAlOtp5mn"",""spoke_post_id"":true}"
+"2025-11-18 15:56:13",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47091,""post_id"":47088}"
+"2025-11-18 15:56:13",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-18 15:56:13",SUCCESS,async_update,"Async update completed for ""Banana Ball Returns to First Horizon Park"" (1.65s)",-,"{""hub_id"":46653,""local_id"":true,""processing_time"":1.651235818862915,""job_id"":""4pfyXCvujykl8AK7zry3LBYnAlOtp5mn""}"
+"2025-11-18 15:56:12",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-18 15:56:02",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47088,""status"":""publish""}"
+"2025-11-18 15:56:02",SUCCESS,async_create,"Async create completed for ""Banana Ball Returns to First Horizon Park"" (3.66s)",-,"{""hub_id"":46653,""local_id"":47088,""processing_time"":3.662850856781006,""job_id"":""4ILtjHkfF53kDjIh69mOETOTeH74QHz1""}"
+"2025-11-18 15:56:02",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""4ILtjHkfF53kDjIh69mOETOTeH74QHz1"",""spoke_post_id"":47088}"
+"2025-11-18 15:56:00",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47090,""post_id"":47088}"
+"2025-11-18 15:56:00",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47088}"
+"2025-11-18 15:55:59",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47089,""post_id"":47088}"
+"2025-11-18 15:55:59",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-18 15:55:59",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47088,""intended_status"":""publish""}"
+"2025-11-18 15:55:59",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-18 15:55:58",INFO,debug_content,"DEBUG: Content received from hub: <strong>NASHVILLE</strong> - During their selection show on Thursday, October 9 on ESPN 2, and Banana Ball YouTube, Nashville and First Horizon Park were announced as hosts for Banana Ball in 2026. The Party Animals and Texas Tailgaters will come to First Horizon Park June 18-20.
+
+Fresh off a historic 2025 Banana Ball World Tour that included stops at numerous Major League Baseball and National Football League venues, including Nissan Stadium, 2026 will feature stops at 75 different stadiums ",-,"{""full_content_length"":1632}"
+"2025-11-18 15:55:58",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-17 20:31:26",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""A8vSH6CJjajpzHpBTHSE8MMqI0bXNphX"",""spoke_post_id"":true}"
+"2025-11-17 20:31:25",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47078,""post_id"":47038}"
+"2025-11-17 20:31:25",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $570 Million for Monday Drawing"" (1.61s)",-,"{""hub_id"":46650,""local_id"":true,""processing_time"":1.607578992843628,""job_id"":""A8vSH6CJjajpzHpBTHSE8MMqI0bXNphX""}"
+"2025-11-17 20:31:24",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 20:31:23",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47077,""post_id"":47038}"
+"2025-11-17 20:31:23",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $570 Million for Monday Drawing"" (4.88s)",-,"{""hub_id"":46650,""local_id"":true,""processing_time"":4.877434015274048,""job_id"":""LZlUYGKvLyajxXzIwSSTp6lZOKZPjlc4""}"
+"2025-11-17 20:31:23",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""LZlUYGKvLyajxXzIwSSTp6lZOKZPjlc4"",""spoke_post_id"":true}"
+"2025-11-17 20:31:18",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 13:46:24",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""vqrJrNiwFGjt2UTRb5OYozwfJRbFsowq"",""spoke_post_id"":true}"
+"2025-11-17 13:46:23",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47042,""post_id"":47038}"
+"2025-11-17 13:46:23",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $570 Million for Monday Drawing"" (6.20s)",-,"{""hub_id"":46650,""local_id"":true,""processing_time"":6.195934057235718,""job_id"":""vqrJrNiwFGjt2UTRb5OYozwfJRbFsowq""}"
+"2025-11-17 13:46:17",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47041,""post_id"":47038}"
+"2025-11-17 13:46:17",SUCCESS,async_update,"Async update completed for ""Powerball Jackpot Climbs to $570 Million for Monday Drawing"" (6.77s)",-,"{""hub_id"":46650,""local_id"":true,""processing_time"":6.772305965423584,""job_id"":""kJj9BHQgr7ZzWaZronZwZcsbCjp0JtC5""}"
+"2025-11-17 13:46:17",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""kJj9BHQgr7ZzWaZronZwZcsbCjp0JtC5"",""spoke_post_id"":true}"
+"2025-11-17 13:46:17",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 13:46:10",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 13:46:08",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47038,""status"":""publish""}"
+"2025-11-17 13:46:08",SUCCESS,async_create,"Async create completed for ""Powerball Jackpot Climbs to $570 Million for Monday Drawing"" (9.05s)",-,"{""hub_id"":46650,""local_id"":47038,""processing_time"":9.048352003097534,""job_id"":""YIMuZmk26P1oWyZHg96RrUBomxGIwCT7""}"
+"2025-11-17 13:46:08",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""YIMuZmk26P1oWyZHg96RrUBomxGIwCT7"",""spoke_post_id"":47038}"
+"2025-11-17 13:46:03",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47040,""post_id"":47038}"
+"2025-11-17 13:46:03",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-17 13:46:03",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47038}"
+"2025-11-17 13:46:02",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47039,""post_id"":47038}"
+"2025-11-17 13:46:02",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-17 13:46:02",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47038,""intended_status"":""publish""}"
+"2025-11-17 13:46:02",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 13:45:59",INFO,debug_content,"DEBUG: Content received from hub: The Powerball jackpot continues its impressive climb after no ticket matched all six numbers in Saturday night's drawing, pushing the grand prize to an estimated $570 million for the upcoming drawing on Monday, November 18, 2025.
+<h3>Latest Drawing Results</h3>
+The winning numbers drawn on Saturday, November 16, 2025, were 6, 7, 12, 47, and 53, with Powerball number 21. The Power Play multiplier was 4x. While no one claimed the jackpot, thousands of players across the country won smaller prize",-,"{""full_content_length"":1173}"
+"2025-11-17 13:45:59",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-17 13:28:15",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47035,""status"":""publish""}"
+"2025-11-17 13:28:15",SUCCESS,async_create,"Async create completed for ""$200,000 Tennessee Cash Jackpot Winner in Lebanon"" (10.14s)",-,"{""hub_id"":46648,""local_id"":47035,""processing_time"":10.136283874511719,""job_id"":""HafZkyY4mbIM9yuV1jrpag7KPIYNRuPD""}"
+"2025-11-17 13:28:15",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""HafZkyY4mbIM9yuV1jrpag7KPIYNRuPD"",""spoke_post_id"":47035}"
+"2025-11-17 13:28:07",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47037,""post_id"":47035}"
+"2025-11-17 13:28:07",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47035}"
+"2025-11-17 13:28:06",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47036,""post_id"":47035}"
+"2025-11-17 13:28:06",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-17 13:28:06",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47035,""intended_status"":""publish""}"
+"2025-11-17 13:28:06",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-17 13:28:04",INFO,debug_content,"DEBUG: Content received from hub: LEBANON – 11-16-2025 - Congrats to a lucky Tennessee Cash player in Lebanon, who won the game’s jackpot of $200,000 from the drawing held Friday, Nov. 14, 2025.
+
+The winning ticket was purchased at Thornton’s, 243 Hwy. 109 North in Lebanon.
+
+No additional information is available until the prize is claimed.
+
+<a href=""https://tnlottery.com/"">Source: TN Lottery</a>
+
+<a href=""https://cannoncountysource.com/News/"" class=""sourcehub-smart-link-processed"">More News</a>",-,"{""full_content_length"":480}"
+"2025-11-17 13:28:04",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-15 17:13:48",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""https:\/\/hub2a.wpenginepowered.com"",""job_id"":""Vv4ovzUgufWyxoC4HzHYUn97hHJlOqXL"",""spoke_post_id"":47024}"
+"2025-11-15 17:13:47",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":47024,""status"":""publish""}"
+"2025-11-15 17:13:47",SUCCESS,async_create,"Async create completed for ""$980M Mega Millions jackpot won in Georgia"" (34.29s)",-,"{""hub_id"":46640,""local_id"":47024,""processing_time"":34.28590488433838,""job_id"":""Vv4ovzUgufWyxoC4HzHYUn97hHJlOqXL""}"
+"2025-11-15 17:13:17",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47026,""post_id"":47024}"
+"2025-11-15 17:13:17",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":47024}"
+"2025-11-15 17:13:15",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":47025,""post_id"":47024}"
+"2025-11-15 17:13:15",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-15 17:13:15",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":47024,""intended_status"":""publish""}"
+"2025-11-15 17:13:15",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-15 17:13:13",INFO,debug_content,"DEBUG: Content received from hub: ATLANTA – Georgia is celebrating its largest jackpot winner in history. A single Mega Millions ticket purchased in Newnan matched all six numbers drawn Friday night to win a jackpot worth an estimated $980 million. The jackpot has an estimated cash value of $452.2 million.
+
+Publix #1816, located at 4000 N. Highway 29 in Newnan, sold the lucky Quik Pik ticket.
+
+“We are thrilled to congratulate the largest winner in our state’s history,” Georgia Lottery President and CEO Gretchen Corbi",-,"{""full_content_length"":2691}"
+"2025-11-15 17:13:13",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-14 21:36:13",INFO,,"Plugin activated",-,[]
+"2025-11-14 21:36:13",INFO,,"Plugin activated",-,[]
+"2025-11-14 21:33:54",INFO,,"Plugin deactivated",-,[]
+"2025-11-14 21:33:54",INFO,,"Plugin deactivated",-,[]
+"2025-11-13 15:36:05",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46975,""post_id"":46971}"
+"2025-11-13 15:36:05",SUCCESS,async_update,"Async update completed for ""Wendy’s Declares First-Ever “Frosty Day” Holiday on November 15"" (4.30s)",-,"{""hub_id"":46631,""local_id"":true,""processing_time"":4.302947998046875,""job_id"":""a7XII7ac8KlXmSH33lAzuuc97Pe1Qa3C""}"
+"2025-11-13 15:36:01",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-13 15:35:58",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46974,""post_id"":46971}"
+"2025-11-13 15:35:58",SUCCESS,async_update,"Async update completed for ""Wendy’s Declares First-Ever “Frosty Day” Holiday on November 15"" (1.53s)",-,"{""hub_id"":46631,""local_id"":true,""processing_time"":1.5279269218444824,""job_id"":""YMQxZxTy37MP8jRtqayc4M0LwE8pribY""}"
+"2025-11-13 15:35:56",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-13 15:35:48",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":46971,""status"":""publish""}"
+"2025-11-13 15:35:48",SUCCESS,async_create,"Async create completed for ""Wendy’s Declares First-Ever “Frosty Day” Holiday on November 15"" (3.50s)",-,"{""hub_id"":46631,""local_id"":46971,""processing_time"":3.5010430812835693,""job_id"":""xz0VwS8tITb21OgPW8L4yvt7qynjLHEi""}"
+"2025-11-13 15:35:47",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46973,""post_id"":46971}"
+"2025-11-13 15:35:47",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-13 15:35:47",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":46971}"
+"2025-11-13 15:35:46",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46972,""post_id"":46971}"
+"2025-11-13 15:35:46",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-13 15:35:46",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":46971,""intended_status"":""publish""}"
+"2025-11-13 15:35:46",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-13 15:35:45",INFO,debug_content,"DEBUG: Content received from hub: Save the date! Wendy’s® is declaring the first-ever worldwide <a title=""Frosty Day"" href=""https://www.nationaldayarchives.com/day/frosty-day/"" target=""_blank"" rel=""noopener nofollow""><strong><u>Frosty® Day</u></strong></a> – a new, annual celebration dedicated to the iconic frozen treat cherished for decades. Fittingly, Frosty Day falls on the anniversary of the very first Wendy’s restaurant opening back in 1969, so this celebration spans generations of Wendy’s fans.
+
+In honor of th",-,"{""full_content_length"":2775}"
+"2025-11-13 15:35:45",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-13 13:53:24",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":46967,""status"":""publish""}"
+"2025-11-13 13:53:24",SUCCESS,async_create,"Async create completed for ""Dutch Bros Releases 2025 Holiday Menu"" (33.05s)",-,"{""hub_id"":46629,""local_id"":46967,""processing_time"":33.04538679122925,""job_id"":""wbJvNbyHrPY2Uo7ZvFOm3fYEdXulc7XG""}"
+"2025-11-13 13:52:53",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46969,""post_id"":46967}"
+"2025-11-13 13:52:53",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc",-,"{""fields"":[""_yoast_wpseo_metadesc""]}"
+"2025-11-13 13:52:53",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":46967}"
+"2025-11-13 13:52:52",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46968,""post_id"":46967}"
+"2025-11-13 13:52:52",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-13 13:52:52",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":46967,""intended_status"":""publish""}"
+"2025-11-13 13:52:52",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-13 13:52:51",INFO,debug_content,"DEBUG: Content received from hub: <b>(November 1, 2025) - </b>Dutch Bros is rocking the holidays this year with four seasonal drinks. From returning faves to your new go-to winter treat, these drinks are here to get everyone holly jolly hyped! The <a href=""https://www.dutchbros.com/menu/seasonal-drinks/hazelnut-truffle-mocha/""><b>Hazelnut Truffle Mocha</b></a><b>, </b><a href=""https://www.dutchbros.com/menu/seasonal-drinks/candy-cane-mocha/""><b>Candy Cane Mocha</b></a><b>, </b><a href=""https://www.dutchbros.com/menu/seasonal",-,"{""full_content_length"":2752}"
+"2025-11-13 13:52:51",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-12 21:40:19",INFO,,"Plugin activated",-,[]
+"2025-11-12 21:40:19",INFO,,"Plugin activated",-,[]
+"2025-11-12 21:39:56",INFO,,"Plugin deactivated",-,[]
+"2025-11-12 21:39:56",INFO,,"Plugin deactivated",-,[]
+"2025-11-10 21:12:31",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46905,""post_id"":46900}"
+"2025-11-10 21:12:31",SUCCESS,async_update,"Async update completed for ""Crumbl Weekly Menu Through November 15, 2025"" (1.49s)",-,"{""hub_id"":46614,""local_id"":true,""processing_time"":1.4863970279693604,""job_id"":""vdvKocDLS6cUtptCtxbADhcQnzS555eU""}"
+"2025-11-10 21:12:30",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-10 21:12:29",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46904,""post_id"":46900}"
+"2025-11-10 21:12:29",SUCCESS,async_update,"Async update completed for ""Crumbl Weekly Menu Through November 15, 2025"" (31.30s)",-,"{""hub_id"":46614,""local_id"":true,""processing_time"":31.301936864852905,""job_id"":""B349iVcSbbSUw6NUCRMyXhjJ3R172DXh""}"
+"2025-11-10 21:11:58",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-10 21:11:51",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46903,""post_id"":46900}"
+"2025-11-10 21:11:51",SUCCESS,async_update,"Async update completed for ""Crumbl Weekly Menu Through November 15, 2025"" (7.11s)",-,"{""hub_id"":46614,""local_id"":true,""processing_time"":7.10693097114563,""job_id"":""JMqiVjMPQRRbcLWMNnznUkKrR4YLBr53""}"
+"2025-11-10 21:11:44",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-10 21:10:43",SUCCESS,yoast_sync,"Post published after Yoast meta set",-,"{""post_id"":46900,""status"":""publish""}"
+"2025-11-10 21:10:43",SUCCESS,async_create,"Async create completed for ""Crumbl Weekly Menu Through November 15, 2025"" (7.72s)",-,"{""hub_id"":46614,""local_id"":46900,""processing_time"":7.719755172729492,""job_id"":""o3tWmiZhzbobYrqr9L47IKIlahy9iPda""}"
+"2025-11-10 21:10:37",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46902,""post_id"":46900}"
+"2025-11-10 21:10:37",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-10 21:10:37",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":46900}"
+"2025-11-10 21:10:36",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46901,""post_id"":46900}"
+"2025-11-10 21:10:36",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-10 21:10:36",INFO,newspaper_update,"Updated Newspaper theme meta fields: td_post_theme_settings, td_post_video",-,"{""fields"":[""td_post_theme_settings"",""td_post_video""]}"
+"2025-11-10 21:10:36",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":46900,""intended_status"":""publish""}"
+"2025-11-10 21:10:36",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-10 21:10:35",INFO,debug_content,"DEBUG: Content received from hub: <div>Crumbl’s latest limited-time desserts are from November 10-15, 2025. Find a location near you <a href=""https://crumblcookies.com/stores"" target=""_blank"" rel=""noopener noreferrer"">right here!</a> Their menu rotates each week to offer delicious gourmet flavors.</div>
+<div></div>
+<strong>DUBAI CHOCOLATE CHEESECAKE (NEW)</strong>
+A decadent chocolate cheesecake nestled on a chocolate graham crust, topped with crispy Kataifi and pistachio filling, a drizzle of pistachio cream, and a dollop",-,"{""full_content_length"":1731}"
+"2025-11-10 21:10:35",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-10 20:04:08",INFO,,"Plugin activated",-,[]
+"2025-11-10 20:04:08",INFO,,"Plugin activated",-,[]
+"2025-11-10 19:58:24",INFO,,"Plugin deactivated",-,[]
+"2025-11-10 19:58:24",INFO,,"Plugin deactivated",-,[]
+"2025-11-10 19:51:53",INFO,,"Plugin activated",-,[]
+"2025-11-10 19:51:53",INFO,,"Plugin activated",-,[]
+"2025-11-10 19:50:53",INFO,,"Plugin deactivated",-,[]
+"2025-11-10 19:50:53",INFO,,"Plugin deactivated",-,[]
+"2025-11-10 19:38:45",INFO,,"Plugin activated",-,[]
+"2025-11-10 19:38:45",INFO,,"Plugin activated",-,[]
+"2025-11-07 21:16:33",INFO,,"Plugin deactivated",-,[]
+"2025-11-07 21:16:33",INFO,,"Plugin deactivated",-,[]
+"2025-11-06 19:49:24",SUCCESS,async_create,"Async create completed for ""Taco Bell Drops Mountain Dew Baja Blast Pie"" (32.23s)",-,"{""hub_id"":46565,""local_id"":46815,""processing_time"":32.22592496871948,""job_id"":""g3OLBcK7iIsaNLgKXufbnNqnqONd6xCz""}"
+"2025-11-06 19:49:23",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-06 19:48:53",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46816,""post_id"":46815}"
+"2025-11-06 19:48:53",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-06 19:48:51",INFO,debug_content,"DEBUG: Content received from hub: <b>(November 5, 2025) </b>– Friendsgiving isn’t just a holiday, it’s a cultural loophole. A break in the calendar where creativity is encouraged, traditions get tossed and the most surprising dish takes the spotlight. That’s why, after years of fan obsession, Taco Bell is finally dropping a dish made for this moment: <b>Mountain Dew Baja Blast ™ Pie. </b>Unexpected in every way, it’s the iconic tropical Baja Blast flavor reimagined as a creamy key lime-style pie that’s more than ",-,"{""full_content_length"":3873}"
+"2025-11-06 19:48:51",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-06 17:16:41",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-06 17:16:41",SUCCESS,async_create,"Async create completed for ""Invivo X, SJP ROSÉ Now Pouring at Publix"" (32.65s)",-,"{""hub_id"":46563,""local_id"":46809,""processing_time"":32.652184009552,""job_id"":""qq9hOE9MCqJCCSMF0Rej6lvnrGj3dlhn""}"
+"2025-11-06 17:16:10",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46810,""post_id"":46809}"
+"2025-11-06 17:16:10",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-06 17:16:09",INFO,debug_content,"DEBUG: Content received from hub: <strong>STYLISH SIPPING, YEAR-ROUND </strong>
+
+It’s officially rosé season year-round, as <strong><em>Invivo X, SJP Rosé</em></strong>, the acclaimed collaboration between award-winning actor and entrepreneur <strong>Sarah Jessica Parker</strong> and Invivo Wines, makes its latest retail debut throughout the states. From the sun-soaked vineyards of the South of France to wine aisles everywhere, <em>Invivo X, SJP Rosé</em> captures the essence of thoughtful winemaking with every pour",-,"{""full_content_length"":5027}"
+"2025-11-06 17:16:09",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-05 20:02:45",SUCCESS,async_create,"Async create completed for ""KFC Goes Big on National Fried Chicken Sandwich Day"" (3.58s)",-,"{""hub_id"":46559,""local_id"":46792,""processing_time"":3.579998016357422,""job_id"":""sGYbSaQPdytQeZ3dsqMpGAnCvmGYuPq6""}"
+"2025-11-05 20:02:44",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-05 20:02:42",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46793,""post_id"":46792}"
+"2025-11-05 20:02:42",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-05 20:02:41",INFO,debug_content,"DEBUG: Content received from hub: Nov. 3, 2025 - This year's National Fried Chicken Sandwich Day falls on a Sunday, and while some chicken places will take the day off, KFC isn't one of them. To make up for where others fall short (and small), KFC is opening 'Sundays By KFC,' a one-day-only pop-up restaurant in NYC on, you guessed it, Sunday, November 9. Alongside the activation, KFC Reward members can earn a free Chicken Sandwich nationwide to go big, while other shops stay home.
+
+Fans can enjoy a free Chicken Sandwich (Class",-,"{""full_content_length"":2604}"
+"2025-11-05 20:02:41",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-05 17:37:36",SUCCESS,async_create,"Async create completed for ""CFP Rankings: Tennessee and Vanderbilt Make Top 25"" (4.28s)",-,"{""hub_id"":46556,""local_id"":46780,""processing_time"":4.280585050582886,""job_id"":""ohNT2j6JuQI1rDgpTObwIWgDcG56AWkl""}"
+"2025-11-05 17:37:35",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-05 17:37:33",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46781,""post_id"":46780}"
+"2025-11-05 17:37:33",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-05 17:37:32",INFO,debug_content,"DEBUG: Content received from hub: The College Football Playoff Selection Committee released its first rankings of the 2025-26 season on Tuesday night, bringing both clarity and controversy to the playoff picture.
+
+Among the notable inclusions are two Tennessee programs making their mark: the Tennessee Volunteers landed at No. 25 despite a 6-3 record, while in-state rival Vanderbilt earned a spot at No. 16 with an impressive 7-2 showing. The Commodores' inclusion reflects their resurgent season under their coaching staff, while",-,"{""full_content_length"":1501}"
+"2025-11-05 17:37:32",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-05 17:14:30",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46779,""post_id"":46777}"
+"2025-11-05 17:14:30",INFO,newspaper_update,"Updated Newspaper theme meta fields: td_post_video",-,"{""fields"":[""td_post_video""]}"
+"2025-11-05 17:14:30",SUCCESS,async_update,"Async update completed for ""Predators Fall in Overtime as Johansson Lifts Wild 3-2"" (5.34s)",-,"{""hub_id"":46555,""local_id"":true,""processing_time"":5.336271047592163,""job_id"":""ztR8lBdcacbNF3jrUcyIscgA6tLvDCCi""}"
+"2025-11-05 17:14:25",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-05 17:12:45",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-05 17:12:45",SUCCESS,async_create,"Async create completed for ""Predators Fall in Overtime as Johansson Lifts Wild 3-2"" (32.13s)",-,"{""hub_id"":46555,""local_id"":46777,""processing_time"":32.132797956466675,""job_id"":""iDGMYzUbBg3u9RDIAYRoN8FvSxut8xcw""}"
+"2025-11-05 17:12:14",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46778,""post_id"":46777}"
+"2025-11-05 17:12:14",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-05 17:12:13",INFO,debug_content,"DEBUG: Content received from hub: November 4, 2025 – The Nashville Predators squandered a late third-period equalizer as Marcus Johansson netted the overtime winner at 3:38 of the extra frame, lifting the Minnesota Wild to a 3-2 victory at Grand Casino Arena in front of 16,253 fans. The loss dropped Nashville's record to 5-6-4 while Minnesota improved to 5-6-3 in a tightly contested Central Division matchup.
+
+The Predators struggled on special teams throughout the contest, failing to convert on four power play opportunities ",-,"{""full_content_length"":3424}"
+"2025-11-05 17:12:13",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-05 16:51:11",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46776,""post_id"":46769}"
+"2025-11-05 16:51:11",SUCCESS,async_update,"Async update completed for ""Dunkin' and Wicked Launch Epic New Collab"" (16.39s)",-,"{""hub_id"":46553,""local_id"":true,""processing_time"":16.391298055648804,""job_id"":""I01SsTSfQNCWCntt4F3MH8S3551BOnjm""}"
+"2025-11-05 16:50:55",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-05 16:49:52",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46775,""post_id"":46769}"
+"2025-11-05 16:49:52",SUCCESS,async_update,"Async update completed for ""Dunkin' and Wicked Launch Epic New Collab"" (11.95s)",-,"{""hub_id"":46553,""local_id"":true,""processing_time"":11.949273109436035,""job_id"":""nPYQG20TsD14J2cEWUTSNfSQ5AEIqga0""}"
+"2025-11-05 16:49:40",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-05 16:46:45",SUCCESS,async_create,"Async create completed for ""Tanger Outlets Nashville to Host Holiday Tree Lighting Event"" (2.70s)",-,"{""hub_id"":46549,""local_id"":46773,""processing_time"":2.6953630447387695,""job_id"":""codrhNC6DVFuAeEnRK4Ec6F5Nurhs18B""}"
+"2025-11-05 16:46:44",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46774,""post_id"":46773}"
+"2025-11-05 16:46:44",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-05 16:46:44",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-05 16:46:42",INFO,debug_content,"DEBUG: Content received from hub: The holiday season is officially arriving at Tanger Outlets Nashville. Beginning in November, guests will find festive décor, holiday music and big holiday savings. Guests can enjoy Santa moments and themed festivities all season long, including the center’s marquee seasonal event: the Holiday Tree Lighting on Nov. 7 from 5 – 8 p.m.
+
+Presented by Wilson Bank &amp; Trust and J. Crew Factory, the Holiday Tree Lighting will feature family holiday activities starting at 5 p.m., including DIY ",-,"{""full_content_length"":1608}"
+"2025-11-05 16:46:42",INFO,find_author,"Found matching author by email: info@middletennesseesource.com",-,"{""matched_user_id"":21,""display_name"":""Source Staff""}"
+"2025-11-05 16:43:35",SUCCESS,async_create,"Async create completed for ""Dunkin' and Wicked Launch Epic New Collab"" (7.11s)",-,"{""hub_id"":46553,""local_id"":46769,""processing_time"":7.11368203163147,""job_id"":""R0B4YpUZ4J7ijBeFhLxD4YTgx922jA18""}"
+"2025-11-05 16:43:34",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-05 16:43:32",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46770,""post_id"":46769}"
+"2025-11-05 16:43:32",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-05 16:43:28",INFO,debug_content,"DEBUG: Content received from hub: <p class=""has-medium-font-size"">Dunkin’ is brewing up something wicked good this season. To celebrate the epic conclusion of Universal Pictures’ global cinematic event, Wicked: For Good, the brand is infusing everyday Dunkin’ runs with a touch of Oz magic. Because this November, even Oz runs on Dunkin’.</p>
+<p class=""has-medium-font-size"">Launching nationwide today, the <strong><em>Dunkin’</em> x <em>Wicked</em></strong><em> </em>lineup brings together two icons – the electrifyi",-,"{""full_content_length"":6159}"
+"2025-11-05 16:43:28",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-04 20:19:56",SUCCESS,async_create,"Async create completed for ""Trovador Inspirado Launches New Double Barrel Aged Rum"" (3.05s)",-,"{""hub_id"":46543,""local_id"":46753,""processing_time"":3.0450479984283447,""job_id"":""LNIwQsNgZQ127S0uF7I9RYaaf4KPnNY9""}"
+"2025-11-04 20:19:55",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-04 20:19:54",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46754,""post_id"":46753}"
+"2025-11-04 20:19:54",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-04 20:19:53",INFO,debug_content,"DEBUG: Content received from hub: <p dir=""ltr"">Nashville, Tennessee-based brand <a href=""https://www.trovadorrum.com/"">Trovador Inspirado Rum</a> is proud to announce the release of Trovador Inspirado Double Barrel Aged Rum, a bold new addition to the brand’s growing portfolio of globally-inspired spirits, available for pre-order starting Wednesday, October 29.</p>
+<p dir=""ltr"">Blended and bottled in Nashville by production duo Colton Weinstein and Devon Trevathan, this super-premium, double-barreled rum is crafted from the b",-,"{""full_content_length"":3510}"
+"2025-11-04 20:19:53",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-04 19:08:54",SUCCESS,async_create,"Async create completed for ""A Very Jonas Christmas Movie' Official Trailer Is Here"" (17.07s)",-,"{""hub_id"":46540,""local_id"":46750,""processing_time"":17.06741690635681,""job_id"":""qmN3mvSNydSLAJz3ipaVmtu6uyHqMS7l""}"
+"2025-11-04 19:08:53",INFO,yoast_update,"Updated Yoast SEO meta fields: _yoast_wpseo_metadesc, _yoast_wpseo_focuskw",-,"{""fields"":[""_yoast_wpseo_metadesc"",""_yoast_wpseo_focuskw""]}"
+"2025-11-04 19:08:38",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":46751,""post_id"":46750}"
+"2025-11-04 19:08:38",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2025-11-04 19:08:37",INFO,debug_content,"DEBUG: Content received from hub: <div>
+
+Holiday Movie To Premiere Nov. 14 on Disney+ and Hulu
+
+‘A Very Jonas Christmas Movie’ Original Soundtrack Drops Nov. 14
+Now Available For <a id=""OWAbe8c4c6a-e8cb-64c0-8918-d71676bf6145"" tabindex=""0"" title=""Original URL: https://apple.co/4nw3Pe5. Click or tap if you trust this link."" href=""https://nam04.safelinks.protection.outlook.com/?url=https%3A%2F%2Fapple.co%2F4nw3Pe5&amp;data=05%7C02%7CMeghan.Hui%40disney.com%7C508a74f6ff0847ef9fd008de18b62541%7C56b731a8a2ac4c32bf6b616810e9",-,"{""full_content_length"":10050}"
+"2025-11-04 19:08:37",INFO,find_author,"Found matching author by username: Mike",-,"{""matched_user_id"":14,""display_name"":""Michael Carpenter""}"
+"2025-11-04 18:05:34",SUCCESS,settings_update,"Settings updated successfully",-,"{""nonce"":""e17d686554"",""mode"":""spoke"",""default_author"":""21"",""attribution_text"":"""",""openai_api_key"":"""",""openai_model"":""gpt-4"",""ai_max_words"":""2000"",""auto_publish"":""true"",""preserve_author"":""true"",""sync_featured_image"":""true"",""sync_categories"":""true"",""sync_tags"":""true"",""log_retention_days"":""30"",""enable_debug_logging"":""true""}"
+"2025-11-04 18:04:32",SUCCESS,settings_update,"Settings updated successfully",-,"{""nonce"":""e17d686554"",""mode"":""spoke"",""default_author"":""21"",""attribution_text"":"""",""openai_api_key"":"""",""openai_model"":""gpt-4"",""ai_max_words"":""2000"",""auto_publish"":""true"",""preserve_author"":""true"",""sync_featured_image"":""true"",""sync_categories"":""true"",""sync_tags"":""true"",""log_retention_days"":""30"",""enable_debug_logging"":""false""}"
+"2025-11-04 18:04:04",INFO,,"Plugin activated",-,[]
+"2025-11-04 18:04:04",INFO,,"Plugin activated",-,[]

@@ -217,11 +217,8 @@ class SourceHub_Spoke_Manager {
                 'job_queued'
             );
             
-            // Schedule immediate processing
-            wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
-            
-            // Spawn WP Cron immediately to ensure job processes without waiting for site visits
-            spawn_cron();
+            // Schedule immediate processing with Action Scheduler (reliable, no wp-cron dependency)
+            as_enqueue_async_action('sourcehub_process_sync_job', array($job_id), 'sourcehub');
             
             // Return 202 Accepted immediately
             error_log(sprintf('SourceHub Spoke: Job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
@@ -301,11 +298,8 @@ class SourceHub_Spoke_Manager {
                 'job_queued'
             );
             
-            // Schedule immediate processing
-            wp_schedule_single_event(time(), 'sourcehub_process_sync_job', array($job_id));
-            
-            // Spawn WP Cron immediately to ensure job processes without waiting for site visits
-            spawn_cron();
+            // Schedule immediate processing with Action Scheduler (reliable, no wp-cron dependency)
+            as_enqueue_async_action('sourcehub_process_sync_job', array($job_id), 'sourcehub');
             
             // Return 202 Accepted immediately
             error_log(sprintf('SourceHub Spoke: Update job queued in %.2f seconds, returning 202', microtime(true) - $start_time));
