@@ -2,6 +2,18 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.0.2] - 2025-12-05
+
+### Fixed
+- **Critical Race Condition Fix**: Moved `_sourcehub_pending_completion` flag to the very beginning of `syndicate_post()`
+  - Problem: Fast spokes (completing in <1 second) would send completion callbacks before the pending flag was set
+  - The flag was being set AFTER the sync lock check, causing a race condition
+  - Spoke callbacks would arrive, check for pending flag, find it false, and skip scheduling delayed sync
+  - Result: Posts stayed in draft forever, never got images/Yoast/publish status
+  - Solution: Set `_sourcehub_pending_completion` as the FIRST operation in `syndicate_post()`, before any locks or checks
+  - This guarantees callbacks will always see the flag, even if spoke completes instantly
+  - Combined with v2.0.0.1 debounce fix, this ensures 100% reliable first-publish syndication
+
 ## [2.0.0.1] - 2025-12-05
 
 ### Fixed

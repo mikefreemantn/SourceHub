@@ -1332,6 +1332,12 @@ class SourceHub_Hub_Manager {
      * @param array $spoke_ids Array of spoke connection IDs
      */
     public function syndicate_post($post_id, $spoke_ids) {
+        // CRITICAL: Mark as pending completion FIRST, before any locks or checks
+        // This ensures callbacks can see the flag when they arrive (even if spoke completes in <1 second)
+        // Must be set BEFORE sync lock to prevent race condition where callback arrives before flag is set
+        update_post_meta($post_id, '_sourcehub_pending_completion', true);
+        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($spoke_ids));
+        
         // Check if sync is already in progress for this post using persistent lock
         $lock_key = 'sourcehub_sync_lock_' . $post_id;
         if (get_transient($lock_key)) {
@@ -1381,11 +1387,6 @@ class SourceHub_Hub_Manager {
 
         // For first publish: Create draft first, then schedule delayed sync for image+Yoast+publish
         // This prevents duplicate images and ensures Yoast data is ready
-        
-        // CRITICAL: Mark as pending completion BEFORE sending requests
-        // This ensures callbacks can see the flag when they arrive (even if spoke completes in <1 second)
-        update_post_meta($post_id, '_sourcehub_pending_completion', true);
-        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($spoke_ids));
         
         // CRITICAL: Pre-populate sync_status with "processing" for ALL spokes BEFORE sending any requests
         // This prevents race condition where fast spokes complete before we've set status for slower spokes
