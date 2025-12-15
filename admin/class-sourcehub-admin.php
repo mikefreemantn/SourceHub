@@ -946,16 +946,8 @@ class SourceHub_Admin {
             return __('Never', 'sourcehub');
         }
 
-        // Calculate time difference
-        $time_diff = current_time('timestamp') - strtotime($datetime);
-
-        // If less than 1 minute, show "Just now"
-        if ($time_diff < 60) {
-            return __('Just now', 'sourcehub');
-        }
-
-        // Otherwise show formatted date/time
-        return date_i18n('n/j/y g:i A', strtotime($datetime));
+        // Always show full timestamp with date, hour, minute, and second
+        return date_i18n('Y-m-d H:i:s', strtotime($datetime));
     }
 
     /**
