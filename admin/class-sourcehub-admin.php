@@ -946,8 +946,10 @@ class SourceHub_Admin {
             return __('Never', 'sourcehub');
         }
 
-        // Always show full timestamp with date, hour, minute, and second
-        return date_i18n('Y-m-d H:i:s', strtotime($datetime));
+        // Convert UTC timestamp to site's local timezone
+        // Database stores in UTC, so we need to convert to local time
+        $timestamp = strtotime($datetime . ' UTC');
+        return date_i18n('Y-m-d H:i:s', $timestamp);
     }
 
     /**

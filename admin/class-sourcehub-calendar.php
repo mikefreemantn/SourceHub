@@ -294,15 +294,39 @@ class SourceHub_Calendar {
             // Get spoke connections for this post
             $post_spokes = array();
             if (!empty($selected_spokes)) {
+                // Get sync status for all spokes
+                $sync_status = get_post_meta($post->ID, '_sourcehub_sync_status', true);
+                if (!is_array($sync_status)) {
+                    $sync_status = array();
+                }
+                
                 foreach ($selected_spokes as $spoke_id) {
                     $connection = SourceHub_Database::get_connection($spoke_id);
                     if ($connection) {
+                        // Get status for this specific spoke
+                        $spoke_sync_status = isset($sync_status[$spoke_id]) ? $sync_status[$spoke_id] : null;
+                        $sync_state = 'pending'; // default
+                        $error_message = '';
+                        
+                        if ($spoke_sync_status && isset($spoke_sync_status['status'])) {
+                            if ($spoke_sync_status['status'] === 'success') {
+                                $sync_state = 'success';
+                            } elseif ($spoke_sync_status['status'] === 'error' || $spoke_sync_status['status'] === 'failed') {
+                                $sync_state = 'error';
+                                $error_message = isset($spoke_sync_status['error']) ? $spoke_sync_status['error'] : 'Unknown error';
+                            } elseif ($spoke_sync_status['status'] === 'processing') {
+                                $sync_state = 'processing';
+                            }
+                        }
+                        
                         $post_spokes[] = array(
                             'id' => $connection->id,
                             'name' => $connection->name,
                             'url' => $connection->url,
                             'status' => $connection->status,
-                            'syndicated' => in_array($spoke_id, $syndicated_spokes)
+                            'syndicated' => in_array($spoke_id, $syndicated_spokes),
+                            'sync_state' => $sync_state,
+                            'error_message' => $error_message
                         );
                     }
                 }

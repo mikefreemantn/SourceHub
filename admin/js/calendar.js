@@ -454,19 +454,31 @@
             html += '<span class="event-meta-icon">🌐</span>';
             html += '<div class="event-spokes-container">';
             spokes.forEach(function(spoke) {
-                // For scheduled posts, show 'scheduled' badge instead of 'pending'
                 let statusClass, statusIcon;
-                if (spoke.syndicated) {
-                    statusClass = 'syndicated';
+                
+                // Use sync_state if available, otherwise fall back to old logic
+                if (spoke.sync_state === 'success') {
+                    statusClass = 'success';
                     statusIcon = '✓';
+                } else if (spoke.sync_state === 'error') {
+                    statusClass = 'error';
+                    statusIcon = '✗';
+                } else if (spoke.sync_state === 'processing') {
+                    statusClass = 'processing';
+                    statusIcon = '⏳';
                 } else if (props.post_status === 'future') {
+                    // For scheduled posts that haven't been published yet
                     statusClass = 'scheduled';
                     statusIcon = '📅';
                 } else {
+                    // Default pending state
                     statusClass = 'pending';
                     statusIcon = '⏳';
                 }
-                html += '<span class="spoke-badge-card ' + statusClass + '">' + statusIcon + ' ' + spoke.name + '</span>';
+                
+                // Add title attribute with error message if present
+                const titleAttr = spoke.error_message ? ' title="' + spoke.error_message + '"' : '';
+                html += '<span class="spoke-badge-card ' + statusClass + '"' + titleAttr + '>' + statusIcon + ' ' + spoke.name + '</span>';
             });
             html += '</div>';
             html += '</div>';
@@ -555,13 +567,37 @@
         if (props.spokes && props.spokes.length > 0) {
             props.spokes.forEach(function(spoke) {
                 const spokeEl = $('<div class="spoke-item">');
-                const statusClass = spoke.syndicated ? 'syndicated' : 'pending';
-                const statusText = spoke.syndicated ? 'Syndicated' : 'Pending';
                 
-                spokeEl.html(
-                    '<span class="spoke-name">' + spoke.name + '</span>' +
-                    '<span class="spoke-status ' + statusClass + '">' + statusText + '</span>'
-                );
+                // Determine status based on sync_state
+                let statusClass = 'pending';
+                let statusText = 'Pending';
+                let statusIcon = '⏳';
+                
+                if (spoke.sync_state === 'success') {
+                    statusClass = 'success';
+                    statusText = 'Synced';
+                    statusIcon = '✓';
+                } else if (spoke.sync_state === 'error') {
+                    statusClass = 'error';
+                    statusText = 'Failed';
+                    statusIcon = '✗';
+                } else if (spoke.sync_state === 'processing') {
+                    statusClass = 'processing';
+                    statusText = 'Processing';
+                    statusIcon = '⏳';
+                }
+                
+                let spokeHtml = '<span class="spoke-name">' + spoke.name + '</span>' +
+                    '<span class="spoke-status ' + statusClass + '">' + statusIcon + ' ' + statusText + '</span>';
+                
+                // Add error message if present
+                if (spoke.error_message) {
+                    spokeHtml += '<div class="spoke-error-message" title="' + spoke.error_message + '">' + 
+                        '<small>' + spoke.error_message + '</small>' +
+                        '</div>';
+                }
+                
+                spokeEl.html(spokeHtml);
                 spokesContainer.append(spokeEl);
             });
         } else {

@@ -47,6 +47,9 @@ class SourceHub_Hub_Manager {
         // Handle delayed syncs (for Yoast and Newspaper meta)
         add_action('sourcehub_delayed_sync', array($this, 'handle_delayed_sync'));
         
+        // Handle spoke sync retries
+        add_action('sourcehub_retry_spoke_sync', array($this, 'handle_spoke_retry'), 10, 3);
+        
         // REST API for async callbacks
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         
@@ -61,6 +64,12 @@ class SourceHub_Hub_Manager {
         
         add_action('wp_ajax_sourcehub_send_to_spoke', array($this, 'ajax_send_to_spoke'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
+        
+        // Add custom column to posts list
+        add_filter('manage_posts_columns', array($this, 'add_syndication_column'));
+        add_action('manage_posts_custom_column', array($this, 'render_syndication_column'), 10, 2);
+        add_action('admin_head', array($this, 'add_syndication_column_styles'));
+        add_filter('default_hidden_columns', array($this, 'show_syndication_column_by_default'), 10, 2);
     }
 
     /**
@@ -168,8 +177,9 @@ class SourceHub_Hub_Manager {
                         $sync_status = array();
                     }
                     
-                    // Check if all spokes have completed their CREATE
+                    // Check if all spokes have completed their CREATE (success or exhausted retries)
                     $all_creates_complete = true;
+                    $has_processing_spokes = false;
                     $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
                     
                     error_log(sprintf('SourceHub Hub: syndicated_spokes: %s', print_r($syndicated_spokes, true)));
@@ -179,15 +189,64 @@ class SourceHub_Hub_Manager {
                         foreach ($syndicated_spokes as $spoke_id) {
                             $spoke_status = $sync_status[$spoke_id] ?? null;
                             error_log(sprintf('SourceHub Hub: Checking spoke %d - status: %s', $spoke_id, print_r($spoke_status, true)));
-                            if (!$spoke_status || $spoke_status['status'] !== 'success' || ($spoke_status['action'] ?? '') !== 'create') {
+                            
+                            if (!$spoke_status) {
                                 $all_creates_complete = false;
-                                error_log(sprintf('SourceHub Hub: Spoke %d not complete yet', $spoke_id));
+                                error_log(sprintf('SourceHub Hub: Spoke %d has no status yet', $spoke_id));
                                 break;
                             }
+                            
+                            $status = $spoke_status['status'] ?? '';
+                            $action = $spoke_status['action'] ?? '';
+                            
+                            // Check if spoke is still processing (including retries)
+                            if ($status === 'processing') {
+                                $has_processing_spokes = true;
+                                $all_creates_complete = false;
+                                error_log(sprintf('SourceHub Hub: Spoke %d still processing', $spoke_id));
+                                break;
+                            }
+                            
+                            // Check if spoke succeeded
+                            if ($status === 'success' && $action === 'create') {
+                                error_log(sprintf('SourceHub Hub: Spoke %d completed successfully', $spoke_id));
+                                continue;
+                            }
+                            
+                            // If spoke failed, check if it has exhausted retries
+                            if ($status === 'failed') {
+                                $retry_count = $spoke_status['retry_count'] ?? 0;
+                                $max_retries = 5;
+                                
+                                if ($retry_count >= $max_retries) {
+                                    // Exhausted retries - log warning but allow delayed sync to proceed
+                                    error_log(sprintf('SourceHub Hub: Spoke %d failed after %d retries - will proceed without it', $spoke_id, $retry_count));
+                                    SourceHub_Logger::warning(
+                                        sprintf('Spoke %d failed after maximum retries - proceeding with delayed sync for successful spokes', $spoke_id),
+                                        array('post_id' => $hub_post_id, 'spoke_id' => $spoke_id, 'retry_count' => $retry_count),
+                                        $hub_post_id,
+                                        $spoke_id,
+                                        'spoke_exhausted_retries'
+                                    );
+                                    continue; // Allow delayed sync to proceed
+                                } else {
+                                    // Still has retries left - wait for retry to complete
+                                    $all_creates_complete = false;
+                                    error_log(sprintf('SourceHub Hub: Spoke %d failed but has retries remaining (%d/%d)', $spoke_id, $retry_count, $max_retries));
+                                    break;
+                                }
+                            }
+                            
+                            // Any other status means not complete
+                            $all_creates_complete = false;
+                            error_log(sprintf('SourceHub Hub: Spoke %d not complete yet (status: %s, action: %s)', $spoke_id, $status, $action));
+                            break;
                         }
                     }
                     
-                    error_log(sprintf('SourceHub Hub: all_creates_complete: %s', $all_creates_complete ? 'TRUE' : 'FALSE'));
+                    error_log(sprintf('SourceHub Hub: all_creates_complete: %s, has_processing_spokes: %s', 
+                        $all_creates_complete ? 'TRUE' : 'FALSE',
+                        $has_processing_spokes ? 'TRUE' : 'FALSE'));
                     
                     // If all CREATEs are done, schedule delayed sync with short delay to allow locks to clear
                     if ($all_creates_complete) {
@@ -397,6 +456,44 @@ class SourceHub_Hub_Manager {
                             <?php _e('Select All', 'sourcehub'); ?>
                         </button>
                     </div>
+                    
+                    <!-- Custom Publish Date/Time -->
+                    <div class="sourcehub-custom-date-section" style="margin-bottom: 15px; padding: 10px 12px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                        <label style="display: flex; align-items: flex-start; margin-bottom: 0; cursor: pointer;">
+                            <input type="checkbox" 
+                                   id="sourcehub_use_custom_date" 
+                                   name="sourcehub_use_custom_date" 
+                                   value="1"
+                                   style="margin: 3px 8px 0 0; flex-shrink: 0;"
+                                   <?php checked(get_post_meta($post->ID, '_sourcehub_use_custom_date', true), '1'); ?>>
+                            <span style="font-weight: 500; line-height: 1.5; font-size: 13px;"><?php _e('Use custom publish date for spoke sites', 'sourcehub'); ?></span>
+                        </label>
+                        <div id="sourcehub-custom-date-fields" style="margin-top: 10px; <?php echo get_post_meta($post->ID, '_sourcehub_use_custom_date', true) ? '' : 'display: none;'; ?>">
+                            <?php
+                            $custom_date = get_post_meta($post->ID, '_sourcehub_custom_publish_date', true);
+                            if (empty($custom_date)) {
+                                $custom_date = current_time('Y-m-d H:i:s');
+                            }
+                            $datetime = new DateTime($custom_date);
+                            ?>
+                            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+                                <input type="date" 
+                                       id="sourcehub_custom_date" 
+                                       name="sourcehub_custom_date" 
+                                       value="<?php echo esc_attr($datetime->format('Y-m-d')); ?>"
+                                       style="padding: 5px 8px; font-size: 13px; border: 1px solid #8c8f94; border-radius: 3px; flex: 0 0 auto;">
+                                <input type="time" 
+                                       id="sourcehub_custom_time" 
+                                       name="sourcehub_custom_time" 
+                                       value="<?php echo esc_attr($datetime->format('H:i')); ?>"
+                                       style="padding: 5px 8px; font-size: 13px; border: 1px solid #8c8f94; border-radius: 3px; flex: 0 0 auto;">
+                            </div>
+                            <small style="color: #646970; display: block; line-height: 1.4; font-size: 12px; margin: 0;">
+                                <?php _e('This date will be used as the publish date on spoke sites instead of the hub publish date.', 'sourcehub'); ?>
+                            </small>
+                        </div>
+                    </div>
+                    
                     <?php foreach ($connections as $connection): 
                         $ai_settings = json_decode($connection->ai_settings, true);
                         $has_ai_enabled = !empty($ai_settings['enabled']);
@@ -717,6 +814,15 @@ class SourceHub_Hub_Manager {
                 $('#sourcehub-toggle-all-spokes').text('<?php _e('Deselect All', 'sourcehub'); ?>');
             }
             
+            // Toggle custom date fields
+            $('#sourcehub_use_custom_date').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#sourcehub-custom-date-fields').slideDown(200);
+                } else {
+                    $('#sourcehub-custom-date-fields').slideUp(200);
+                }
+            });
+            
             // Test connections
             $('#sourcehub-test-connections').on('click', function() {
                 var $button = $(this);
@@ -918,6 +1024,57 @@ class SourceHub_Hub_Manager {
             }, $_POST['sourcehub_ai_overrides']);
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
+        
+        // Save custom publish date settings and detect changes
+        $old_use_custom_date = get_post_meta($post_id, '_sourcehub_use_custom_date', true);
+        $old_custom_date = get_post_meta($post_id, '_sourcehub_custom_publish_date', true);
+        
+        $use_custom_date = isset($_POST['sourcehub_use_custom_date']) ? '1' : '0';
+        update_post_meta($post_id, '_sourcehub_use_custom_date', $use_custom_date);
+        
+        $custom_date_changed = false;
+        if ($use_custom_date === '1' && isset($_POST['sourcehub_custom_date']) && isset($_POST['sourcehub_custom_time'])) {
+            $custom_date = sanitize_text_field($_POST['sourcehub_custom_date']);
+            $custom_time = sanitize_text_field($_POST['sourcehub_custom_time']);
+            $custom_datetime = $custom_date . ' ' . $custom_time . ':00';
+            
+            // Check if date changed
+            if ($old_custom_date !== $custom_datetime || $old_use_custom_date !== '1') {
+                $custom_date_changed = true;
+                error_log('SourceHub: Custom publish date changed from "' . $old_custom_date . '" to "' . $custom_datetime . '"');
+            }
+            
+            update_post_meta($post_id, '_sourcehub_custom_publish_date', $custom_datetime);
+        } elseif ($old_use_custom_date === '1' && $use_custom_date === '0') {
+            // Custom date was disabled
+            $custom_date_changed = true;
+            error_log('SourceHub: Custom publish date disabled');
+        }
+        
+        // Trigger update immediately if custom date changed on a published post
+        if ($custom_date_changed && $post->post_status === 'publish') {
+            // Get syndicated spokes to update
+            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+            if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
+                // Find which syndicated spokes are still selected
+                $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
+                
+                if (!empty($existing_spokes)) {
+                    error_log('SourceHub: Custom date changed - triggering immediate update to ' . count($existing_spokes) . ' spoke(s)');
+                    
+                    SourceHub_Logger::info(
+                        sprintf('Custom publish date changed for post "%s" - updating %d spoke sites', $post->post_title, count($existing_spokes)),
+                        array('spoke_ids' => $existing_spokes),
+                        $post_id,
+                        null,
+                        'custom_date_update'
+                    );
+                    
+                    // Trigger update directly
+                    $this->update_syndicated_post($post_id, $existing_spokes);
+                }
+            }
+        }
 
         // Handle syndication for NEW posts (post_updated doesn't fire for new posts)
         // For updates, handle_post_update will handle it
@@ -1152,8 +1309,12 @@ class SourceHub_Hub_Manager {
         // Find EXISTING spokes (already syndicated and still selected)
         $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
         
+        // Check if custom date changed
+        $custom_date_changed = get_post_meta($post_id, '_sourcehub_custom_date_changed', true);
+        
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
+        error_log('SourceHub: Custom date changed: ' . ($custom_date_changed ? 'yes' : 'no'));
         
         // Create posts on NEW spokes
         if (!empty($new_spokes)) {
@@ -1161,17 +1322,28 @@ class SourceHub_Hub_Manager {
             $this->syndicate_post($post_id, $new_spokes);
         }
         
-        // Update posts on EXISTING spokes
+        // Update posts on EXISTING spokes (or if custom date changed)
         if (!empty($existing_spokes)) {
+            // Always update if custom date changed, even if no other content changed
+            if ($custom_date_changed) {
+                error_log('SourceHub: Custom date changed - forcing update to all syndicated spokes');
+                delete_post_meta($post_id, '_sourcehub_custom_date_changed'); // Clear the flag
+            }
+            
             SourceHub_Logger::info(
                 sprintf('Syncing updates for post "%s" to %d existing spoke sites', $post_after->post_title, count($existing_spokes)),
-                array('spoke_ids' => $existing_spokes),
+                array('spoke_ids' => $existing_spokes, 'custom_date_changed' => (bool)$custom_date_changed),
                 $post_id,
                 null,
                 'update'
             );
             
             $this->update_syndicated_post($post_id, $existing_spokes);
+        } elseif ($custom_date_changed && !empty($syndicated_spokes)) {
+            // Custom date changed but no existing spokes in selected list
+            // This means spokes were deselected but we should still update the ones that were syndicated
+            error_log('SourceHub: Custom date changed but no spokes currently selected - clearing flag');
+            delete_post_meta($post_id, '_sourcehub_custom_date_changed');
         }
     }
 
@@ -1499,6 +1671,10 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
+        // Clear the processing transient now that initial syndication is complete
+        // Individual spokes may still be processing async, but the overall "syncing" state is done
+        delete_transient('sourcehub_sync_status_' . $post_id);
+        
         // Delayed sync will be scheduled when spoke completion callbacks are received
         // This ensures the draft posts are fully created before we send the update
         SourceHub_Logger::info(
@@ -1678,6 +1854,9 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
+        // Clear the processing transient now that update syndication is complete
+        delete_transient('sourcehub_sync_status_' . $post_id);
+        
         // Release sync locks (both persistent and instance)
         delete_transient('sourcehub_sync_lock_' . $post_id);
         unset($this->sync_locks[$post_id]);
@@ -1735,7 +1914,7 @@ class SourceHub_Hub_Manager {
                 'X-SourceHub-API-Key' => $connection->api_key,
             ),
             'body' => json_encode($post_data),
-            'timeout' => 30, // 30 seconds to stay under WP Engine/Cloudflare 60s limit
+            'timeout' => 90, // 90 seconds to allow spoke sites time to process
         ));
 
         if (is_wp_error($response)) {
@@ -1880,6 +2059,24 @@ class SourceHub_Hub_Manager {
         // Apply any custom filters but NOT do_shortcode
         $processed_content = apply_filters('sourcehub_before_syndication', $processed_content);
         
+        // Check if custom publish date is enabled
+        $use_custom_date = get_post_meta($post->ID, '_sourcehub_use_custom_date', true);
+        $post_date = $post->post_date;
+        $post_date_gmt = $post->post_date_gmt;
+        
+        if ($use_custom_date === '1') {
+            $custom_date = get_post_meta($post->ID, '_sourcehub_custom_publish_date', true);
+            if (!empty($custom_date)) {
+                $post_date = $custom_date;
+                // Convert to GMT
+                $datetime = new DateTime($custom_date, new DateTimeZone(wp_timezone_string()));
+                $datetime->setTimezone(new DateTimeZone('UTC'));
+                $post_date_gmt = $datetime->format('Y-m-d H:i:s');
+                
+                error_log('SourceHub: Using custom publish date for post ' . $post->ID . ': ' . $post_date . ' (GMT: ' . $post_date_gmt . ')');
+            }
+        }
+        
         $data = array(
             'hub_id' => $post->ID,
             'title' => $post->post_title,
@@ -1887,8 +2084,8 @@ class SourceHub_Hub_Manager {
             'excerpt' => $post->post_excerpt,
             'status' => $skip_image ? 'draft' : $post->post_status, // Create as draft if skipping image
             'slug' => $post->post_name,
-            'date' => $post->post_date,
-            'date_gmt' => $post->post_date_gmt,
+            'date' => $post_date,
+            'date_gmt' => $post_date_gmt,
             'modified' => $post->post_modified,
             'modified_gmt' => $post->post_modified_gmt,
             'post_type' => $post->post_type,
@@ -2646,34 +2843,85 @@ class SourceHub_Hub_Manager {
                         $started_timestamp = strtotime($status_data['started_at']);
                         $elapsed = $now - $started_timestamp;
                         
-                        // If older than 5 minutes, mark as failed
+                        // If older than 5 minutes, retry the syndication
                         if ($elapsed > $timeout_seconds) {
                             $connection = SourceHub_Database::get_connection($connection_id);
                             $connection_name = $connection ? $connection->name : "Connection $connection_id";
                             
-                            $sync_status[$connection_id] = array(
-                                'status' => 'failed',
-                                'last_sync' => current_time('mysql'),
-                                'action' => $status_data['action'] ?? 'unknown',
-                                'error' => sprintf('Timeout: No response after %d minutes', $timeout_minutes),
-                                'started_at' => $status_data['started_at']
-                            );
+                            // Get retry count
+                            $retry_count = isset($status_data['retry_count']) ? (int)$status_data['retry_count'] : 0;
+                            $max_retries = 5;
                             
-                            $updated = true;
-                            
-                            // Log the timeout
-                            SourceHub_Logger::error(
-                                sprintf('Syndication timeout for post %d to %s after %d minutes', 
-                                    $post_id, $connection_name, $timeout_minutes),
-                                array(
-                                    'connection_id' => $connection_id,
-                                    'elapsed_seconds' => $elapsed,
-                                    'started_at' => $status_data['started_at']
-                                ),
-                                $post_id,
-                                $connection_id,
-                                'timeout'
-                            );
+                            if ($retry_count < $max_retries) {
+                                // Retry the syndication
+                                $retry_count++;
+                                
+                                SourceHub_Logger::warning(
+                                    sprintf('Syndication timeout for post %d to %s - attempting retry %d/%d', 
+                                        $post_id, $connection_name, $retry_count, $max_retries),
+                                    array(
+                                        'connection_id' => $connection_id,
+                                        'elapsed_seconds' => $elapsed,
+                                        'retry_count' => $retry_count
+                                    ),
+                                    $post_id,
+                                    $connection_id,
+                                    'timeout_retry'
+                                );
+                                
+                                // Update status to show retry in progress
+                                $sync_status[$connection_id] = array(
+                                    'status' => 'processing',
+                                    'last_sync' => current_time('mysql'),
+                                    'action' => $status_data['action'] ?? 'unknown',
+                                    'started_at' => current_time('mysql'),
+                                    'retry_count' => $retry_count,
+                                    'previous_timeout' => $status_data['started_at']
+                                );
+                                
+                                $updated = true;
+                                
+                                // Schedule retry with exponential backoff
+                                $delay = min(300, 30 * pow(2, $retry_count - 1)); // 30s, 60s, 120s, 240s, 300s
+                                
+                                as_schedule_single_action(
+                                    time() + $delay,
+                                    'sourcehub_retry_spoke_sync',
+                                    array(
+                                        'post_id' => $post_id,
+                                        'connection_id' => $connection_id,
+                                        'retry_count' => $retry_count
+                                    ),
+                                    'sourcehub'
+                                );
+                                
+                            } else {
+                                // Max retries exceeded - mark as failed
+                                $sync_status[$connection_id] = array(
+                                    'status' => 'failed',
+                                    'last_sync' => current_time('mysql'),
+                                    'action' => $status_data['action'] ?? 'unknown',
+                                    'error' => sprintf('Timeout: Failed after %d retry attempts', $max_retries),
+                                    'started_at' => $status_data['started_at'],
+                                    'retry_count' => $retry_count
+                                );
+                                
+                                $updated = true;
+                                
+                                // Log permanent failure
+                                SourceHub_Logger::error(
+                                    sprintf('Syndication permanently failed for post %d to %s after %d retries', 
+                                        $post_id, $connection_name, $max_retries),
+                                    array(
+                                        'connection_id' => $connection_id,
+                                        'elapsed_seconds' => $elapsed,
+                                        'retry_count' => $retry_count
+                                    ),
+                                    $post_id,
+                                    $connection_id,
+                                    'timeout_exhausted'
+                                );
+                            }
                         }
                     }
                 }
@@ -2684,6 +2932,267 @@ class SourceHub_Hub_Manager {
                 update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
             }
         }
+    }
+
+    /**
+     * Handle spoke sync retry via Action Scheduler
+     * Retries syndication to a specific spoke that timed out
+     *
+     * @param int $post_id Hub post ID
+     * @param int $connection_id Connection ID to retry
+     * @param int $retry_count Current retry attempt number
+     */
+    public function handle_spoke_retry($post_id, $connection_id, $retry_count) {
+        error_log(sprintf('SourceHub Hub: Retrying syndication for post %d to connection %d (attempt %d)', 
+            $post_id, $connection_id, $retry_count));
+        
+        $post = get_post($post_id);
+        if (!$post) {
+            error_log(sprintf('SourceHub Hub: Post %d not found for retry', $post_id));
+            return;
+        }
+        
+        $connection = SourceHub_Database::get_connection($connection_id);
+        if (!$connection || $connection->status !== 'active') {
+            error_log(sprintf('SourceHub Hub: Connection %d not found or inactive for retry', $connection_id));
+            
+            // Mark as failed if connection is gone
+            $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+            if (is_array($sync_status)) {
+                $sync_status[$connection_id] = array(
+                    'status' => 'failed',
+                    'last_sync' => current_time('mysql'),
+                    'action' => $sync_status[$connection_id]['action'] ?? 'unknown',
+                    'error' => 'Connection not found or inactive',
+                    'retry_count' => $retry_count
+                );
+                update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+            }
+            return;
+        }
+        
+        // Get current sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
+        
+        $action = $sync_status[$connection_id]['action'] ?? 'create';
+        
+        SourceHub_Logger::info(
+            sprintf('Retrying %s for post "%s" to %s (attempt %d)', 
+                $action, $post->post_title, $connection->name, $retry_count),
+            array(
+                'post_id' => $post_id,
+                'connection_id' => $connection_id,
+                'retry_count' => $retry_count,
+                'action' => $action
+            ),
+            $post_id,
+            $connection_id,
+            'spoke_retry'
+        );
+        
+        // Get AI settings
+        $ai_overrides = get_post_meta($post_id, '_sourcehub_ai_overrides', true);
+        if (!is_array($ai_overrides)) {
+            $ai_overrides = array();
+        }
+        
+        $ai_settings = json_decode($connection->ai_settings, true);
+        $has_ai_enabled = !empty($ai_settings['enabled']);
+        $ai_disabled_for_post = isset($ai_overrides['disable_ai_' . $connection_id]) ? $ai_overrides['disable_ai_' . $connection_id] : false;
+        
+        // Determine if this is a create or update based on sync status
+        $is_create = ($action === 'create');
+        
+        // Retry the syndication
+        $result = $this->send_post_to_spoke(
+            $post, 
+            $connection, 
+            $has_ai_enabled && !$ai_disabled_for_post, 
+            !$is_create, // include_image for updates
+            1, 
+            $is_create // send_as_draft for creates
+        );
+        
+        if ($result['success']) {
+            SourceHub_Logger::success(
+                sprintf('Retry successful for post "%s" to %s', $post->post_title, $connection->name),
+                array(
+                    'post_id' => $post_id,
+                    'connection_id' => $connection_id,
+                    'retry_count' => $retry_count
+                ),
+                $post_id,
+                $connection_id,
+                'spoke_retry_success'
+            );
+            
+            // Note: The spoke will send a callback when complete, which will update the sync_status
+            // We don't update it here to avoid race conditions
+            
+        } else {
+            // Retry failed - the timeout checker will handle scheduling another retry if needed
+            SourceHub_Logger::warning(
+                sprintf('Retry attempt %d failed for post "%s" to %s: %s', 
+                    $retry_count, $post->post_title, $connection->name, $result['message'] ?? 'Unknown error'),
+                array(
+                    'post_id' => $post_id,
+                    'connection_id' => $connection_id,
+                    'retry_count' => $retry_count,
+                    'error' => $result['message'] ?? 'Unknown error'
+                ),
+                $post_id,
+                $connection_id,
+                'spoke_retry_failed'
+            );
+        }
+    }
+
+    /**
+     * Add syndication status column to posts list
+     */
+    public function add_syndication_column($columns) {
+        // Insert the column after the title column
+        $new_columns = array();
+        foreach ($columns as $key => $value) {
+            $new_columns[$key] = $value;
+            if ($key === 'title') {
+                $new_columns['sourcehub_sync'] = 'SourceHub';
+            }
+        }
+        return $new_columns;
+    }
+
+    /**
+     * Render syndication status column content
+     */
+    public function render_syndication_column($column_name, $post_id) {
+        if ($column_name !== 'sourcehub_sync') {
+            return;
+        }
+        
+        // Prevent double rendering
+        static $rendered = array();
+        if (isset($rendered[$post_id])) {
+            return;
+        }
+        $rendered[$post_id] = true;
+
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes)) {
+            $syndicated_spokes = array();
+        }
+
+        // Get sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status)) {
+            $sync_status = array();
+        }
+
+        // If no spokes selected, show nothing
+        if (empty($syndicated_spokes)) {
+            echo '<span class="sourcehub-sync-indicator sourcehub-sync-none" title="Not syndicated">—</span>';
+            return;
+        }
+
+        // Check status of all spokes
+        $total_spokes = count($syndicated_spokes);
+        $success_count = 0;
+        $error_count = 0;
+        $processing_count = 0;
+
+        foreach ($syndicated_spokes as $spoke_id) {
+            if (isset($sync_status[$spoke_id])) {
+                $status = $sync_status[$spoke_id]['status'] ?? 'unknown';
+                if ($status === 'success') {
+                    $success_count++;
+                } elseif ($status === 'error' || $status === 'failed') {
+                    $error_count++;
+                } elseif ($status === 'processing') {
+                    $processing_count++;
+                }
+            }
+        }
+
+        // Determine overall status
+        if ($error_count > 0) {
+            // Has errors - show red
+            $icon_class = 'sourcehub-sync-error';
+            $title = sprintf('%d of %d spokes failed', $error_count, $total_spokes);
+        } elseif ($processing_count > 0) {
+            // Still processing - show yellow/orange
+            $icon_class = 'sourcehub-sync-processing';
+            $title = sprintf('%d of %d spokes processing', $processing_count, $total_spokes);
+        } elseif ($success_count === $total_spokes) {
+            // All successful - show green
+            $icon_class = 'sourcehub-sync-success';
+            $title = sprintf('All %d spokes synced', $total_spokes);
+        } else {
+            // Partial or unknown - show yellow
+            $icon_class = 'sourcehub-sync-partial';
+            $title = sprintf('%d of %d spokes synced', $success_count, $total_spokes);
+        }
+
+        echo sprintf(
+            '<span class="sourcehub-sync-indicator %s" title="%s"></span>',
+            esc_attr($icon_class),
+            esc_attr($title)
+        );
+    }
+
+    /**
+     * Add styles for syndication status column
+     */
+    public function add_syndication_column_styles() {
+        $screen = get_current_screen();
+        if (!$screen || $screen->base !== 'edit' || $screen->post_type !== 'post') {
+            return;
+        }
+        ?>
+        <style>
+            .column-sourcehub_sync {
+                width: 80px;
+                text-align: center;
+            }
+            .sourcehub-sync-indicator {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+            .sourcehub-sync-none {
+                background-color: #ddd;
+            }
+            .sourcehub-sync-success {
+                background-color: #46b450;
+            }
+            .sourcehub-sync-error {
+                background-color: #dc3232;
+            }
+            .sourcehub-sync-processing {
+                background-color: #ffb900;
+            }
+            .sourcehub-sync-partial {
+                background-color: #f0a000;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Ensure SourceHub column is visible by default
+     */
+    public function show_syndication_column_by_default($hidden, $screen) {
+        // Only apply to posts list screen
+        if ($screen && $screen->base === 'edit' && $screen->post_type === 'post') {
+            // Remove sourcehub_sync from hidden columns array if it exists
+            $hidden = array_diff($hidden, array('sourcehub_sync'));
+        }
+        return $hidden;
     }
 
 }

@@ -497,7 +497,7 @@ class SourceHub_API_Handler {
         $start_time = microtime(true);
         
         $response = wp_remote_get($url, array(
-            'timeout' => 30, // Match syndication timeout
+            'timeout' => 90, // Match syndication timeout
             'sslverify' => false, // Allow testing with self-signed certs
             'headers' => array(
                 'X-SourceHub-API-Key' => $api_key,

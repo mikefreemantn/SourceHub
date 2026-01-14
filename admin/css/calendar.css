@@ -305,26 +305,46 @@
 
 /* Spoke Badges for Cards */
 .spoke-badge-card {
-    font-size: 9px;
-    padding: 2px 4px;
-    border-radius: 2px;
-    font-weight: 500;
-    line-height: 1.2;
-    white-space: nowrap;
+font-size: 9px;
+padding: 2px 4px;
+border-radius: 2px;
+display: inline-block;
+margin-right: 2px;
+white-space: nowrap;
 }
 
-.spoke-badge-card.syndicated {
-    background: #00a32a;
-    color: #fff;
+.spoke-badge-card[title] {
+cursor: help;
+}
+
+.spoke-badge-card.success {
+background: #00a32a;
+color: #fff;
+}
+
+.spoke-badge-card.error {
+background: #dc3545;
+color: #fff;
+}
+
+.spoke-badge-card.processing {
+background: #007cba;
+color: #fff;
 }
 
 .spoke-badge-card.scheduled {
-    background: #007cba;
-    color: #fff;
+background: #6c757d;
+color: #fff;
 }
 
 .spoke-badge-card.pending {
-    background: #dba617;
+background: #dba617;
+color: #fff;
+}
+
+.spoke-badge-card.syndicated {
+background: #00a32a;
+color: #fff;
     color: #fff;
 }
 
@@ -828,14 +848,38 @@
     text-transform: uppercase;
 }
 
-.spoke-status.syndicated {
+.spoke-status.success {
     background: #d1e7dd;
     color: #0f5132;
+}
+
+.spoke-status.error {
+    background: #f8d7da;
+    color: #842029;
 }
 
 .spoke-status.pending {
     background: #fff3cd;
     color: #664d03;
+}
+
+.spoke-status.processing {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.spoke-error-message {
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #f8d7da;
+    border-left: 3px solid #dc3545;
+    border-radius: 2px;
+}
+
+.spoke-error-message small {
+    color: #842029;
+    font-size: 11px;
+    line-height: 1.4;
 }
 
 .sourcehub-modal-footer {

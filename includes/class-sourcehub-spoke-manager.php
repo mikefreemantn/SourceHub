@@ -23,6 +23,7 @@ class SourceHub_Spoke_Manager {
         add_filter('the_content', array($this, 'maybe_add_attribution'), 999);
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('sourcehub_process_sync_job', array($this, 'process_sync_job'));
+        add_action('sourcehub_retry_hub_callback', array($this, 'handle_callback_retry'), 10, 4);
     }
 
     /**
@@ -668,9 +669,13 @@ class SourceHub_Spoke_Manager {
         
         // NOW publish the post if intended status was publish
         if ($intended_status !== 'draft') {
+            // Get the post to preserve its date
+            $post = get_post($post_id);
             wp_update_post(array(
                 'ID' => $post_id,
-                'post_status' => $intended_status
+                'post_status' => $intended_status,
+                'post_date' => $post->post_date,
+                'post_date_gmt' => $post->post_date_gmt
             ));
             error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after Yoast meta set");
             SourceHub_Logger::success(
@@ -729,6 +734,8 @@ class SourceHub_Spoke_Manager {
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
             'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
             'post_name' => isset($data['slug']) ? sanitize_title($data['slug']) : '',
+            'post_date' => isset($data['date']) ? sanitize_text_field($data['date']) : current_time('mysql'),
+            'post_date_gmt' => isset($data['date_gmt']) ? sanitize_text_field($data['date_gmt']) : current_time('mysql', 1),
             'post_modified' => isset($data['modified']) ? sanitize_text_field($data['modified']) : current_time('mysql'),
             'post_modified_gmt' => isset($data['modified_gmt']) ? sanitize_text_field($data['modified_gmt']) : current_time('mysql', 1)
         );
@@ -971,7 +978,7 @@ class SourceHub_Spoke_Manager {
 
         // Download image using wp_remote_get
         $response = wp_remote_get($image_data['url'], array(
-            'timeout' => 30,
+            'timeout' => 90,
             'sslverify' => false
         ));
         
@@ -1461,7 +1468,10 @@ class SourceHub_Spoke_Manager {
             'timeout' => 10
         ));
         
+        $callback_failed = false;
+        
         if (is_wp_error($response)) {
+            $callback_failed = true;
             error_log("SourceHub Spoke: Failed to notify hub: " . $response->get_error_message());
             
             SourceHub_Logger::error(
@@ -1483,6 +1493,7 @@ class SourceHub_Spoke_Manager {
                 $response_code, $response_body));
             
             if ($response_code !== 200) {
+                $callback_failed = true;
                 SourceHub_Logger::warning(
                     'Hub notification returned non-200 status',
                     array(
@@ -1508,6 +1519,171 @@ class SourceHub_Spoke_Manager {
                     'hub_notified'
                 );
             }
+        }
+        
+        // If callback failed, schedule retry with Action Scheduler
+        if ($callback_failed) {
+            // Check if retry is already scheduled to prevent duplicates
+            $existing_retries = as_get_scheduled_actions(array(
+                'hook' => 'sourcehub_retry_hub_callback',
+                'args' => array('job_id' => $job_id),
+                'status' => 'pending'
+            ));
+            
+            if (empty($existing_retries)) {
+                as_schedule_single_action(
+                    time() + 30, // Retry in 30 seconds
+                    'sourcehub_retry_hub_callback',
+                    array(
+                        'payload' => $payload,
+                        'callback_url' => $callback_url,
+                        'attempt' => 1,
+                        'max_attempts' => 5
+                    )
+                );
+                
+                SourceHub_Logger::warning(
+                    'Hub callback failed - scheduled for retry in 30 seconds',
+                    array(
+                        'job_id' => $job_id,
+                        'attempt' => 1,
+                        'max_attempts' => 5
+                    ),
+                    $spoke_post_id,
+                    null,
+                    'callback_retry_scheduled'
+                );
+            }
+        }
+    }
+
+    /**
+     * Handle callback retry via Action Scheduler
+     *
+     * @param array $payload Callback payload
+     * @param string $callback_url Hub callback URL
+     * @param int $attempt Current attempt number
+     * @param int $max_attempts Maximum retry attempts
+     */
+    public function handle_callback_retry($payload, $callback_url, $attempt, $max_attempts) {
+        error_log(sprintf('SourceHub Spoke: Retry attempt %d/%d for job %s', 
+            $attempt, $max_attempts, $payload['job_id']));
+        
+        $response = wp_remote_post($callback_url, array(
+            'headers' => array('Content-Type' => 'application/json'),
+            'body' => json_encode($payload),
+            'timeout' => 10
+        ));
+        
+        $retry_failed = false;
+        
+        if (is_wp_error($response)) {
+            $retry_failed = true;
+            error_log(sprintf('SourceHub Spoke: Retry attempt %d failed: %s', 
+                $attempt, $response->get_error_message()));
+            
+            SourceHub_Logger::warning(
+                sprintf('Hub callback retry attempt %d failed', $attempt),
+                array(
+                    'job_id' => $payload['job_id'],
+                    'attempt' => $attempt,
+                    'error' => $response->get_error_message()
+                ),
+                null,
+                null,
+                'callback_retry_failed'
+            );
+        } else {
+            $response_code = wp_remote_retrieve_response_code($response);
+            
+            if ($response_code !== 200) {
+                $retry_failed = true;
+                error_log(sprintf('SourceHub Spoke: Retry attempt %d returned code %d', 
+                    $attempt, $response_code));
+                
+                SourceHub_Logger::warning(
+                    sprintf('Hub callback retry attempt %d returned non-200 status', $attempt),
+                    array(
+                        'job_id' => $payload['job_id'],
+                        'attempt' => $attempt,
+                        'response_code' => $response_code
+                    ),
+                    null,
+                    null,
+                    'callback_retry_failed'
+                );
+            } else {
+                // Success!
+                error_log(sprintf('SourceHub Spoke: Retry attempt %d succeeded for job %s', 
+                    $attempt, $payload['job_id']));
+                
+                SourceHub_Logger::success(
+                    sprintf('Hub callback succeeded on retry attempt %d', $attempt),
+                    array(
+                        'job_id' => $payload['job_id'],
+                        'attempt' => $attempt,
+                        'spoke_post_id' => $payload['spoke_post_id']
+                    ),
+                    $payload['spoke_post_id'],
+                    null,
+                    'callback_retry_success'
+                );
+            }
+        }
+        
+        // If retry failed and we haven't hit max attempts, schedule another retry
+        if ($retry_failed && $attempt < $max_attempts) {
+            // Exponential backoff: 30s, 60s, 120s, 240s, 300s (max 5 minutes)
+            $delay = min(300, 30 * pow(2, $attempt - 1));
+            
+            // Check if another retry is already scheduled (safety check)
+            $existing_retries = as_get_scheduled_actions(array(
+                'hook' => 'sourcehub_retry_hub_callback',
+                'args' => array('job_id' => $payload['job_id']),
+                'status' => 'pending'
+            ));
+            
+            if (empty($existing_retries)) {
+                as_schedule_single_action(
+                    time() + $delay,
+                    'sourcehub_retry_hub_callback',
+                    array(
+                        'payload' => $payload,
+                        'callback_url' => $callback_url,
+                        'attempt' => $attempt + 1,
+                        'max_attempts' => $max_attempts
+                    )
+                );
+                
+                SourceHub_Logger::warning(
+                    sprintf('Scheduling retry attempt %d in %d seconds', $attempt + 1, $delay),
+                    array(
+                        'job_id' => $payload['job_id'],
+                        'next_attempt' => $attempt + 1,
+                        'delay_seconds' => $delay
+                    ),
+                    null,
+                    null,
+                    'callback_retry_scheduled'
+                );
+            }
+        } elseif ($retry_failed && $attempt >= $max_attempts) {
+            // Max retries exceeded - log permanent failure
+            error_log(sprintf('SourceHub Spoke: Hub callback permanently failed after %d attempts for job %s', 
+                $max_attempts, $payload['job_id']));
+            
+            SourceHub_Logger::error(
+                sprintf('Hub callback permanently failed after %d retry attempts', $max_attempts),
+                array(
+                    'job_id' => $payload['job_id'],
+                    'attempts' => $max_attempts,
+                    'hub_post_id' => $payload['hub_post_id'],
+                    'spoke_post_id' => $payload['spoke_post_id']
+                ),
+                $payload['spoke_post_id'],
+                null,
+                'callback_retry_exhausted'
+            );
         }
     }
 

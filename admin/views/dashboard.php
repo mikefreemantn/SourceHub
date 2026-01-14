@@ -346,6 +346,38 @@ $recent_logs = isset($recent_logs) ? $recent_logs : array();
                     </div>
                 </div>
 
+                <!-- Syndication Status Legend (Hub Mode Only) -->
+                <?php if ($mode === 'hub'): ?>
+                <div class="dashboard-widget">
+                    <h2><?php echo __('Syndication Status', 'sourcehub'); ?></h2>
+                    <div class="status-legend">
+                        <p class="legend-description"><?php echo __('Status indicators in the Posts list:', 'sourcehub'); ?></p>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <span class="legend-circle" style="background-color: #46b450; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.1);"></span>
+                                <span class="legend-label"><?php echo __('All spokes synced successfully', 'sourcehub'); ?></span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-circle" style="background-color: #dc3232; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.1);"></span>
+                                <span class="legend-label"><?php echo __('One or more spokes failed', 'sourcehub'); ?></span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-circle" style="background-color: #ffb900; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.1);"></span>
+                                <span class="legend-label"><?php echo __('Syndication in progress', 'sourcehub'); ?></span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-circle" style="background-color: #f0a000; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.1);"></span>
+                                <span class="legend-label"><?php echo __('Partial sync (some pending)', 'sourcehub'); ?></span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-circle" style="background-color: #ddd; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.1);"></span>
+                                <span class="legend-label"><?php echo __('Not syndicated', 'sourcehub'); ?></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- Recent Activity -->
                 <div class="dashboard-widget">
                     <h2>

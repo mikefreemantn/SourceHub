@@ -1271,3 +1271,39 @@
 .gap-20 {
     gap: 20px;
 }
+
+/* ==========================================================================
+   Syndication Status Legend
+   ========================================================================== */
+
+.status-legend {
+    padding: 20px;
+}
+
+.status-legend .legend-description {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 13px;
+}
+
+.status-legend .legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-legend .legend-circle {
+    flex-shrink: 0;
+}
+
+.status-legend .legend-label {
+    font-size: 13px;
+    color: #2c3338;
+    line-height: 1.4;
+}
