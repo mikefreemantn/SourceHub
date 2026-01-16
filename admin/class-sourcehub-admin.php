@@ -44,6 +44,8 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_check_timeouts', array($this, 'ajax_check_timeouts'));
         add_action('wp_ajax_sourcehub_get_connection', array($this, 'get_connection'));
         add_action('wp_ajax_sourcehub_check_sync_status', array($this, 'check_sync_status'));
+        add_action('wp_ajax_sourcehub_save_smart_link_template', array($this, 'save_smart_link_template'));
+        add_action('wp_ajax_sourcehub_delete_smart_link_template', array($this, 'delete_smart_link_template'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
@@ -224,6 +226,16 @@ class SourceHub_Admin {
                 'sourcehub-smart-links',
                 array($this, 'render_smart_links_guide')
             );
+            
+            // Smart Link Templates - accessible to editors and above
+            add_submenu_page(
+                'sourcehub',
+                __('Smart Link Templates', 'sourcehub'),
+                __('Smart Link Templates', 'sourcehub'),
+                $dashboard_capability,
+                'sourcehub-smart-link-templates',
+                array($this, 'render_smart_link_templates')
+            );
         }
     }
 
@@ -293,7 +305,8 @@ class SourceHub_Admin {
             wp_localize_script('sourcehub-tinymce-shortcodes', 'sourcehubAdmin', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('sourcehub_admin_nonce'),
-                'mode' => sourcehub()->get_mode()
+                'mode' => sourcehub()->get_mode(),
+                'smartLinkTemplates' => get_option('sourcehub_smart_link_templates', array())
             ));
         }
         
@@ -1350,6 +1363,91 @@ class SourceHub_Admin {
             'meta'   => array(
                 'class' => 'sourcehub-admin-bar-item'
             )
+        ));
+    }
+
+    /**
+     * Render Smart Link Templates page
+     */
+    public function render_smart_link_templates() {
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        include SOURCEHUB_PLUGIN_DIR . 'admin/views/smart-link-templates.php';
+    }
+
+    /**
+     * AJAX handler to save a Smart Link Template
+     */
+    public function save_smart_link_template() {
+        check_ajax_referer('sourcehub_smart_link_template', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $link_text = isset($_POST['link_text']) ? sanitize_text_field($_POST['link_text']) : '';
+        $path = isset($_POST['path']) ? sanitize_text_field($_POST['path']) : '';
+
+        if (empty($link_text) || empty($path)) {
+            wp_send_json_error(array('message' => __('Link text and path are required.', 'sourcehub')));
+            return;
+        }
+
+        // Get existing templates
+        $templates = get_option('sourcehub_smart_link_templates', array());
+        
+        // Add new template with unique ID
+        $template_id = uniqid('template_');
+        $templates[$template_id] = array(
+            'link_text' => $link_text,
+            'path' => $path,
+            'created_at' => current_time('mysql')
+        );
+
+        update_option('sourcehub_smart_link_templates', $templates);
+
+        wp_send_json_success(array(
+            'message' => __('Template saved successfully.', 'sourcehub'),
+            'template_id' => $template_id,
+            'template' => $templates[$template_id]
+        ));
+    }
+
+    /**
+     * AJAX handler to delete a Smart Link Template
+     */
+    public function delete_smart_link_template() {
+        check_ajax_referer('sourcehub_smart_link_template', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : '';
+
+        if (empty($template_id)) {
+            wp_send_json_error(array('message' => __('Template ID is required.', 'sourcehub')));
+            return;
+        }
+
+        // Get existing templates
+        $templates = get_option('sourcehub_smart_link_templates', array());
+        
+        if (!isset($templates[$template_id])) {
+            wp_send_json_error(array('message' => __('Template not found.', 'sourcehub')));
+            return;
+        }
+
+        // Remove template
+        unset($templates[$template_id]);
+        update_option('sourcehub_smart_link_templates', $templates);
+
+        wp_send_json_success(array(
+            'message' => __('Template deleted successfully.', 'sourcehub')
         ));
     }
 }

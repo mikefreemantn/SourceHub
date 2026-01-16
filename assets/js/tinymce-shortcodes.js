@@ -30,14 +30,31 @@
 
         // Smart Link Modal
         function openSmartLinkModal() {
+            // Build template dropdown HTML
+            var templates = (typeof sourcehubAdmin !== 'undefined' && sourcehubAdmin.smartLinkTemplates) ? sourcehubAdmin.smartLinkTemplates : {};
+            var templateOptions = '<option value="">-- Select a Template --</option>';
+            
+            for (var templateId in templates) {
+                if (templates.hasOwnProperty(templateId)) {
+                    var template = templates[templateId];
+                    templateOptions += '<option value="' + templateId + '">' + template.link_text + '</option>';
+                }
+            }
+            
+            var templateDropdownHtml = '<div style="margin-bottom: 15px;"><label style="font-weight: bold; display: block; margin-bottom: 5px;">Use Template:</label><select id="smart-link-template-select" style="width: 100%; padding: 6px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px;">' + templateOptions + '</select></div>';
+            
             var dialogInstance = editor.windowManager.open({
                 title: 'Insert Smart Link',
                 width: 600,
-                height: 350,
+                height: 450,
                 body: [
                     {
                         type: 'container',
                         html: '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #ddd; display: flex; gap: 10px;"><button type="button" id="smart-copy-btn" style="padding: 8px 16px; background: #0073aa; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Copy Shortcode</button><button type="button" id="smart-insert-btn" style="padding: 8px 16px; background: #1dad4b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Insert</button><button type="button" id="smart-cancel-btn" style="padding: 8px 16px; background: #ddd; color: #333; border: none; border-radius: 4px; cursor: pointer;">Cancel</button></div>'
+                    },
+                    {
+                        type: 'container',
+                        html: templateDropdownHtml
                     },
                     {
                         type: 'textbox',
@@ -58,6 +75,22 @@
                 ],
                 onPostRender: function() {
                     var dialog = this;
+                    
+                    // Handle template selection
+                    setTimeout(function() {
+                        var templateSelect = document.getElementById('smart-link-template-select');
+                        if (templateSelect) {
+                            templateSelect.addEventListener('change', function() {
+                                var selectedTemplateId = this.value;
+                                if (selectedTemplateId && templates[selectedTemplateId]) {
+                                    var template = templates[selectedTemplateId];
+                                    dialog.find('#linkText')[0].value(template.link_text);
+                                    dialog.find('#path')[0].value(template.path);
+                                    updatePreview();
+                                }
+                            });
+                        }
+                    }, 100);
                     
                     // Update preview when fields change
                     function updatePreview() {

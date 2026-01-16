@@ -64,6 +64,7 @@ class SourceHub_Hub_Manager {
         
         add_action('wp_ajax_sourcehub_send_to_spoke', array($this, 'ajax_send_to_spoke'));
         add_action('wp_ajax_sourcehub_manual_cron', array($this, 'ajax_manual_cron'));
+        add_action('wp_ajax_sourcehub_reset_post', array($this, 'ajax_reset_post'));
         
         // Add custom column to posts list
         add_filter('manage_posts_columns', array($this, 'add_syndication_column'));
@@ -457,43 +458,6 @@ class SourceHub_Hub_Manager {
                         </button>
                     </div>
                     
-                    <!-- Custom Publish Date/Time -->
-                    <div class="sourcehub-custom-date-section" style="margin-bottom: 15px; padding: 10px 12px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
-                        <label style="display: flex; align-items: flex-start; margin-bottom: 0; cursor: pointer;">
-                            <input type="checkbox" 
-                                   id="sourcehub_use_custom_date" 
-                                   name="sourcehub_use_custom_date" 
-                                   value="1"
-                                   style="margin: 3px 8px 0 0; flex-shrink: 0;"
-                                   <?php checked(get_post_meta($post->ID, '_sourcehub_use_custom_date', true), '1'); ?>>
-                            <span style="font-weight: 500; line-height: 1.5; font-size: 13px;"><?php _e('Use custom publish date for spoke sites', 'sourcehub'); ?></span>
-                        </label>
-                        <div id="sourcehub-custom-date-fields" style="margin-top: 10px; <?php echo get_post_meta($post->ID, '_sourcehub_use_custom_date', true) ? '' : 'display: none;'; ?>">
-                            <?php
-                            $custom_date = get_post_meta($post->ID, '_sourcehub_custom_publish_date', true);
-                            if (empty($custom_date)) {
-                                $custom_date = current_time('Y-m-d H:i:s');
-                            }
-                            $datetime = new DateTime($custom_date);
-                            ?>
-                            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
-                                <input type="date" 
-                                       id="sourcehub_custom_date" 
-                                       name="sourcehub_custom_date" 
-                                       value="<?php echo esc_attr($datetime->format('Y-m-d')); ?>"
-                                       style="padding: 5px 8px; font-size: 13px; border: 1px solid #8c8f94; border-radius: 3px; flex: 0 0 auto;">
-                                <input type="time" 
-                                       id="sourcehub_custom_time" 
-                                       name="sourcehub_custom_time" 
-                                       value="<?php echo esc_attr($datetime->format('H:i')); ?>"
-                                       style="padding: 5px 8px; font-size: 13px; border: 1px solid #8c8f94; border-radius: 3px; flex: 0 0 auto;">
-                            </div>
-                            <small style="color: #646970; display: block; line-height: 1.4; font-size: 12px; margin: 0;">
-                                <?php _e('This date will be used as the publish date on spoke sites instead of the hub publish date.', 'sourcehub'); ?>
-                            </small>
-                        </div>
-                    </div>
-                    
                     <?php foreach ($connections as $connection): 
                         $ai_settings = json_decode($connection->ai_settings, true);
                         $has_ai_enabled = !empty($ai_settings['enabled']);
@@ -601,6 +565,9 @@ class SourceHub_Hub_Manager {
                 <div class="sourcehub-actions">
                     <button type="button" id="sourcehub-test-connections" class="button button-secondary">
                         <?php _e('Test Connections', 'sourcehub'); ?>
+                    </button>
+                    <button type="button" id="sourcehub-reset-post" class="button button-secondary" style="margin-left: 10px;" data-post-id="<?php echo esc_attr($post->ID); ?>">
+                        <?php _e('Reset Post', 'sourcehub'); ?>
                     </button>
                     <div id="sourcehub-test-results"></div>
                 </div>
@@ -814,13 +781,39 @@ class SourceHub_Hub_Manager {
                 $('#sourcehub-toggle-all-spokes').text('<?php _e('Deselect All', 'sourcehub'); ?>');
             }
             
-            // Toggle custom date fields
-            $('#sourcehub_use_custom_date').on('change', function() {
-                if ($(this).is(':checked')) {
-                    $('#sourcehub-custom-date-fields').slideDown(200);
-                } else {
-                    $('#sourcehub-custom-date-fields').slideUp(200);
+            // Reset post syndication data
+            $('#sourcehub-reset-post').on('click', function() {
+                if (!confirm('<?php _e('Are you sure you want to reset this post? This will clear all spoke selections and syndication history. This action cannot be undone.', 'sourcehub'); ?>')) {
+                    return;
                 }
+                
+                var $button = $(this);
+                var postId = $button.data('post-id');
+                
+                $button.prop('disabled', true).text('<?php _e('Resetting...', 'sourcehub'); ?>');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'sourcehub_reset_post',
+                        post_id: postId,
+                        nonce: '<?php echo wp_create_nonce('sourcehub_reset_post'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.data.message);
+                            location.reload();
+                        } else {
+                            alert('<?php _e('Reset failed:', 'sourcehub'); ?> ' + response.data.message);
+                            $button.prop('disabled', false).text('<?php _e('Reset Post', 'sourcehub'); ?>');
+                        }
+                    },
+                    error: function() {
+                        alert('<?php _e('Reset failed due to connection error.', 'sourcehub'); ?>');
+                        $button.prop('disabled', false).text('<?php _e('Reset Post', 'sourcehub'); ?>');
+                    }
+                });
             });
             
             // Test connections
@@ -1024,57 +1017,6 @@ class SourceHub_Hub_Manager {
             }, $_POST['sourcehub_ai_overrides']);
         }
         update_post_meta($post_id, '_sourcehub_ai_overrides', $ai_overrides);
-        
-        // Save custom publish date settings and detect changes
-        $old_use_custom_date = get_post_meta($post_id, '_sourcehub_use_custom_date', true);
-        $old_custom_date = get_post_meta($post_id, '_sourcehub_custom_publish_date', true);
-        
-        $use_custom_date = isset($_POST['sourcehub_use_custom_date']) ? '1' : '0';
-        update_post_meta($post_id, '_sourcehub_use_custom_date', $use_custom_date);
-        
-        $custom_date_changed = false;
-        if ($use_custom_date === '1' && isset($_POST['sourcehub_custom_date']) && isset($_POST['sourcehub_custom_time'])) {
-            $custom_date = sanitize_text_field($_POST['sourcehub_custom_date']);
-            $custom_time = sanitize_text_field($_POST['sourcehub_custom_time']);
-            $custom_datetime = $custom_date . ' ' . $custom_time . ':00';
-            
-            // Check if date changed
-            if ($old_custom_date !== $custom_datetime || $old_use_custom_date !== '1') {
-                $custom_date_changed = true;
-                error_log('SourceHub: Custom publish date changed from "' . $old_custom_date . '" to "' . $custom_datetime . '"');
-            }
-            
-            update_post_meta($post_id, '_sourcehub_custom_publish_date', $custom_datetime);
-        } elseif ($old_use_custom_date === '1' && $use_custom_date === '0') {
-            // Custom date was disabled
-            $custom_date_changed = true;
-            error_log('SourceHub: Custom publish date disabled');
-        }
-        
-        // Trigger update immediately if custom date changed on a published post
-        if ($custom_date_changed && $post->post_status === 'publish') {
-            // Get syndicated spokes to update
-            $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
-            if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                // Find which syndicated spokes are still selected
-                $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
-                
-                if (!empty($existing_spokes)) {
-                    error_log('SourceHub: Custom date changed - triggering immediate update to ' . count($existing_spokes) . ' spoke(s)');
-                    
-                    SourceHub_Logger::info(
-                        sprintf('Custom publish date changed for post "%s" - updating %d spoke sites', $post->post_title, count($existing_spokes)),
-                        array('spoke_ids' => $existing_spokes),
-                        $post_id,
-                        null,
-                        'custom_date_update'
-                    );
-                    
-                    // Trigger update directly
-                    $this->update_syndicated_post($post_id, $existing_spokes);
-                }
-            }
-        }
 
         // Handle syndication for NEW posts (post_updated doesn't fire for new posts)
         // For updates, handle_post_update will handle it
@@ -1309,12 +1251,8 @@ class SourceHub_Hub_Manager {
         // Find EXISTING spokes (already syndicated and still selected)
         $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
         
-        // Check if custom date changed
-        $custom_date_changed = get_post_meta($post_id, '_sourcehub_custom_date_changed', true);
-        
         error_log('SourceHub: New spokes to create: ' . print_r($new_spokes, true));
         error_log('SourceHub: Existing spokes to update: ' . print_r($existing_spokes, true));
-        error_log('SourceHub: Custom date changed: ' . ($custom_date_changed ? 'yes' : 'no'));
         
         // Create posts on NEW spokes
         if (!empty($new_spokes)) {
@@ -1322,28 +1260,17 @@ class SourceHub_Hub_Manager {
             $this->syndicate_post($post_id, $new_spokes);
         }
         
-        // Update posts on EXISTING spokes (or if custom date changed)
+        // Update posts on EXISTING spokes
         if (!empty($existing_spokes)) {
-            // Always update if custom date changed, even if no other content changed
-            if ($custom_date_changed) {
-                error_log('SourceHub: Custom date changed - forcing update to all syndicated spokes');
-                delete_post_meta($post_id, '_sourcehub_custom_date_changed'); // Clear the flag
-            }
-            
             SourceHub_Logger::info(
                 sprintf('Syncing updates for post "%s" to %d existing spoke sites', $post_after->post_title, count($existing_spokes)),
-                array('spoke_ids' => $existing_spokes, 'custom_date_changed' => (bool)$custom_date_changed),
+                array('spoke_ids' => $existing_spokes),
                 $post_id,
                 null,
                 'update'
             );
             
             $this->update_syndicated_post($post_id, $existing_spokes);
-        } elseif ($custom_date_changed && !empty($syndicated_spokes)) {
-            // Custom date changed but no existing spokes in selected list
-            // This means spokes were deselected but we should still update the ones that were syndicated
-            error_log('SourceHub: Custom date changed but no spokes currently selected - clearing flag');
-            delete_post_meta($post_id, '_sourcehub_custom_date_changed');
         }
     }
 
@@ -2059,23 +1986,9 @@ class SourceHub_Hub_Manager {
         // Apply any custom filters but NOT do_shortcode
         $processed_content = apply_filters('sourcehub_before_syndication', $processed_content);
         
-        // Check if custom publish date is enabled
-        $use_custom_date = get_post_meta($post->ID, '_sourcehub_use_custom_date', true);
+        // Use WordPress native post dates
         $post_date = $post->post_date;
         $post_date_gmt = $post->post_date_gmt;
-        
-        if ($use_custom_date === '1') {
-            $custom_date = get_post_meta($post->ID, '_sourcehub_custom_publish_date', true);
-            if (!empty($custom_date)) {
-                $post_date = $custom_date;
-                // Convert to GMT
-                $datetime = new DateTime($custom_date, new DateTimeZone(wp_timezone_string()));
-                $datetime->setTimezone(new DateTimeZone('UTC'));
-                $post_date_gmt = $datetime->format('Y-m-d H:i:s');
-                
-                error_log('SourceHub: Using custom publish date for post ' . $post->ID . ': ' . $post_date . ' (GMT: ' . $post_date_gmt . ')');
-            }
-        }
         
         $data = array(
             'hub_id' => $post->ID,
@@ -3193,6 +3106,44 @@ class SourceHub_Hub_Manager {
             $hidden = array_diff($hidden, array('sourcehub_sync'));
         }
         return $hidden;
+    }
+
+    /**
+     * AJAX handler to reset post syndication data
+     * Clears all spoke selections and syndication history
+     */
+    public function ajax_reset_post() {
+        check_ajax_referer('sourcehub_reset_post', 'nonce');
+        
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+        
+        if (!$post_id || !current_user_can('edit_post', $post_id)) {
+            wp_send_json_error(array('message' => __('Invalid post or insufficient permissions.', 'sourcehub')));
+            return;
+        }
+        
+        // Clear all syndication-related meta data
+        delete_post_meta($post_id, '_sourcehub_selected_spokes');
+        delete_post_meta($post_id, '_sourcehub_syndicated_spokes');
+        delete_post_meta($post_id, '_sourcehub_sync_status');
+        delete_post_meta($post_id, '_sourcehub_last_sync');
+        delete_post_meta($post_id, '_sourcehub_ai_overrides');
+        delete_post_meta($post_id, '_sourcehub_spoke_post_ids');
+        
+        // Clear any processing transients
+        delete_transient('sourcehub_sync_status_' . $post_id);
+        
+        SourceHub_Logger::info(
+            sprintf('Post "%s" syndication data reset by user', get_the_title($post_id)),
+            array('post_id' => $post_id),
+            $post_id,
+            null,
+            'reset'
+        );
+        
+        wp_send_json_success(array(
+            'message' => __('Post syndication data has been reset. All spoke selections and history cleared.', 'sourcehub')
+        ));
     }
 
 }
