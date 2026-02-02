@@ -46,6 +46,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_check_sync_status', array($this, 'check_sync_status'));
         add_action('wp_ajax_sourcehub_save_smart_link_template', array($this, 'save_smart_link_template'));
         add_action('wp_ajax_sourcehub_delete_smart_link_template', array($this, 'delete_smart_link_template'));
+        add_action('wp_ajax_sourcehub_manual_retry', array($this, 'ajax_manual_retry'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
@@ -205,6 +206,18 @@ class SourceHub_Admin {
             'sourcehub-logs',
             array($this, 'render_logs')
         );
+
+        // Post Logs - accessible to editors and above (hub mode only)
+        if ($mode === 'hub') {
+            add_submenu_page(
+                'sourcehub',
+                __('Post Logs', 'sourcehub'),
+                __('Post Logs', 'sourcehub'),
+                $dashboard_capability,
+                'sourcehub-post-logs',
+                array($this, 'render_post_logs')
+            );
+        }
 
         // Bug Tracker - accessible to editors and above
         add_submenu_page(
@@ -1378,6 +1391,17 @@ class SourceHub_Admin {
     }
 
     /**
+     * Render Post Logs page
+     */
+    public function render_post_logs() {
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        include SOURCEHUB_PLUGIN_DIR . 'admin/views/post-logs.php';
+    }
+
+    /**
      * AJAX handler to save a Smart Link Template
      */
     public function save_smart_link_template() {
@@ -1448,6 +1472,81 @@ class SourceHub_Admin {
 
         wp_send_json_success(array(
             'message' => __('Template deleted successfully.', 'sourcehub')
+        ));
+    }
+
+    /**
+     * AJAX handler for manual retry of failed/stuck syndications
+     */
+    public function ajax_manual_retry() {
+        check_ajax_referer('sourcehub_manual_retry', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+
+        if (!$post_id) {
+            wp_send_json_error(array('message' => __('Invalid post ID.', 'sourcehub')));
+            return;
+        }
+
+        // Get sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        
+        if (!is_array($sync_status)) {
+            wp_send_json_error(array('message' => __('No syndication status found for this post.', 'sourcehub')));
+            return;
+        }
+
+        // Find failed or stuck spokes
+        $retry_count = 0;
+        foreach ($sync_status as $spoke_id => $status_data) {
+            $status = $status_data['status'] ?? 'unknown';
+            
+            if ($status === 'failed' || $status === 'processing') {
+                // Reset to processing with new timestamp to trigger retry
+                $sync_status[$spoke_id] = array(
+                    'status' => 'processing',
+                    'last_sync' => current_time('mysql'),
+                    'started_at' => current_time('mysql'),
+                    'action' => $status_data['action'] ?? 'update',
+                    'manual_retry' => true
+                );
+                $retry_count++;
+            }
+        }
+
+        if ($retry_count === 0) {
+            wp_send_json_error(array('message' => __('No failed or stuck spokes found to retry.', 'sourcehub')));
+            return;
+        }
+
+        // Update sync status
+        update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
+
+        // Trigger re-sync via Action Scheduler
+        if (function_exists('as_schedule_single_action')) {
+            as_schedule_single_action(
+                time() + 5,
+                'sourcehub_delayed_sync',
+                array($post_id),
+                'sourcehub'
+            );
+        }
+
+        SourceHub_Logger::info(
+            sprintf('Manual retry initiated for post %d - %d spoke(s) queued', $post_id, $retry_count),
+            array('post_id' => $post_id, 'retry_count' => $retry_count),
+            $post_id,
+            null,
+            'manual_retry'
+        );
+
+        wp_send_json_success(array(
+            'message' => sprintf(__('%d spoke(s) queued for retry.', 'sourcehub'), $retry_count)
         ));
     }
 }
