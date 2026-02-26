@@ -85,6 +85,213 @@ class SourceHub_Logger {
      */
     public static function error($message, $data = array(), $post_id = null, $connection_id = null, $action = '') {
         self::log($message, self::ERROR, $data, $post_id, $connection_id, $action);
+        
+        // Send notifications for errors
+        self::send_error_notifications($message, $data, $post_id, $connection_id, $action);
+    }
+    
+    /**
+     * Send error notifications via email and webhook
+     *
+     * @param string $message Error message
+     * @param array $data Additional data
+     * @param int $post_id Related post ID
+     * @param int $connection_id Related connection ID
+     * @param string $action Action being performed
+     */
+    private static function send_error_notifications($message, $data = array(), $post_id = null, $connection_id = null, $action = '') {
+        // Get notification settings
+        $notification_emails = get_option('sourcehub_post_logs_notification_emails', '');
+        $webhook_url = get_option('sourcehub_post_logs_webhook_url', '');
+        
+        // Prepare error data
+        $error_data = array(
+            'message' => $message,
+            'action' => $action,
+            'post_id' => $post_id,
+            'connection_id' => $connection_id,
+            'data' => $data,
+            'timestamp' => current_time('mysql'),
+            'site_url' => get_site_url()
+        );
+        
+        // Add post details if available
+        if ($post_id) {
+            $post = get_post($post_id);
+            if ($post) {
+                $error_data['post_title'] = $post->post_title;
+                $error_data['post_url'] = get_edit_post_link($post_id, 'raw');
+            }
+        }
+        
+        // Add connection details if available
+        if ($connection_id) {
+            $connection = SourceHub_Database::get_connection($connection_id);
+            if ($connection) {
+                $error_data['connection_name'] = $connection->name;
+                $error_data['connection_url'] = $connection->url;
+            }
+        }
+        
+        // Send email notifications
+        if (!empty($notification_emails)) {
+            self::send_email_notification($error_data, $notification_emails);
+        }
+        
+        // Send webhook notification
+        if (!empty($webhook_url)) {
+            self::send_webhook_notification($error_data, $webhook_url);
+        }
+    }
+    
+    /**
+     * Send email notification
+     *
+     * @param array $error_data Error data
+     * @param string $emails Email addresses (one per line)
+     */
+    private static function send_email_notification($error_data, $emails) {
+        $email_list = array_filter(array_map('trim', explode("\n", $emails)));
+        
+        if (empty($email_list)) {
+            return;
+        }
+        
+        $subject = sprintf('[SourceHub] Syndication Error: %s', 
+            isset($error_data['post_title']) ? $error_data['post_title'] : 'Post #' . $error_data['post_id']
+        );
+        
+        // Build HTML email
+        $message = '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: #d63638; color: #ffffff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .header .icon { font-size: 48px; margin-bottom: 10px; }
+        .content { padding: 30px 20px; }
+        .error-box { background: #fff3cd; border-left: 4px solid #d63638; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .error-message { color: #721c24; font-weight: 500; margin: 0; }
+        .info-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .info-table td { padding: 12px 8px; border-bottom: 1px solid #e0e0e0; }
+        .info-table td:first-child { font-weight: 600; color: #666; width: 140px; }
+        .info-table td:last-child { color: #333; }
+        .button { display: inline-block; padding: 12px 24px; background: #2271b1; color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: 500; margin: 10px 5px; }
+        .button:hover { background: #135e96; }
+        .button-secondary { background: #50575e; }
+        .button-secondary:hover { background: #3c434a; }
+        .details { background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0; font-family: monospace; font-size: 12px; overflow-x: auto; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 12px; border-top: 1px solid #e0e0e0; }
+        .footer a { color: #2271b1; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">⚠️</div>
+            <h1>Syndication Error</h1>
+        </div>
+        
+        <div class="content">
+            <div class="error-box">
+                <p class="error-message">' . esc_html($error_data['message']) . '</p>
+            </div>
+            
+            <table class="info-table">';
+        
+        if (isset($error_data['post_title'])) {
+            $message .= '
+                <tr>
+                    <td>Post</td>
+                    <td><strong>' . esc_html($error_data['post_title']) . '</strong></td>
+                </tr>';
+        }
+        
+        if (isset($error_data['connection_name'])) {
+            $message .= '
+                <tr>
+                    <td>Spoke Site</td>
+                    <td>' . esc_html($error_data['connection_name']) . '<br><small style="color: #666;">' . esc_html($error_data['connection_url']) . '</small></td>
+                </tr>';
+        }
+        
+        $message .= '
+                <tr>
+                    <td>Action</td>
+                    <td>' . esc_html($error_data['action']) . '</td>
+                </tr>
+                <tr>
+                    <td>Time</td>
+                    <td>' . esc_html($error_data['timestamp']) . '</td>
+                </tr>
+            </table>';
+        
+        if (!empty($error_data['data'])) {
+            $message .= '
+            <h3 style="color: #666; font-size: 14px; margin: 20px 0 10px;">Additional Details</h3>
+            <div class="details">' . esc_html(print_r($error_data['data'], true)) . '</div>';
+        }
+        
+        $message .= '
+            <div style="text-align: center; margin-top: 30px;">';
+        
+        if (isset($error_data['post_url'])) {
+            $message .= '
+                <a href="' . esc_url($error_data['post_url']) . '" class="button">Edit Post</a>';
+        }
+        
+        $message .= '
+                <a href="' . esc_url(admin_url('admin.php?page=sourcehub-post-logs')) . '" class="button button-secondary">View Post Logs</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This notification was sent by <a href="' . esc_url($error_data['site_url']) . '">SourceHub</a></p>
+            <p style="margin: 5px 0 0;">Manage notification settings in <a href="' . esc_url(admin_url('admin.php?page=sourcehub-post-logs')) . '">Post Logs</a></p>
+        </div>
+    </div>
+</body>
+</html>';
+        
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        
+        foreach ($email_list as $email) {
+            if (is_email($email)) {
+                wp_mail($email, $subject, $message, $headers);
+            }
+        }
+    }
+    
+    /**
+     * Send webhook notification
+     *
+     * @param array $error_data Error data
+     * @param string $webhook_url Webhook URL
+     */
+    private static function send_webhook_notification($error_data, $webhook_url) {
+        if (empty($webhook_url) || !filter_var($webhook_url, FILTER_VALIDATE_URL)) {
+            return;
+        }
+        
+        $response = wp_remote_post($webhook_url, array(
+            'method' => 'POST',
+            'timeout' => 10,
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'User-Agent' => 'SourceHub/' . SOURCEHUB_VERSION
+            ),
+            'body' => json_encode($error_data),
+            'sslverify' => true
+        ));
+        
+        // Log webhook failures silently to avoid infinite loops
+        if (is_wp_error($response)) {
+            error_log('SourceHub: Webhook notification failed - ' . $response->get_error_message());
+        }
     }
 
     /**

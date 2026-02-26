@@ -11,6 +11,26 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Handle settings save
+if (isset($_POST['save_post_logs_settings']) && check_admin_referer('sourcehub_post_logs_settings', 'sourcehub_post_logs_nonce')) {
+    $notification_emails = isset($_POST['notification_emails']) ? sanitize_textarea_field($_POST['notification_emails']) : '';
+    $webhook_url = isset($_POST['webhook_url']) ? esc_url_raw($_POST['webhook_url']) : '';
+    
+    update_option('sourcehub_post_logs_notification_emails', $notification_emails);
+    update_option('sourcehub_post_logs_webhook_url', $webhook_url);
+    
+    echo '<div class="notice notice-success is-dismissible"><p>Notification settings saved.</p></div>';
+}
+
+// Get current settings
+$notification_emails = get_option('sourcehub_post_logs_notification_emails', '');
+$webhook_url = get_option('sourcehub_post_logs_webhook_url', '');
+
+// Get user's collapsed state preference
+$user_id = get_current_user_id();
+$is_collapsed = get_user_meta($user_id, 'sourcehub_post_logs_settings_collapsed', true);
+$is_collapsed = ($is_collapsed === '1' || $is_collapsed === 1);
+
 // Get filter parameters
 $status_filter = isset($_GET['status']) ? sanitize_text_field($_GET['status']) : 'all';
 $spoke_filter = isset($_GET['spoke']) ? intval($_GET['spoke']) : 0;
@@ -67,7 +87,8 @@ foreach ($posts_with_status as $post_data) {
             // Check if stuck (older than 10 minutes)
             if (isset($status_data['started_at'])) {
                 $started = strtotime($status_data['started_at']);
-                $elapsed = time() - $started;
+                $now = current_time('timestamp'); // Use WordPress local time, not UTC
+                $elapsed = $now - $started;
                 if ($elapsed > 600) { // 10 minutes
                     $has_processing = true;
                     $connection = SourceHub_Database::get_connection($spoke_id);
@@ -110,6 +131,48 @@ foreach ($posts_with_status as $post_data) {
 <div class="wrap">
     <h1><?php _e('Post Syndication Logs', 'sourcehub'); ?></h1>
     <p><?php _e('View posts with syndication errors or stuck in processing status.', 'sourcehub'); ?></p>
+
+    <!-- Notification Settings -->
+    <div class="sourcehub-notification-settings" style="background: #fff; border: 1px solid #ccd0d4; margin: 20px 0; border-radius: 4px;">
+        <div style="padding: 15px 20px; border-bottom: 1px solid #ccd0d4; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleNotificationSettings()">
+            <div>
+                <h2 style="margin: 0; display: inline-block;"><?php _e('Error Notifications', 'sourcehub'); ?></h2>
+                <span style="margin-left: 10px; color: #666; font-size: 13px;"><?php _e('Configure email and webhook alerts', 'sourcehub'); ?></span>
+            </div>
+            <span class="dashicons dashicons-arrow-down-alt2" id="notification-settings-toggle" style="transition: transform 0.2s; <?php echo $is_collapsed ? 'transform: rotate(-90deg);' : ''; ?>"></span>
+        </div>
+        
+        <div id="notification-settings-content" style="padding: 20px; <?php echo $is_collapsed ? 'display: none;' : ''; ?>">
+            <form method="post" action="">
+                <?php wp_nonce_field('sourcehub_post_logs_settings', 'sourcehub_post_logs_nonce'); ?>
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="notification_emails"><?php _e('Notification Emails', 'sourcehub'); ?></label>
+                        </th>
+                        <td>
+                            <textarea name="notification_emails" id="notification_emails" rows="3" class="large-text" placeholder="email1@example.com&#10;email2@example.com"><?php echo esc_textarea($notification_emails); ?></textarea>
+                            <p class="description"><?php _e('Enter one email address per line. These addresses will be notified when syndication errors occur.', 'sourcehub'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="webhook_url"><?php _e('Webhook URL', 'sourcehub'); ?></label>
+                        </th>
+                        <td>
+                            <input type="url" name="webhook_url" id="webhook_url" value="<?php echo esc_attr($webhook_url); ?>" class="large-text" placeholder="https://example.com/webhook">
+                            <p class="description"><?php _e('Optional webhook URL to receive POST requests with error details in JSON format.', 'sourcehub'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <button type="submit" name="save_post_logs_settings" class="button button-primary"><?php _e('Save Notification Settings', 'sourcehub'); ?></button>
+                </p>
+            </form>
+        </div>
+    </div>
 
     <!-- Filters -->
     <div class="sourcehub-post-logs-filters">
@@ -333,6 +396,27 @@ foreach ($posts_with_status as $post_data) {
 </style>
 
 <script>
+function toggleNotificationSettings() {
+    var content = document.getElementById('notification-settings-content');
+    var toggle = document.getElementById('notification-settings-toggle');
+    var isCollapsed = content.style.display === 'none';
+    
+    // Toggle display
+    content.style.display = isCollapsed ? 'block' : 'none';
+    toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+    
+    // Save state via AJAX
+    jQuery.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: {
+            action: 'sourcehub_toggle_post_logs_settings',
+            collapsed: isCollapsed ? '0' : '1',
+            nonce: '<?php echo wp_create_nonce('sourcehub_toggle_settings'); ?>'
+        }
+    });
+}
+
 jQuery(document).ready(function($) {
     // Handle retry sync button
     $('.retry-sync-btn').on('click', function() {

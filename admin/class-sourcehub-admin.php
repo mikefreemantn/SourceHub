@@ -47,6 +47,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_save_smart_link_template', array($this, 'save_smart_link_template'));
         add_action('wp_ajax_sourcehub_delete_smart_link_template', array($this, 'delete_smart_link_template'));
         add_action('wp_ajax_sourcehub_manual_retry', array($this, 'ajax_manual_retry'));
+        add_action('wp_ajax_sourcehub_toggle_post_logs_settings', array($this, 'ajax_toggle_post_logs_settings'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
@@ -1548,5 +1549,24 @@ class SourceHub_Admin {
         wp_send_json_success(array(
             'message' => sprintf(__('%d spoke(s) queued for retry.', 'sourcehub'), $retry_count)
         ));
+    }
+
+    /**
+     * AJAX handler to toggle Post Logs settings collapsed state
+     */
+    public function ajax_toggle_post_logs_settings() {
+        check_ajax_referer('sourcehub_toggle_settings', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $collapsed = isset($_POST['collapsed']) ? sanitize_text_field($_POST['collapsed']) : '0';
+        $user_id = get_current_user_id();
+        
+        update_user_meta($user_id, 'sourcehub_post_logs_settings_collapsed', $collapsed);
+        
+        wp_send_json_success();
     }
 }
