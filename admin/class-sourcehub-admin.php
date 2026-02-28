@@ -973,10 +973,13 @@ class SourceHub_Admin {
             return __('Never', 'sourcehub');
         }
 
-        // Convert UTC timestamp to site's local timezone
-        // Database stores in UTC, so we need to convert to local time
-        $timestamp = strtotime($datetime . ' UTC');
-        return date_i18n('Y-m-d H:i:s', $timestamp);
+        // Database stores in GMT/UTC via current_time('mysql', 1)
+        // Convert GMT datetime to local WordPress timezone
+        $local_datetime = get_date_from_gmt($datetime);
+        $timestamp = strtotime($local_datetime);
+        
+        // Format as: 2/25/26 4:19 PM (12-hour format without seconds)
+        return date('n/j/y g:i A', $timestamp);
     }
 
     /**

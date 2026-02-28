@@ -76,6 +76,66 @@ class SourceHub_Spoke_Manager {
             'callback' => array($this, 'get_status'),
             'permission_callback' => array($this, 'check_api_permission')
         ));
+
+        register_rest_route('sourcehub/v1', '/trash-post', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'trash_post'),
+            'permission_callback' => array($this, 'check_api_permission'),
+            'args' => array(
+                'spoke_post_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Spoke post ID to trash'
+                ),
+                'hub_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Original hub post ID'
+                )
+            )
+        ));
+
+        register_rest_route('sourcehub/v1', '/untrash-post', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'untrash_post'),
+            'permission_callback' => array($this, 'check_api_permission'),
+            'args' => array(
+                'spoke_post_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Spoke post ID to restore'
+                ),
+                'hub_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Original hub post ID'
+                )
+            )
+        ));
+
+        register_rest_route('sourcehub/v1', '/delete-post', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'delete_post'),
+            'permission_callback' => array($this, 'check_api_permission'),
+            'args' => array(
+                'spoke_post_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Spoke post ID to delete'
+                ),
+                'hub_id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Original hub post ID'
+                ),
+                'force' => array(
+                    'required' => false,
+                    'type' => 'boolean',
+                    'default' => true,
+                    'description' => 'Force permanent deletion'
+                )
+            )
+        ));
     }
 
     /**
@@ -1465,7 +1525,7 @@ class SourceHub_Spoke_Manager {
         $response = wp_remote_post($callback_url, array(
             'headers' => array('Content-Type' => 'application/json'),
             'body' => json_encode($payload),
-            'timeout' => 10
+            'timeout' => 30 // Increased from 10s to handle slow hub responses
         ));
         
         $callback_failed = false;
@@ -1572,7 +1632,7 @@ class SourceHub_Spoke_Manager {
         $response = wp_remote_post($callback_url, array(
             'headers' => array('Content-Type' => 'application/json'),
             'body' => json_encode($payload),
-            'timeout' => 10
+            'timeout' => 30 // Increased from 10s to handle slow hub responses
         ));
         
         $retry_failed = false;
@@ -1636,55 +1696,154 @@ class SourceHub_Spoke_Manager {
             // Exponential backoff: 30s, 60s, 120s, 240s, 300s (max 5 minutes)
             $delay = min(300, 30 * pow(2, $attempt - 1));
             
-            // Check if another retry is already scheduled (safety check)
-            $existing_retries = as_get_scheduled_actions(array(
-                'hook' => 'sourcehub_retry_hub_callback',
-                'args' => array('job_id' => $payload['job_id']),
-                'status' => 'pending'
-            ));
-            
-            if (empty($existing_retries)) {
-                as_schedule_single_action(
-                    time() + $delay,
-                    'sourcehub_retry_hub_callback',
-                    array(
-                        'payload' => $payload,
-                        'callback_url' => $callback_url,
-                        'attempt' => $attempt + 1,
-                        'max_attempts' => $max_attempts
-                    )
-                );
-                
-                SourceHub_Logger::warning(
-                    sprintf('Scheduling retry attempt %d in %d seconds', $attempt + 1, $delay),
-                    array(
-                        'job_id' => $payload['job_id'],
-                        'next_attempt' => $attempt + 1,
-                        'delay_seconds' => $delay
-                    ),
-                    null,
-                    null,
-                    'callback_retry_scheduled'
-                );
-            }
-        } elseif ($retry_failed && $attempt >= $max_attempts) {
-            // Max retries exceeded - log permanent failure
-            error_log(sprintf('SourceHub Spoke: Hub callback permanently failed after %d attempts for job %s', 
-                $max_attempts, $payload['job_id']));
-            
-            SourceHub_Logger::error(
-                sprintf('Hub callback permanently failed after %d retry attempts', $max_attempts),
+            as_schedule_single_action(
+                time() + $delay,
+                'sourcehub_retry_hub_callback',
                 array(
-                    'job_id' => $payload['job_id'],
-                    'attempts' => $max_attempts,
-                    'hub_post_id' => $payload['hub_post_id'],
-                    'spoke_post_id' => $payload['spoke_post_id']
+                    'hub_url' => $hub_url,
+                    'payload' => $payload,
+                    'attempt' => $attempt + 1
                 ),
+                'sourcehub'
+            );
+            
+            SourceHub_Logger::info(
+                sprintf('Scheduled retry attempt %d in %d seconds', $attempt + 1, $delay),
+                array('job_id' => $payload['job_id'], 'delay' => $delay),
                 $payload['spoke_post_id'],
                 null,
-                'callback_retry_exhausted'
+                'callback_retry_scheduled'
             );
         }
     }
 
+    /**
+     * Trash a post on the spoke site
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function trash_post($request) {
+        $spoke_post_id = $request->get_param('spoke_post_id');
+        $hub_id = $request->get_param('hub_id');
+        
+        // Move post to trash
+        $result = wp_trash_post($spoke_post_id);
+        
+        if ($result) {
+            SourceHub_Logger::success(
+                sprintf('Post %d trashed (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'trash'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => true,
+                'message' => 'Post moved to trash',
+                'spoke_post_id' => $spoke_post_id
+            ), 200);
+        } else {
+            SourceHub_Logger::error(
+                sprintf('Failed to trash post %d (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'trash'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'Failed to trash post'
+            ), 500);
+        }
+    }
+
+    /**
+     * Restore a post from trash on the spoke site
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function untrash_post($request) {
+        $spoke_post_id = $request->get_param('spoke_post_id');
+        $hub_id = $request->get_param('hub_id');
+        
+        // Restore post from trash
+        $result = wp_untrash_post($spoke_post_id);
+        
+        if ($result) {
+            SourceHub_Logger::success(
+                sprintf('Post %d restored from trash (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'untrash'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => true,
+                'message' => 'Post restored from trash',
+                'spoke_post_id' => $spoke_post_id
+            ), 200);
+        } else {
+            SourceHub_Logger::error(
+                sprintf('Failed to restore post %d (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'untrash'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'Failed to restore post'
+            ), 500);
+        }
+    }
+
+    /**
+     * Permanently delete a post on the spoke site
+     *
+     * @param WP_REST_Request $request Request object
+     * @return WP_REST_Response
+     */
+    public function delete_post($request) {
+        $spoke_post_id = $request->get_param('spoke_post_id');
+        $hub_id = $request->get_param('hub_id');
+        $force = $request->get_param('force') ?? true;
+        
+        // Permanently delete post
+        $result = wp_delete_post($spoke_post_id, $force);
+        
+        if ($result) {
+            SourceHub_Logger::success(
+                sprintf('Post %d permanently deleted (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'delete'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => true,
+                'message' => 'Post permanently deleted',
+                'spoke_post_id' => $spoke_post_id
+            ), 200);
+        } else {
+            SourceHub_Logger::error(
+                sprintf('Failed to delete post %d (hub ID: %d)', $spoke_post_id, $hub_id),
+                array('spoke_post_id' => $spoke_post_id, 'hub_id' => $hub_id),
+                $spoke_post_id,
+                null,
+                'delete'
+            );
+            
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'Failed to delete post'
+            ), 500);
+        }
+    }
 }

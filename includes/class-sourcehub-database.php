@@ -428,7 +428,8 @@ class SourceHub_Database {
             'action' => '',
             'status' => 'INFO',
             'message' => '',
-            'data' => null
+            'data' => null,
+            'created_at' => current_time('mysql', 1) // Always store in GMT/UTC
         );
 
         $data = wp_parse_args($data, $defaults);

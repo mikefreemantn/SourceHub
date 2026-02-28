@@ -31,10 +31,15 @@ class SourceHub_Hub_Manager {
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)
-        add_action('transition_post_status', array($this, 'handle_status_transition'), 10, 3); // Catch auto-draft → publish
+        add_action('transition_post_status', array($this, 'handle_status_transition'), 10, 3); // Catch all status transitions
         
-        // Handle scheduled posts when they publish
+        // Handle scheduled posts when they publish (legacy - now handled in transition_post_status)
         add_action('future_to_publish', array($this, 'handle_scheduled_post_publish'));
+        
+        // Handle post deletion and trash
+        add_action('wp_trash_post', array($this, 'handle_post_trash'));
+        add_action('untrash_post', array($this, 'handle_post_untrash'));
+        add_action('before_delete_post', array($this, 'handle_post_delete'));
         
         // Multiple hooks to catch Newspaper meta at different points
         add_action('updated_post_meta', array($this, 'meta_updated_check'), 10, 4);
@@ -1094,32 +1099,65 @@ class SourceHub_Hub_Manager {
 
     /**
      * Handle post status transitions
-     * Specifically catches auto-draft → publish for first-time posts
+     * Handles: draft→publish, draft→future, future→future, future→publish, future→draft
      *
      * @param string $new_status New post status
      * @param string $old_status Old post status
      * @param WP_Post $post Post object
      */
     public function handle_status_transition($new_status, $old_status, $post) {
+        // Only handle posts
+        if ($post->post_type !== 'post') {
+            return;
+        }
+        
         // Log ALL transitions for posts to debug
-        if ($post->post_type === 'post') {
-            SourceHub_Logger::info(
-                sprintf('Status transition: %s → %s', $old_status, $new_status),
-                array(
-                    'post_id' => $post->ID,
-                    'post_title' => $post->post_title,
-                    'old_status' => $old_status,
-                    'new_status' => $new_status,
-                    'post_type' => $post->post_type
-                ),
-                $post->ID,
-                null,
-                'status_transition'
-            );
+        SourceHub_Logger::info(
+            sprintf('Status transition: %s → %s', $old_status, $new_status),
+            array(
+                'post_id' => $post->ID,
+                'post_title' => $post->post_title,
+                'old_status' => $old_status,
+                'new_status' => $new_status,
+                'post_type' => $post->post_type,
+                'post_date' => $post->post_date
+            ),
+            $post->ID,
+            null,
+            'status_transition'
+        );
+        
+        // Handle draft → future transition (scheduling a post)
+        if ($old_status === 'draft' && $new_status === 'future') {
+            $this->handle_scheduled_post_creation($post);
+            return;
+        }
+        
+        // Handle future → future transition (rescheduling or editing scheduled post)
+        if ($old_status === 'future' && $new_status === 'future') {
+            $this->handle_scheduled_post_update($post);
+            return;
+        }
+        
+        // Handle future → publish transition (manual early publish or scheduled publish time reached)
+        if ($old_status === 'future' && $new_status === 'publish') {
+            $this->handle_scheduled_post_publish($post);
+            return;
+        }
+        
+        // Handle future → draft transition (unscheduling)
+        if ($old_status === 'future' && $new_status === 'draft') {
+            $this->handle_scheduled_post_unschedule($post);
+            return;
+        }
+        
+        // Handle pending → publish transition (approve pending post)
+        if ($old_status === 'pending' && $new_status === 'publish') {
+            $this->handle_pending_post_publish($post);
+            return;
         }
         
         // Handle draft → publish transition (first publish)
-        // Check if this is a NEW publish (not an update from publish to publish)
         if ($old_status === 'draft' && $new_status === 'publish') {
             // Only handle posts
             if ($post->post_type !== 'post') {
@@ -1219,6 +1257,12 @@ class SourceHub_Hub_Manager {
             return;
         }
         
+        // Skip scheduled posts - handle_status_transition handles all future status changes
+        if ($post_after->post_status === 'future') {
+            error_log('SourceHub: Skipping - scheduled post handled by handle_status_transition');
+            return;
+        }
+        
         // Only handle published posts
         if ($post_after->post_status !== 'publish') {
             error_log('SourceHub: Skipping - post status is ' . $post_after->post_status);
@@ -1276,36 +1320,529 @@ class SourceHub_Hub_Manager {
 
     /**
      * Handle scheduled post publishing
-     * Triggered when a scheduled post transitions to published
+     * Triggered when a scheduled post transitions to published (manual or automatic)
      *
      * @param WP_Post $post Post object
      */
     public function handle_scheduled_post_publish($post) {
         $post_id = $post->ID;
         
-        error_log('SourceHub: Scheduled post ' . $post_id . ' is now publishing');
+        SourceHub_Logger::info(
+            'Scheduled post is now publishing',
+            array('post_id' => $post_id, 'post_title' => $post->post_title),
+            $post_id,
+            null,
+            'scheduled_publish'
+        );
         
         // Get selected spokes
         $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
         if (empty($selected_spokes) || !is_array($selected_spokes)) {
-            error_log('SourceHub: No spokes selected for scheduled post ' . $post_id);
+            SourceHub_Logger::warning(
+                'No spokes selected for scheduled post publish',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'no_spokes'
+            );
             return;
         }
         
-        // Get already syndicated spokes
+        // Get already syndicated spokes (should have been synced when scheduled)
         $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
         if (!is_array($syndicated_spokes)) {
             $syndicated_spokes = array();
         }
         
-        // Find NEW spokes that need posts created
+        // Update existing scheduled posts on spokes to published status
+        if (!empty($syndicated_spokes)) {
+            SourceHub_Logger::info(
+                sprintf('Updating %d spoke(s) from scheduled to published', count($syndicated_spokes)),
+                array('spoke_ids' => $syndicated_spokes),
+                $post_id,
+                null,
+                'update_to_published'
+            );
+            $this->update_syndicated_post($post_id, $syndicated_spokes);
+        }
+        
+        // Handle any NEW spokes that were added after scheduling
+        $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
+        if (!empty($new_spokes)) {
+            SourceHub_Logger::info(
+                sprintf('Creating posts on %d new spoke(s) added after scheduling', count($new_spokes)),
+                array('spoke_ids' => $new_spokes),
+                $post_id,
+                null,
+                'create_new_spokes'
+            );
+            $this->syndicate_post($post_id, $new_spokes);
+        }
+    }
+
+    /**
+     * Handle scheduled post creation (draft → future)
+     * Immediately syndicates post as scheduled to spokes
+     *
+     * @param WP_Post $post Post object
+     */
+    public function handle_scheduled_post_creation($post) {
+        $post_id = $post->ID;
+        
+        SourceHub_Logger::info(
+            'Post scheduled - syndicating as scheduled post to spokes',
+            array(
+                'post_id' => $post_id,
+                'post_title' => $post->post_title,
+                'scheduled_date' => $post->post_date
+            ),
+            $post_id,
+            null,
+            'scheduled_creation'
+        );
+        
+        // Get selected spokes from POST data
+        $selected_spokes = isset($_POST['sourcehub_selected_spokes']) ? 
+            array_map('intval', $_POST['sourcehub_selected_spokes']) : array();
+        
+        if (empty($selected_spokes)) {
+            SourceHub_Logger::warning(
+                'No spokes selected for scheduled post',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'no_spokes'
+            );
+            return;
+        }
+        
+        // Save selected spokes to post meta
+        update_post_meta($post_id, '_sourcehub_selected_spokes', $selected_spokes);
+        
+        // Syndicate immediately as scheduled post
+        $this->syndicate_post($post_id, $selected_spokes);
+    }
+
+    /**
+     * Handle scheduled post update (future → future)
+     * Updates scheduled posts on spokes with new content/time
+     *
+     * @param WP_Post $post Post object
+     */
+    public function handle_scheduled_post_update($post) {
+        $post_id = $post->ID;
+        
+        SourceHub_Logger::info(
+            'Scheduled post updated - syncing changes to spokes',
+            array(
+                'post_id' => $post_id,
+                'post_title' => $post->post_title,
+                'scheduled_date' => $post->post_date
+            ),
+            $post_id,
+            null,
+            'scheduled_update'
+        );
+        
+        // Get selected and syndicated spokes
+        $selected_spokes = get_post_meta($post_id, '_sourcehub_selected_spokes', true);
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        
+        if (!is_array($selected_spokes)) {
+            $selected_spokes = array();
+        }
+        if (!is_array($syndicated_spokes)) {
+            $syndicated_spokes = array();
+        }
+        
+        // Find NEW spokes (selected but not yet syndicated)
         $new_spokes = array_diff($selected_spokes, $syndicated_spokes);
         
+        // Find EXISTING spokes (already syndicated and still selected)
+        $existing_spokes = array_intersect($selected_spokes, $syndicated_spokes);
+        
+        // Create posts on NEW spokes
         if (!empty($new_spokes)) {
-            error_log('SourceHub: Syndicating scheduled post ' . $post_id . ' to ' . count($new_spokes) . ' spoke(s)');
+            SourceHub_Logger::info(
+                sprintf('Creating scheduled posts on %d new spoke(s)', count($new_spokes)),
+                array('spoke_ids' => $new_spokes),
+                $post_id,
+                null,
+                'create_new_scheduled'
+            );
             $this->syndicate_post($post_id, $new_spokes);
+        }
+        
+        // Update posts on EXISTING spokes
+        if (!empty($existing_spokes)) {
+            SourceHub_Logger::info(
+                sprintf('Updating scheduled posts on %d existing spoke(s)', count($existing_spokes)),
+                array('spoke_ids' => $existing_spokes),
+                $post_id,
+                null,
+                'update_scheduled'
+            );
+            $this->update_syndicated_post($post_id, $existing_spokes);
+        }
+    }
+
+    /**
+     * Handle scheduled post unscheduling (future → draft)
+     * Moves scheduled posts on spokes back to draft or deletes them
+     *
+     * @param WP_Post $post Post object
+     */
+    public function handle_scheduled_post_unschedule($post) {
+        $post_id = $post->ID;
+        
+        SourceHub_Logger::info(
+            'Scheduled post unscheduled - updating spokes to draft',
+            array(
+                'post_id' => $post_id,
+                'post_title' => $post->post_title
+            ),
+            $post_id,
+            null,
+            'scheduled_unschedule'
+        );
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes) || empty($syndicated_spokes)) {
+            return;
+        }
+        
+        // Update all syndicated spokes to draft status
+        SourceHub_Logger::info(
+            sprintf('Moving %d spoke post(s) to draft', count($syndicated_spokes)),
+            array('spoke_ids' => $syndicated_spokes),
+            $post_id,
+            null,
+            'move_to_draft'
+        );
+        
+        $this->update_syndicated_post($post_id, $syndicated_spokes);
+    }
+
+    /**
+     * Handle pending post publish (pending → publish)
+     * Updates syndicated posts from pending to published on spokes
+     *
+     * @param WP_Post $post Post object
+     */
+    public function handle_pending_post_publish($post) {
+        $post_id = $post->ID;
+        
+        SourceHub_Logger::info(
+            'Pending post published - updating spokes to published',
+            array('post_id' => $post_id, 'post_title' => $post->post_title),
+            $post_id,
+            null,
+            'pending_publish'
+        );
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes) || empty($syndicated_spokes)) {
+            SourceHub_Logger::warning(
+                'No syndicated spokes found for pending post publish',
+                array('post_id' => $post_id),
+                $post_id,
+                null,
+                'no_spokes'
+            );
+            return;
+        }
+        
+        // Update all syndicated spokes to published status
+        SourceHub_Logger::info(
+            sprintf('Updating %d spoke(s) from pending to published', count($syndicated_spokes)),
+            array('spoke_ids' => $syndicated_spokes),
+            $post_id,
+            null,
+            'update_to_published'
+        );
+        
+        $this->update_syndicated_post($post_id, $syndicated_spokes);
+    }
+
+    /**
+     * Handle post trash
+     * Moves syndicated posts to trash on spoke sites
+     *
+     * @param int $post_id Post ID
+     */
+    public function handle_post_trash($post_id) {
+        $post = get_post($post_id);
+        
+        // Only handle posts
+        if (!$post || $post->post_type !== 'post') {
+            return;
+        }
+        
+        SourceHub_Logger::info(
+            'Post moved to trash - trashing on spoke sites',
+            array('post_id' => $post_id, 'post_title' => $post->post_title),
+            $post_id,
+            null,
+            'post_trash'
+        );
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes) || empty($syndicated_spokes)) {
+            return;
+        }
+        
+        // Trash posts on all syndicated spokes
+        foreach ($syndicated_spokes as $spoke_id) {
+            $connection = SourceHub_Database::get_connection($spoke_id);
+            if (!$connection || $connection->status !== 'active') {
+                continue;
+            }
+            
+            $this->trash_post_on_spoke($post_id, $connection);
+        }
+    }
+
+    /**
+     * Handle post untrash (restore from trash)
+     * Restores syndicated posts from trash on spoke sites
+     *
+     * @param int $post_id Post ID
+     */
+    public function handle_post_untrash($post_id) {
+        $post = get_post($post_id);
+        
+        // Only handle posts
+        if (!$post || $post->post_type !== 'post') {
+            return;
+        }
+        
+        SourceHub_Logger::info(
+            'Post restored from trash - restoring on spoke sites',
+            array('post_id' => $post_id, 'post_title' => $post->post_title),
+            $post_id,
+            null,
+            'post_untrash'
+        );
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes) || empty($syndicated_spokes)) {
+            return;
+        }
+        
+        // Restore posts on all syndicated spokes
+        foreach ($syndicated_spokes as $spoke_id) {
+            $connection = SourceHub_Database::get_connection($spoke_id);
+            if (!$connection || $connection->status !== 'active') {
+                continue;
+            }
+            
+            $this->untrash_post_on_spoke($post_id, $connection);
+        }
+    }
+
+    /**
+     * Handle post permanent deletion
+     * Permanently deletes syndicated posts on spoke sites
+     *
+     * @param int $post_id Post ID
+     */
+    public function handle_post_delete($post_id) {
+        $post = get_post($post_id);
+        
+        // Only handle posts
+        if (!$post || $post->post_type !== 'post') {
+            return;
+        }
+        
+        SourceHub_Logger::info(
+            'Post permanently deleted - deleting on spoke sites',
+            array('post_id' => $post_id, 'post_title' => $post->post_title),
+            $post_id,
+            null,
+            'post_delete'
+        );
+        
+        // Get syndicated spokes
+        $syndicated_spokes = get_post_meta($post_id, '_sourcehub_syndicated_spokes', true);
+        if (!is_array($syndicated_spokes) || empty($syndicated_spokes)) {
+            return;
+        }
+        
+        // Delete posts on all syndicated spokes
+        foreach ($syndicated_spokes as $spoke_id) {
+            $connection = SourceHub_Database::get_connection($spoke_id);
+            if (!$connection || $connection->status !== 'active') {
+                continue;
+            }
+            
+            $this->delete_post_on_spoke($post_id, $connection);
+        }
+    }
+
+    /**
+     * Trash a post on a spoke site
+     *
+     * @param int $post_id Hub post ID
+     * @param object $connection Spoke connection
+     */
+    private function trash_post_on_spoke($post_id, $connection) {
+        // Get spoke post ID from sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status) || !isset($sync_status[$connection->id]['spoke_post_id'])) {
+            SourceHub_Logger::warning(
+                'No spoke post ID found for trash operation',
+                array('connection_id' => $connection->id),
+                $post_id,
+                $connection->id,
+                'trash_failed'
+            );
+            return;
+        }
+        
+        $spoke_post_id = $sync_status[$connection->id]['spoke_post_id'];
+        $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/trash-post';
+        
+        $response = wp_remote_post($url, array(
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-SourceHub-API-Key' => $connection->api_key,
+            ),
+            'body' => json_encode(array(
+                'spoke_post_id' => $spoke_post_id,
+                'hub_id' => $post_id
+            )),
+            'timeout' => 30,
+        ));
+        
+        if (is_wp_error($response)) {
+            SourceHub_Logger::error(
+                sprintf('Failed to trash post on %s: %s', $connection->name, $response->get_error_message()),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'trash'
+            );
         } else {
-            error_log('SourceHub: Scheduled post ' . $post_id . ' already syndicated to all selected spokes');
+            SourceHub_Logger::success(
+                sprintf('Post trashed on %s', $connection->name),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'trash'
+            );
+        }
+    }
+
+    /**
+     * Restore a post from trash on a spoke site
+     *
+     * @param int $post_id Hub post ID
+     * @param object $connection Spoke connection
+     */
+    private function untrash_post_on_spoke($post_id, $connection) {
+        // Get spoke post ID from sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status) || !isset($sync_status[$connection->id]['spoke_post_id'])) {
+            SourceHub_Logger::warning(
+                'No spoke post ID found for untrash operation',
+                array('connection_id' => $connection->id),
+                $post_id,
+                $connection->id,
+                'untrash_failed'
+            );
+            return;
+        }
+        
+        $spoke_post_id = $sync_status[$connection->id]['spoke_post_id'];
+        $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/untrash-post';
+        
+        $response = wp_remote_post($url, array(
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-SourceHub-API-Key' => $connection->api_key,
+            ),
+            'body' => json_encode(array(
+                'spoke_post_id' => $spoke_post_id,
+                'hub_id' => $post_id
+            )),
+            'timeout' => 30,
+        ));
+        
+        if (is_wp_error($response)) {
+            SourceHub_Logger::error(
+                sprintf('Failed to restore post on %s: %s', $connection->name, $response->get_error_message()),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'untrash'
+            );
+        } else {
+            SourceHub_Logger::success(
+                sprintf('Post restored on %s', $connection->name),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'untrash'
+            );
+        }
+    }
+
+    /**
+     * Permanently delete a post on a spoke site
+     *
+     * @param int $post_id Hub post ID
+     * @param object $connection Spoke connection
+     */
+    private function delete_post_on_spoke($post_id, $connection) {
+        // Get spoke post ID from sync status
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        if (!is_array($sync_status) || !isset($sync_status[$connection->id]['spoke_post_id'])) {
+            SourceHub_Logger::warning(
+                'No spoke post ID found for delete operation',
+                array('connection_id' => $connection->id),
+                $post_id,
+                $connection->id,
+                'delete_failed'
+            );
+            return;
+        }
+        
+        $spoke_post_id = $sync_status[$connection->id]['spoke_post_id'];
+        $url = trailingslashit($connection->url) . 'wp-json/sourcehub/v1/delete-post';
+        
+        $response = wp_remote_post($url, array(
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-SourceHub-API-Key' => $connection->api_key,
+            ),
+            'body' => json_encode(array(
+                'spoke_post_id' => $spoke_post_id,
+                'hub_id' => $post_id,
+                'force' => true // Force permanent deletion
+            )),
+            'timeout' => 30,
+        ));
+        
+        if (is_wp_error($response)) {
+            SourceHub_Logger::error(
+                sprintf('Failed to delete post on %s: %s', $connection->name, $response->get_error_message()),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'delete'
+            );
+        } else {
+            SourceHub_Logger::success(
+                sprintf('Post deleted on %s', $connection->name),
+                array('spoke_post_id' => $spoke_post_id),
+                $post_id,
+                $connection->id,
+                'delete'
+            );
         }
     }
 
@@ -1800,11 +2337,11 @@ class SourceHub_Hub_Manager {
      * @param bool $skip_image Whether to skip featured image (for draft creation)
      * @return array Result array
      */
-    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1, $skip_image = false) {
+    private function send_post_to_spoke($post, $connection, $use_ai = false, $is_update = false, $attempt = 1, $skip_image = false, $use_current_time = false) {
         $max_attempts = 1; // Disabled auto-retry to prevent duplicates from timeouts
         
         // Prepare post data
-        $post_data = $this->prepare_post_data($post, $connection, $use_ai, $skip_image);
+        $post_data = $this->prepare_post_data($post, $connection, $use_ai, $skip_image, $use_current_time);
         
         // Debug: Log final content being sent to spoke
         SourceHub_Logger::info(
@@ -1950,9 +2487,10 @@ class SourceHub_Hub_Manager {
      * @param object $connection Connection object
      * @param bool $use_ai Whether to use AI rewriting
      * @param bool $skip_image Whether to skip featured image (for draft creation)
+     * @param bool $use_current_time Whether to use current time instead of original post time (for retries)
      * @return array
      */
-    private function prepare_post_data($post, $connection, $use_ai = false, $skip_image = false) {
+    private function prepare_post_data($post, $connection, $use_ai = false, $skip_image = false, $use_current_time = false) {
         // Get page template
         $page_template = get_page_template_slug($post->ID);
         error_log('SourceHub: Collecting page template for post ' . $post->ID . ': ' . ($page_template ? $page_template : 'DEFAULT'));
@@ -1986,18 +2524,23 @@ class SourceHub_Hub_Manager {
         // Apply any custom filters but NOT do_shortcode
         $processed_content = apply_filters('sourcehub_before_syndication', $processed_content);
         
-        // Use WordPress native post dates
-        $post_date = $post->post_date;
-        $post_date_gmt = $post->post_date_gmt;
+        // Use current time for retries, or original post time for first publish
+        if ($use_current_time) {
+            $post_date = current_time('mysql');
+            $post_date_gmt = current_time('mysql', 1);
+        } else {
+            $post_date = $post->post_date;
+            $post_date_gmt = $post->post_date_gmt;
+        }
         
         $data = array(
             'hub_id' => $post->ID,
             'title' => $post->post_title,
             'content' => $processed_content,
             'excerpt' => $post->post_excerpt,
-            'status' => $skip_image ? 'draft' : $post->post_status, // Create as draft if skipping image
+            'status' => $skip_image ? 'draft' : $post->post_status, // Pass actual status (publish, future, draft)
             'slug' => $post->post_name,
-            'date' => $post_date,
+            'date' => $post_date, // Current time for retries, original time for first publish
             'date_gmt' => $post_date_gmt,
             'modified' => $post->post_modified,
             'modified_gmt' => $post->post_modified_gmt,
@@ -2919,14 +3462,15 @@ class SourceHub_Hub_Manager {
         // Determine if this is a create or update based on sync status
         $is_create = ($action === 'create');
         
-        // Retry the syndication
+        // Retry the syndication with current time (not original publish time)
         $result = $this->send_post_to_spoke(
             $post, 
             $connection, 
             $has_ai_enabled && !$ai_disabled_for_post, 
             !$is_create, // include_image for updates
             1, 
-            $is_create // send_as_draft for creates
+            $is_create, // send_as_draft for creates
+            true // use_current_time - use NOW instead of original publish time
         );
         
         if ($result['success']) {
