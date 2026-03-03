@@ -47,6 +47,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_save_smart_link_template', array($this, 'save_smart_link_template'));
         add_action('wp_ajax_sourcehub_delete_smart_link_template', array($this, 'delete_smart_link_template'));
         add_action('wp_ajax_sourcehub_manual_retry', array($this, 'ajax_manual_retry'));
+        add_action('wp_ajax_sourcehub_clear_post_status', array($this, 'ajax_clear_post_status'));
         add_action('wp_ajax_sourcehub_toggle_post_logs_settings', array($this, 'ajax_toggle_post_logs_settings'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
@@ -1512,11 +1513,13 @@ class SourceHub_Admin {
             
             if ($status === 'failed' || $status === 'processing') {
                 // Reset to processing with new timestamp to trigger retry
+                // Reset retry_count to 0 so it doesn't appear as permanently failed
                 $sync_status[$spoke_id] = array(
                     'status' => 'processing',
                     'last_sync' => current_time('mysql'),
                     'started_at' => current_time('mysql'),
                     'action' => $status_data['action'] ?? 'update',
+                    'retry_count' => 0, // Reset retry count for manual retry
                     'manual_retry' => true
                 );
                 $retry_count++;
@@ -1551,6 +1554,40 @@ class SourceHub_Admin {
 
         wp_send_json_success(array(
             'message' => sprintf(__('%d spoke(s) queued for retry.', 'sourcehub'), $retry_count)
+        ));
+    }
+
+    /**
+     * AJAX handler to clear post syndication status (remove from logs)
+     */
+    public function ajax_clear_post_status() {
+        check_ajax_referer('sourcehub_clear_post', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+
+        if (!$post_id) {
+            wp_send_json_error(array('message' => __('Invalid post ID.', 'sourcehub')));
+            return;
+        }
+
+        // Delete the sync status meta to remove from logs
+        delete_post_meta($post_id, '_sourcehub_sync_status');
+
+        SourceHub_Logger::info(
+            sprintf('Post %d syndication status cleared from logs', $post_id),
+            array('post_id' => $post_id),
+            $post_id,
+            null,
+            'status_cleared'
+        );
+
+        wp_send_json_success(array(
+            'message' => __('Post removed from logs.', 'sourcehub')
         ));
     }
 

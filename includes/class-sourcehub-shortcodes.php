@@ -216,8 +216,8 @@ class SourceHub_Shortcodes {
             return;
         }
 
-        // Check permissions
-        if (!current_user_can('manage_options')) {
+        // Check permissions - allow anyone who can edit posts to use smart links
+        if (!current_user_can('edit_posts')) {
             wp_send_json_error(array('message' => 'Insufficient permissions'));
             return;
         }

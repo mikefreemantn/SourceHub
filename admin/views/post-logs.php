@@ -302,6 +302,12 @@ foreach ($posts_with_status as $post_data) {
                                     data-post-id="<?php echo esc_attr($post['id']); ?>">
                                 <?php _e('Retry Sync', 'sourcehub'); ?>
                             </button>
+                            <br><br>
+                            <button type="button" 
+                                    class="button button-small button-link-delete clear-post-btn" 
+                                    data-post-id="<?php echo esc_attr($post['id']); ?>">
+                                <?php _e('Clear from List', 'sourcehub'); ?>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -418,6 +424,47 @@ function toggleNotificationSettings() {
 }
 
 jQuery(document).ready(function($) {
+    // Handle clear post button
+    $('.clear-post-btn').on('click', function() {
+        var $btn = $(this);
+        var postId = $btn.data('post-id');
+        
+        if (!confirm('<?php _e('Remove this post from the logs? This will clear all failed/stuck statuses. You can always retry syndication later from the post editor.', 'sourcehub'); ?>')) {
+            return;
+        }
+        
+        $btn.prop('disabled', true).text('<?php _e('Clearing...', 'sourcehub'); ?>');
+        
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'sourcehub_clear_post_status',
+                post_id: postId,
+                nonce: '<?php echo wp_create_nonce('sourcehub_clear_post'); ?>'
+            },
+            success: function(response) {
+                if (response.success) {
+                    $btn.closest('tr').fadeOut(300, function() {
+                        $(this).remove();
+                        // Update count
+                        var count = $('.sourcehub-post-logs-table tbody tr:visible').length;
+                        if (count === 0) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    alert('<?php _e('Clear failed:', 'sourcehub'); ?> ' + (response.data.message || 'Unknown error'));
+                    $btn.prop('disabled', false).text('<?php _e('Clear from List', 'sourcehub'); ?>');
+                }
+            },
+            error: function() {
+                alert('<?php _e('Connection error. Please try again.', 'sourcehub'); ?>');
+                $btn.prop('disabled', false).text('<?php _e('Clear from List', 'sourcehub'); ?>');
+            }
+        });
+    });
+    
     // Handle retry sync button
     $('.retry-sync-btn').on('click', function() {
         var $btn = $(this);

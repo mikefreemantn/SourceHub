@@ -1,0 +1,124 @@
+Date,Status,Action,Message,Connection,Details
+"2026-03-03 20:27:20",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 3","Spoke 3","{""hub_post_id"":942,""spoke_post_id"":181,""job_id"":""YvcMJYm2JBWwEoZPTxLCroU7vWAearOr""}"
+"2026-03-03 20:27:19",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 3","Spoke 3","{""hub_post_id"":942,""spoke_post_id"":181,""job_id"":""yoHoGlSPAJP1Erz0lG3CzsAEBCToG3nS""}"
+"2026-03-03 20:26:55",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 4","Spoke 4","{""hub_post_id"":942,""spoke_post_id"":165,""job_id"":""oc5g4FCKRPnvQWj3hwrAjK7T4N8OdatG""}"
+"2026-03-03 20:26:55",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 4","Spoke 4","{""hub_post_id"":942,""spoke_post_id"":165,""job_id"":""YE78inlanM6KNmZ0XkWrq4rS1JojTK1R""}"
+"2026-03-03 20:26:47",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":942,""spoke_post_id"":266,""job_id"":""jRM5s6WsRAANDwSsZtZ9KjxhW6zGv3wN""}"
+"2026-03-03 20:26:47",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":942,""spoke_post_id"":266,""job_id"":""LiNVzbr18lDBAPmr3NIQ5oxtO8SWICkB""}"
+"2026-03-03 20:26:30",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 1","Spoke 1","{""hub_post_id"":942,""spoke_post_id"":1395,""job_id"":""BB27tTRnji97crhqVoHJuj2jMB9MRCtZ""}"
+"2026-03-03 20:26:30",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 1","Spoke 1","{""hub_post_id"":942,""spoke_post_id"":1395,""job_id"":""88eDMiIre2AHZxInVKZdCmJyHBNIMxc2""}"
+"2026-03-03 20:26:24",INFO,completing_draft,"Completing draft syndication - adding image, Yoast data, and publishing",-,"{""post_id"":942,""spoke_count"":4}"
+"2026-03-03 20:26:24",INFO,update,"Updating 4 spokes",-,"{""spoke_ids"":[2,3,4,5]}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 1","Spoke 1","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 1",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 1","{""connection_name"":""Spoke 1"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 1","{""connection_name"":""Spoke 1"",""url"":""http:\/\/spoke-1.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 1","{""connection_name"":""Spoke 1"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 1","Spoke 1","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""BB27tTRnji97crhqVoHJuj2jMB9MRCtZ"",""status"":""processing""},""async"":true,""job_id"":""BB27tTRnji97crhqVoHJuj2jMB9MRCtZ""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 2","Spoke 2","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""http:\/\/spoke-2.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""jRM5s6WsRAANDwSsZtZ9KjxhW6zGv3wN"",""status"":""processing""},""async"":true,""job_id"":""jRM5s6WsRAANDwSsZtZ9KjxhW6zGv3wN""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 3","Spoke 3","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 3",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 3","{""connection_name"":""Spoke 3"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 3","{""connection_name"":""Spoke 3"",""url"":""http:\/\/spoke3.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 3","{""connection_name"":""Spoke 3"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 3","Spoke 3","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""yoHoGlSPAJP1Erz0lG3CzsAEBCToG3nS"",""status"":""processing""},""async"":true,""job_id"":""yoHoGlSPAJP1Erz0lG3CzsAEBCToG3nS""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 4","Spoke 4","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 4",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 4","{""connection_name"":""Spoke 4"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 4","{""connection_name"":""Spoke 4"",""url"":""http:\/\/spoke-4.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 4","{""connection_name"":""Spoke 4"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 4","Spoke 4","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""oc5g4FCKRPnvQWj3hwrAjK7T4N8OdatG"",""status"":""processing""},""async"":true,""job_id"":""oc5g4FCKRPnvQWj3hwrAjK7T4N8OdatG""}"
+"2026-03-03 20:26:24",INFO,update,"Updating 4 spokes",-,"{""spoke_ids"":[2,3,4,5]}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 1","Spoke 1","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 1",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 1","{""connection_name"":""Spoke 1"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 1","{""connection_name"":""Spoke 1"",""url"":""http:\/\/spoke-1.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 1","{""connection_name"":""Spoke 1"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 1","Spoke 1","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""88eDMiIre2AHZxInVKZdCmJyHBNIMxc2"",""status"":""processing""},""async"":true,""job_id"":""88eDMiIre2AHZxInVKZdCmJyHBNIMxc2""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 2","Spoke 2","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""http:\/\/spoke-2.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""LiNVzbr18lDBAPmr3NIQ5oxtO8SWICkB"",""status"":""processing""},""async"":true,""job_id"":""LiNVzbr18lDBAPmr3NIQ5oxtO8SWICkB""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 3","Spoke 3","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 3",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 3","{""connection_name"":""Spoke 3"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 3","{""connection_name"":""Spoke 3"",""url"":""http:\/\/spoke3.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 3","{""connection_name"":""Spoke 3"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 3","Spoke 3","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""YvcMJYm2JBWwEoZPTxLCroU7vWAearOr"",""status"":""processing""},""async"":true,""job_id"":""YvcMJYm2JBWwEoZPTxLCroU7vWAearOr""}"
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:26:24",WARNING,yoast_collect,"No Yoast data found for ""Failure test: 10"" to send to Spoke 4","Spoke 4","{""post_id"":942}"
+"2026-03-03 20:26:24",INFO,,"Custom Smart Links processing started for: Spoke 4",-,[]
+"2026-03-03 20:26:24",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 4","{""connection_name"":""Spoke 4"",""full_content_length"":16}"
+"2026-03-03 20:26:24",INFO,wake_up,"Attempting to wake up spoke site","Spoke 4","{""connection_name"":""Spoke 4"",""url"":""http:\/\/spoke-4.local""}"
+"2026-03-03 20:26:24",INFO,wake_up,"Spoke site is already awake","Spoke 4","{""connection_name"":""Spoke 4"",""response_code"":200}"
+"2026-03-03 20:26:24",INFO,update_queued,"Post ""Failure test: 10"" update queued for Spoke 4","Spoke 4","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post update queued for processing"",""job_id"":""YE78inlanM6KNmZ0XkWrq4rS1JojTK1R"",""status"":""processing""},""async"":true,""job_id"":""YE78inlanM6KNmZ0XkWrq4rS1JojTK1R""}"
+"2026-03-03 20:26:11",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 3","Spoke 3","{""hub_post_id"":942,""spoke_post_id"":181,""job_id"":""s2eSoOiKKkPZYBve7SJl1GDcjbUtZL8v""}"
+"2026-03-03 20:26:11",INFO,delayed_sync_scheduled,"All draft creates completed - scheduling delayed sync in 2 seconds to add image, Yoast data, and publish",-,"{""post_id"":942,""spoke_count"":4}"
+"2026-03-03 20:25:45",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 4","Spoke 4","{""hub_post_id"":942,""spoke_post_id"":165,""job_id"":""o7keY1wCO1B4A5tq54AclqzB69YLVppM""}"
+"2026-03-03 20:25:41",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 1","Spoke 1","{""hub_post_id"":942,""spoke_post_id"":1395,""job_id"":""1m0bz7B8E1LEGWPcrszjBkcScfx41bgd""}"
+"2026-03-03 20:25:37",SUCCESS,sync_completed,"Sync completed: ""Failure test: 10"" successfully synced to Spoke 2","Spoke 2","{""hub_post_id"":942,""spoke_post_id"":266,""job_id"":""ZarGsKQJQKrecblEvDIoHHJ0uOIOdUvn""}"
+"2026-03-03 20:25:32",INFO,wake_up,"Spoke site is already awake","Spoke 4","{""connection_name"":""Spoke 4"",""response_code"":200}"
+"2026-03-03 20:25:32",INFO,syndicate_queued,"Post ""Failure test: 10"" queued for syndication to Spoke 4","Spoke 4","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""o7keY1wCO1B4A5tq54AclqzB69YLVppM"",""status"":""processing""},""async"":true,""job_id"":""o7keY1wCO1B4A5tq54AclqzB69YLVppM""}"
+"2026-03-03 20:25:32",INFO,awaiting_create_completion,"Draft posts queued - delayed sync will be scheduled when all creates complete",-,"{""post_id"":942,""spoke_count"":4}"
+"2026-03-03 20:25:32",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":942,""post_title"":""Failure test: 10"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:30""}"
+"2026-03-03 20:25:32",WARNING,publish_debounced,"Duplicate publish ignored (debounced)",-,"{""post_id"":942,""seconds_since_last"":2}"
+"2026-03-03 20:25:31",INFO,wake_up,"Spoke site is already awake","Spoke 3","{""connection_name"":""Spoke 3"",""response_code"":200}"
+"2026-03-03 20:25:31",INFO,syndicate_queued,"Post ""Failure test: 10"" queued for syndication to Spoke 3","Spoke 3","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""s2eSoOiKKkPZYBve7SJl1GDcjbUtZL8v"",""status"":""processing""},""async"":true,""job_id"":""s2eSoOiKKkPZYBve7SJl1GDcjbUtZL8v""}"
+"2026-03-03 20:25:31",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:25:31",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:25:31",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Spoke 4","{""post_id"":942}"
+"2026-03-03 20:25:31",INFO,,"Custom Smart Links processing started for: Spoke 4",-,[]
+"2026-03-03 20:25:31",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 4","{""connection_name"":""Spoke 4"",""full_content_length"":16}"
+"2026-03-03 20:25:31",INFO,wake_up,"Attempting to wake up spoke site","Spoke 4","{""connection_name"":""Spoke 4"",""url"":""http:\/\/spoke-4.local""}"
+"2026-03-03 20:25:30",INFO,status_transition,"Status transition: draft → publish",-,"{""post_id"":942,""post_title"":""Failure test: 10"",""old_status"":""draft"",""new_status"":""publish"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:30""}"
+"2026-03-03 20:25:30",INFO,first_publish,"Triggering syndication for first publish (draft → publish)",-,"{""post_id"":942,""post_title"":""Failure test: 10"",""old_status"":""draft"",""new_status"":""publish""}"
+"2026-03-03 20:25:30",INFO,spokes_found,"Found 4 selected spokes in POST data for first publish",-,"{""spoke_ids"":[2,3,4,5]}"
+"2026-03-03 20:25:30",INFO,draft_create,"Creating draft posts on spoke sites (no image yet)",-,"{""spoke_ids"":[2,3,4,5]}"
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:25:30",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Spoke 1","{""post_id"":942}"
+"2026-03-03 20:25:30",INFO,,"Custom Smart Links processing started for: Spoke 1",-,[]
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 1","{""connection_name"":""Spoke 1"",""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,wake_up,"Attempting to wake up spoke site","Spoke 1","{""connection_name"":""Spoke 1"",""url"":""http:\/\/spoke-1.local""}"
+"2026-03-03 20:25:30",INFO,wake_up,"Spoke site is already awake","Spoke 1","{""connection_name"":""Spoke 1"",""response_code"":200}"
+"2026-03-03 20:25:30",INFO,syndicate_queued,"Post ""Failure test: 10"" queued for syndication to Spoke 1","Spoke 1","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""1m0bz7B8E1LEGWPcrszjBkcScfx41bgd"",""status"":""processing""},""async"":true,""job_id"":""1m0bz7B8E1LEGWPcrszjBkcScfx41bgd""}"
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:25:30",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Spoke 2","{""post_id"":942}"
+"2026-03-03 20:25:30",INFO,,"Custom Smart Links processing started for: Spoke 2",-,[]
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 2","{""connection_name"":""Spoke 2"",""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,wake_up,"Attempting to wake up spoke site","Spoke 2","{""connection_name"":""Spoke 2"",""url"":""http:\/\/spoke-2.local""}"
+"2026-03-03 20:25:30",INFO,wake_up,"Spoke site is already awake","Spoke 2","{""connection_name"":""Spoke 2"",""response_code"":200}"
+"2026-03-03 20:25:30",INFO,syndicate_queued,"Post ""Failure test: 10"" queued for syndication to Spoke 2","Spoke 2","{""success"":true,""message"":""Post queued for processing"",""data"":{""success"":true,""message"":""Post queued for processing"",""job_id"":""ZarGsKQJQKrecblEvDIoHHJ0uOIOdUvn"",""status"":""processing""},""async"":true,""job_id"":""ZarGsKQJQKrecblEvDIoHHJ0uOIOdUvn""}"
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Original post content: Failure test: 10",-,"{""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,gallery_sync,"No gallery images found in post content",-,[]
+"2026-03-03 20:25:30",INFO,yoast_skip,"Skipping Yoast data for draft creation - will be added in delayed sync","Spoke 3","{""post_id"":942}"
+"2026-03-03 20:25:30",INFO,,"Custom Smart Links processing started for: Spoke 3",-,[]
+"2026-03-03 20:25:30",INFO,debug_content,"DEBUG: Final content being sent to spoke: Failure test: 10","Spoke 3","{""connection_name"":""Spoke 3"",""full_content_length"":16}"
+"2026-03-03 20:25:30",INFO,wake_up,"Attempting to wake up spoke site","Spoke 3","{""connection_name"":""Spoke 3"",""url"":""http:\/\/spoke3.local""}"
+"2026-03-03 20:25:12",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":942,""post_title"":""Failure test: 10"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:12""}"
+"2026-03-03 20:25:12",INFO,status_transition,"Status transition: auto-draft → draft",-,"{""post_id"":942,""post_title"":""Failure test: 10"",""old_status"":""auto-draft"",""new_status"":""draft"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:12""}"
+"2026-03-03 20:25:01",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":942,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:01""}"
+"2026-03-03 20:25:01",INFO,status_transition,"Status transition: new → auto-draft",-,"{""post_id"":942,""post_title"":""Auto Draft"",""old_status"":""new"",""new_status"":""auto-draft"",""post_type"":""post"",""post_date"":""2026-03-03 14:25:01""}"

@@ -61,9 +61,12 @@ class SourceHub_Hub_Manager {
         add_action('wp_ajax_sourcehub_test_connection', array($this, 'ajax_test_connection'));
         add_action('wp_ajax_sourcehub_sync_post', array($this, 'ajax_sync_post'));
         
-        // Schedule timeout check for stuck processing jobs
+        // Add custom 15-minute cron schedule
+        add_filter('cron_schedules', array($this, 'add_custom_cron_schedules'));
+        
+        // Schedule timeout check for stuck processing jobs - runs every minute
         if (!wp_next_scheduled('sourcehub_check_timeouts')) {
-            wp_schedule_event(time(), 'hourly', 'sourcehub_check_timeouts');
+            wp_schedule_event(time(), 'sourcehub_1min', 'sourcehub_check_timeouts');
         }
         add_action('sourcehub_check_timeouts', array($this, 'check_processing_timeouts'));
         
@@ -219,28 +222,19 @@ class SourceHub_Hub_Manager {
                                 continue;
                             }
                             
-                            // If spoke failed, check if it has exhausted retries
+                            // If spoke failed, proceed with delayed sync for successful spokes
+                            // Failed spokes will be retried by the timeout checker
                             if ($status === 'failed') {
                                 $retry_count = $spoke_status['retry_count'] ?? 0;
-                                $max_retries = 5;
-                                
-                                if ($retry_count >= $max_retries) {
-                                    // Exhausted retries - log warning but allow delayed sync to proceed
-                                    error_log(sprintf('SourceHub Hub: Spoke %d failed after %d retries - will proceed without it', $spoke_id, $retry_count));
-                                    SourceHub_Logger::warning(
-                                        sprintf('Spoke %d failed after maximum retries - proceeding with delayed sync for successful spokes', $spoke_id),
-                                        array('post_id' => $hub_post_id, 'spoke_id' => $spoke_id, 'retry_count' => $retry_count),
-                                        $hub_post_id,
-                                        $spoke_id,
-                                        'spoke_exhausted_retries'
-                                    );
-                                    continue; // Allow delayed sync to proceed
-                                } else {
-                                    // Still has retries left - wait for retry to complete
-                                    $all_creates_complete = false;
-                                    error_log(sprintf('SourceHub Hub: Spoke %d failed but has retries remaining (%d/%d)', $spoke_id, $retry_count, $max_retries));
-                                    break;
-                                }
+                                error_log(sprintf('SourceHub Hub: Spoke %d failed (retry %d) - proceeding with delayed sync for successful spokes', $spoke_id, $retry_count));
+                                SourceHub_Logger::warning(
+                                    sprintf('Spoke %d failed - proceeding with delayed sync for successful spokes', $spoke_id),
+                                    array('post_id' => $hub_post_id, 'spoke_id' => $spoke_id, 'retry_count' => $retry_count),
+                                    $hub_post_id,
+                                    $spoke_id,
+                                    'spoke_failed_proceeding'
+                                );
+                                continue; // Allow delayed sync to proceed
                             }
                             
                             // Any other status means not complete
@@ -960,37 +954,33 @@ class SourceHub_Hub_Manager {
             return;
         }
 
-        // Check nonce - but only if SourceHub data is being submitted
-        // On brand new posts, the meta box might not be rendered yet, so no nonce
-        $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
+        // Check nonce - but only if SourceHub meta box was actually rendered
+        // The nonce field is only present when the meta box renders in the editor
+        // Auto-saves, REST API calls, and quick edits won't have the nonce field
+        if (!isset($_POST['sourcehub_syndication_nonce'])) {
+            // No nonce field means meta box wasn't rendered (auto-save, REST API, etc.)
+            // Skip processing silently - this is normal behavior
+            return;
+        }
         
-        if ($has_sourcehub_data) {
-            if (!isset($_POST['sourcehub_syndication_nonce']) || !wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
-                error_log('SourceHub: Nonce check failed for post ' . $post_id);
-                SourceHub_Logger::error(
-                    'Nonce verification failed in save_post_meta',
-                    array('post_id' => $post_id, 'post_title' => $post->post_title),
-                    $post_id,
-                    null,
-                    'nonce_failed'
-                );
-                return;
-            }
-        } else {
-            // No SourceHub data in POST, nothing to save
-            error_log('SourceHub: No SourceHub data in POST for post ' . $post_id);
-            SourceHub_Logger::warning(
-                'No SourceHub data in POST - meta box may not have rendered',
-                array(
-                    'post_id' => $post_id,
-                    'post_title' => $post->post_title,
-                    'post_status' => $post->post_status,
-                    'post_type' => $post->post_type
-                ),
+        // Verify the nonce
+        if (!wp_verify_nonce($_POST['sourcehub_syndication_nonce'], 'sourcehub_syndication_nonce')) {
+            error_log('SourceHub: Nonce verification failed for post ' . $post_id);
+            SourceHub_Logger::error(
+                'Nonce verification failed in save_post_meta',
+                array('post_id' => $post_id, 'post_title' => $post->post_title),
                 $post_id,
                 null,
-                'no_metabox_data'
+                'nonce_failed'
             );
+            return;
+        }
+        
+        // Check if SourceHub data is being submitted
+        $has_sourcehub_data = isset($_POST['sourcehub_selected_spokes']) || isset($_POST['sourcehub_ai_overrides']);
+        
+        if (!$has_sourcehub_data) {
+            // Nonce is valid but no SourceHub data - nothing to save
             return;
         }
         
@@ -1972,7 +1962,7 @@ class SourceHub_Hub_Manager {
         // This ensures callbacks can see the flag when they arrive (even if spoke completes in <1 second)
         // Must be set BEFORE sync lock to prevent race condition where callback arrives before flag is set
         update_post_meta($post_id, '_sourcehub_pending_completion', true);
-        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($spoke_ids));
+        // NOTE: _sourcehub_syndicated_spokes will be updated after syndication loop with actual queued spokes
         
         // Check if sync is already in progress for this post using persistent lock
         $lock_key = 'sourcehub_sync_lock_' . $post_id;
@@ -2063,8 +2053,11 @@ class SourceHub_Hub_Manager {
             // Send as draft without image (will be added in delayed sync)
             $result = $this->send_post_to_spoke($post, $connection, $has_ai_enabled && !$ai_disabled_for_post, false, 1, true);
             
+            // CRITICAL: Add spoke to syndicated list regardless of success/failure
+            // This ensures delayed sync and retry logic can handle failed spokes
+            $syndicated_spokes[] = $spoke_id;
+            
             if ($result['success']) {
-                $syndicated_spokes[] = $spoke_id;
                 
                 // Check if async processing
                 if (!empty($result['async'])) {
@@ -2134,6 +2127,10 @@ class SourceHub_Hub_Manager {
         
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
+        
+        // CRITICAL: Update syndicated_spokes to only include spokes that were actually queued
+        // This prevents delayed sync from waiting for spokes that were never sent the post
+        update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
         
         // Clear the processing transient now that initial syndication is complete
         // Individual spokes may still be processing async, but the overall "syncing" state is done
@@ -2237,8 +2234,20 @@ class SourceHub_Hub_Manager {
         if (!is_array($sync_status)) {
             $sync_status = array();
         }
+        
+        // Check if this is a delayed sync completing draft creation
+        $pending_completion = get_post_meta($post_id, '_sourcehub_pending_completion', true);
 
         foreach ($spokes_to_update as $spoke_id) {
+            // If completing draft creation, skip spokes that failed initial creation
+            if ($pending_completion) {
+                $spoke_status = $sync_status[$spoke_id] ?? null;
+                if ($spoke_status && isset($spoke_status['status']) && $spoke_status['status'] === 'failed') {
+                    error_log(sprintf('SourceHub: Skipping spoke %d in delayed sync - initial draft creation failed', $spoke_id));
+                    continue; // Skip this spoke, let auto-retry handle it
+                }
+            }
+            
             $connection = SourceHub_Database::get_connection($spoke_id);
             if (!$connection || $connection->status !== 'active') {
                 continue;
@@ -2305,12 +2314,17 @@ class SourceHub_Hub_Manager {
         }
 
         // CRITICAL: Re-read sync_status from database before saving to avoid overwriting callback updates
+        // BUT only for spokes we didn't just update (to preserve our fresh update results)
         $current_sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
         if (is_array($current_sync_status)) {
             foreach ($current_sync_status as $spoke_id => $spoke_data) {
-                // If callback already marked this spoke as success, keep that status
-                if (isset($spoke_data['status']) && $spoke_data['status'] === 'success') {
-                    $sync_status[$spoke_id] = $spoke_data;
+                // Only preserve callback statuses for spokes we didn't just update
+                // If we just updated this spoke, our status takes precedence
+                if (!in_array($spoke_id, $spokes_to_update)) {
+                    // If callback already marked this spoke as success, keep that status
+                    if (isset($spoke_data['status']) && $spoke_data['status'] === 'success') {
+                        $sync_status[$spoke_id] = $spoke_data;
+                    }
                 }
             }
         }
@@ -2468,6 +2482,21 @@ class SourceHub_Hub_Manager {
             );
         }
 
+        // HTTP 200/201 received - but check if response body contains an error
+        $body_data = json_decode($response_body, true);
+        
+        // Some spokes may return HTTP 200 with error payload (e.g., chaos testing, plugin errors)
+        if (is_array($body_data) && isset($body_data['error']) && $body_data['error'] === true) {
+            $error_message = $body_data['message'] ?? 'Unknown error in response';
+            error_log(sprintf('SourceHub: HTTP %d but response contains error for %s: %s', $response_code, $connection->name, $error_message));
+            
+            return array(
+                'success' => false,
+                'message' => sprintf(__('Spoke returned error: %s', 'sourcehub'), $error_message),
+                'data' => $body_data
+            );
+        }
+        
         // Success!
         if ($attempt > 1) {
             error_log(sprintf('SourceHub: Succeeded on attempt %d/%d for %s', $attempt, $max_attempts, $connection->name));
@@ -2476,7 +2505,7 @@ class SourceHub_Hub_Manager {
         return array(
             'success' => true,
             'message' => __('Post sent successfully', 'sourcehub'),
-            'data' => json_decode($response_body, true)
+            'data' => $body_data
         );
     }
 
@@ -3264,8 +3293,22 @@ class SourceHub_Hub_Manager {
     }
     
     /**
+     * Add custom cron schedules
+     *
+     * @param array $schedules Existing schedules
+     * @return array Modified schedules
+     */
+    public function add_custom_cron_schedules($schedules) {
+        $schedules['sourcehub_1min'] = array(
+            'interval' => 60, // 1 minute in seconds
+            'display'  => __('Every Minute (SourceHub)', 'sourcehub')
+        );
+        return $schedules;
+    }
+
+    /**
      * Check for processing jobs that have timed out
-     * Runs hourly via cron to find jobs stuck in "processing" state
+     * Runs every minute via cron to find jobs stuck in "processing" state or failed
      */
     public function check_processing_timeouts() {
         global $wpdb;
@@ -3277,8 +3320,10 @@ class SourceHub_Hub_Manager {
             WHERE meta_key = '_sourcehub_sync_status'"
         );
         
-        $timeout_minutes = 5;
+        $timeout_minutes = 1;
         $timeout_seconds = $timeout_minutes * 60;
+        $max_age_hours = 24; // Ignore posts stuck for more than 24 hours (likely abandoned)
+        $max_age_seconds = $max_age_hours * 3600;
         $now = current_time('timestamp');
         
         foreach ($posts_with_status as $row) {
@@ -3292,37 +3337,58 @@ class SourceHub_Hub_Manager {
             $updated = false;
             
             foreach ($sync_status as $connection_id => $status_data) {
-                // Check if status is "processing"
-                if (isset($status_data['status']) && $status_data['status'] === 'processing') {
+                // Check if status is "processing" (stuck/timeout) or "failed" (HTTP error)
+                $is_processing = isset($status_data['status']) && $status_data['status'] === 'processing';
+                $is_failed = isset($status_data['status']) && $status_data['status'] === 'failed';
+                
+                if ($is_processing || $is_failed) {
                     // Check if it has a timestamp
-                    if (isset($status_data['started_at'])) {
-                        $started_timestamp = strtotime($status_data['started_at']);
+                    if (isset($status_data['last_sync'])) {
+                        $started_timestamp = strtotime($status_data['last_sync']);
                         $elapsed = $now - $started_timestamp;
                         
-                        // If older than 5 minutes, retry the syndication
+                        // Skip posts stuck for more than 24 hours (likely abandoned/corrupted)
+                        if ($elapsed > $max_age_seconds) {
+                            error_log(sprintf('SourceHub: Skipping post %d - stuck for %d hours (too old)', $post_id, floor($elapsed / 3600)));
+                            continue;
+                        }
+                        
+                        // Check retry count first - skip if already exhausted
+                        $retry_count = isset($status_data['retry_count']) ? (int)$status_data['retry_count'] : 0;
+                        $max_retries = 6;
+                        
+                        if ($retry_count >= $max_retries) {
+                            // Already permanently failed - skip to avoid logging duplicate errors
+                            error_log(sprintf('SourceHub: Skipping post %d connection %d - already exhausted retries (%d/%d)', $post_id, $connection_id, $retry_count, $max_retries));
+                            continue;
+                        }
+                        
+                        // For processing: retry if older than 1 minute
+                        // For failed: retry if older than 1 minute (allows time for spoke to come back online)
                         if ($elapsed > $timeout_seconds) {
                             $connection = SourceHub_Database::get_connection($connection_id);
                             $connection_name = $connection ? $connection->name : "Connection $connection_id";
-                            
-                            // Get retry count
-                            $retry_count = isset($status_data['retry_count']) ? (int)$status_data['retry_count'] : 0;
-                            $max_retries = 5;
                             
                             if ($retry_count < $max_retries) {
                                 // Retry the syndication
                                 $retry_count++;
                                 
+                                // Log as WARNING for retries (not ERROR to avoid webhook spam)
+                                // Only the initial failure logs as ERROR
+                                $error_type = $is_failed ? 'failed' : 'stuck in processing';
                                 SourceHub_Logger::warning(
-                                    sprintf('Syndication timeout for post %d to %s - attempting retry %d/%d', 
-                                        $post_id, $connection_name, $retry_count, $max_retries),
+                                    sprintf('Post %s for %d minutes - attempting retry %d/%d to %s', 
+                                        $error_type, floor($elapsed / 60), $retry_count, $max_retries, $connection_name),
                                     array(
                                         'connection_id' => $connection_id,
                                         'elapsed_seconds' => $elapsed,
-                                        'retry_count' => $retry_count
+                                        'retry_count' => $retry_count,
+                                        'post_id' => $post_id,
+                                        'status' => $status_data['status']
                                     ),
                                     $post_id,
                                     $connection_id,
-                                    'timeout_retry'
+                                    $is_failed ? 'failed_retry' : 'timeout_retry'
                                 );
                                 
                                 // Update status to show retry in progress
@@ -3337,8 +3403,8 @@ class SourceHub_Hub_Manager {
                                 
                                 $updated = true;
                                 
-                                // Schedule retry with exponential backoff
-                                $delay = min(300, 30 * pow(2, $retry_count - 1)); // 30s, 60s, 120s, 240s, 300s
+                                // Schedule retry immediately (cron already provides 1-min spacing)
+                                $delay = 5; // 5 seconds to avoid race conditions
                                 
                                 as_schedule_single_action(
                                     time() + $delay,
