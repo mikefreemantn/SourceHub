@@ -190,6 +190,9 @@ class SourceHub_Hub_Manager {
                     $all_creates_complete = true;
                     $has_processing_spokes = false;
                     $syndicated_spokes = get_post_meta($hub_post_id, '_sourcehub_syndicated_spokes', true);
+                    if (!is_array($syndicated_spokes)) {
+                        $syndicated_spokes = array();
+                    }
                     
                     error_log(sprintf('SourceHub Hub: syndicated_spokes: %s', print_r($syndicated_spokes, true)));
                     error_log(sprintf('SourceHub Hub: sync_status: %s', print_r($sync_status, true)));
