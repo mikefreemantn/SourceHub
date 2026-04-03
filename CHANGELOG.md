@@ -2,6 +2,31 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.3] - 2026-04-03
+
+### Fixed
+- **CRITICAL: Accurate Sync Status Tracking**: Hub now properly tracks CREATE vs UPDATE completion for 2-step syndication
+  - Problem: Hub marked articles as "synced" after CREATE callback, before UPDATE/publish actually happened
+  - If UPDATE requests failed or were blocked (e.g., by security rules), hub showed "synced" but articles stayed in draft
+  - No visibility into whether UPDATE step succeeded or failed
+  - Solution: Hub now tracks CREATE and UPDATE separately with distinct statuses
+  - CREATE callback → marks as `draft_created` (not "success")
+  - UPDATE callback → marks as `success` (actually synced)
+  - UI shows "Draft Created (Publishing...)" status when waiting for UPDATE
+  - Overall status shows "📝 Publishing..." when any spoke is in draft_created state
+  - Only shows "✓ Synced" after UPDATE confirms article is published
+  - Added "⚠️ Partially Synced" status when some spokes fail
+  - JavaScript polling updated to recognize and persist `draft_created` status
+  - Result: Hub never falsely claims articles are synced when they're stuck in draft
+
+### Technical Details
+- Modified `handle_sync_complete()` in `class-sourcehub-hub-manager.php` to check for `pending_completion` flag
+- Added `draft_created` status for CREATE callbacks when pending completion
+- Updated overall status display to check `sync_status` meta for persistent state
+- Updated JavaScript `sync-status.js` to handle `draft_created` status
+- Polling continues while spokes are in `draft_created` state
+- Prevents premature "all done" determination when UPDATE hasn't completed
+
 ## [2.0.0.2] - 2025-12-05
 
 ### Fixed

@@ -77,10 +77,10 @@
                     // Update individual spoke badges
                     updateSpokesBadges(perSpokeStatus);
 
-                    // Check if all spokes are done (not processing)
+                    // Check if all spokes are done (not processing or draft_created)
                     let allSpokesDone = true;
                     for (let spokeId in perSpokeStatus) {
-                        if (perSpokeStatus[spokeId].status === 'processing') {
+                        if (perSpokeStatus[spokeId].status === 'processing' || perSpokeStatus[spokeId].status === 'draft_created') {
                             allSpokesDone = false;
                             break;
                         }
@@ -140,6 +140,11 @@
                 badgeHtml = '<span class="sync-status-badge sync-processing">' +
                     '<span class="dashicons dashicons-update"></span>' +
                     '<small>Processing...</small>' +
+                    '</span>';
+            } else if (spokeStatus.status === 'draft_created') {
+                badgeHtml = '<span class="sync-status-badge sync-draft-created" style="background: #f0f6fc; color: #0969da; border: 1px solid #0969da;">' +
+                    '<span class="dashicons dashicons-edit"></span>' +
+                    '<small>Draft Created (Publishing...)</small>' +
                     '</span>';
             } else if (spokeStatus.status === 'success') {
                 badgeHtml = '<span class="sync-status-badge sync-success">' +

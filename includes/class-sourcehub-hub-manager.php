@@ -139,30 +139,61 @@ class SourceHub_Hub_Manager {
         
         if ($status === 'completed') {
             $action = $sync_status[$connection->id]['action'] ?? 'create';
+            $pending_completion = get_post_meta($hub_post_id, '_sourcehub_pending_completion', true);
             
-            $sync_status[$connection->id] = array(
-                'status' => 'success',
-                'last_sync' => current_time('mysql'),
-                'action' => $action,
-                'spoke_post_id' => $spoke_post_id
-            );
-            
-            error_log(sprintf('SourceHub Hub: Post %d synced successfully to %s (spoke post ID: %d)', 
-                $hub_post_id, $connection->name, $spoke_post_id));
-            
-            // Log successful completion
-            $post = get_post($hub_post_id);
-            SourceHub_Logger::success(
-                sprintf('Sync completed: "%s" successfully synced to %s', $post ? $post->post_title : 'Unknown', $connection->name),
-                array(
-                    'hub_post_id' => $hub_post_id,
-                    'spoke_post_id' => $spoke_post_id,
-                    'job_id' => $job_id
-                ),
-                $hub_post_id,
-                $connection->id,
-                'sync_completed'
-            );
+            // CRITICAL: For 2-step syndication, don't mark as 'success' until UPDATE is complete
+            // CREATE callback = draft created, UPDATE callback = published
+            if ($action === 'create' && $pending_completion) {
+                // Draft created successfully, but still waiting for UPDATE to publish
+                $sync_status[$connection->id] = array(
+                    'status' => 'draft_created',
+                    'last_sync' => current_time('mysql'),
+                    'action' => $action,
+                    'spoke_post_id' => $spoke_post_id
+                );
+                
+                error_log(sprintf('SourceHub Hub: Post %d draft created on %s (spoke post ID: %d), waiting for UPDATE to publish', 
+                    $hub_post_id, $connection->name, $spoke_post_id));
+                
+                // Log draft creation (not final success)
+                $post = get_post($hub_post_id);
+                SourceHub_Logger::info(
+                    sprintf('Draft created: "%s" created as draft on %s (waiting for publish)', $post ? $post->post_title : 'Unknown', $connection->name),
+                    array(
+                        'hub_post_id' => $hub_post_id,
+                        'spoke_post_id' => $spoke_post_id,
+                        'job_id' => $job_id
+                    ),
+                    $hub_post_id,
+                    $connection->id,
+                    'draft_created'
+                );
+            } else {
+                // UPDATE completed OR single-step syndication - mark as success
+                $sync_status[$connection->id] = array(
+                    'status' => 'success',
+                    'last_sync' => current_time('mysql'),
+                    'action' => $action,
+                    'spoke_post_id' => $spoke_post_id
+                );
+                
+                error_log(sprintf('SourceHub Hub: Post %d synced successfully to %s (spoke post ID: %d)', 
+                    $hub_post_id, $connection->name, $spoke_post_id));
+                
+                // Log successful completion
+                $post = get_post($hub_post_id);
+                SourceHub_Logger::success(
+                    sprintf('Sync completed: "%s" successfully synced to %s', $post ? $post->post_title : 'Unknown', $connection->name),
+                    array(
+                        'hub_post_id' => $hub_post_id,
+                        'spoke_post_id' => $spoke_post_id,
+                        'job_id' => $job_id
+                    ),
+                    $hub_post_id,
+                    $connection->id,
+                    'sync_completed'
+                );
+            }
             
             // CRITICAL: Save sync_status to database NOW before checking if all creates are complete
             // This ensures subsequent callbacks can see this completion
@@ -219,8 +250,8 @@ class SourceHub_Hub_Manager {
                                 break;
                             }
                             
-                            // Check if spoke succeeded
-                            if ($status === 'success' && $action === 'create') {
+                            // Check if spoke succeeded (draft_created counts as success for CREATE phase)
+                            if (($status === 'success' || $status === 'draft_created') && $action === 'create') {
                                 error_log(sprintf('SourceHub Hub: Spoke %d completed successfully', $spoke_id));
                                 continue;
                             }
@@ -438,6 +469,22 @@ class SourceHub_Hub_Manager {
                 // Check overall sync status from transient
                 $overall_status = get_transient('sourcehub_sync_status_' . $post->ID);
                 $has_syndicated = !empty($syndicated_connections);
+                
+                // Check if any spokes are in draft_created state (waiting for publish)
+                $has_draft_created = false;
+                $all_synced = true;
+                if (!empty($sync_status) && is_array($sync_status)) {
+                    foreach ($sync_status as $spoke_id => $status_info) {
+                        if (isset($status_info['status'])) {
+                            if ($status_info['status'] === 'draft_created') {
+                                $has_draft_created = true;
+                                $all_synced = false;
+                            } elseif ($status_info['status'] !== 'success') {
+                                $all_synced = false;
+                            }
+                        }
+                    }
+                }
                 ?>
                 <div class="sourcehub-overall-status">
                     <span class="sourcehub-syndication-status <?php echo $has_syndicated ? 'synced' : 'not-synced'; ?>">
@@ -445,8 +492,12 @@ class SourceHub_Hub_Manager {
                             ⏳ <?php _e('Processing...', 'sourcehub'); ?>
                         <?php elseif ($overall_status && $overall_status['status'] === 'syncing'): ?>
                             🔄 <?php _e('Syndicating...', 'sourcehub'); ?>
-                        <?php elseif ($has_syndicated): ?>
+                        <?php elseif ($has_draft_created): ?>
+                            📝 <?php _e('Publishing...', 'sourcehub'); ?>
+                        <?php elseif ($has_syndicated && $all_synced): ?>
                             ✓ <?php printf(_n('Synced to %d spoke', 'Synced to %d spokes', count($syndicated_connections), 'sourcehub'), count($syndicated_connections)); ?>
+                        <?php elseif ($has_syndicated): ?>
+                            ⚠️ <?php _e('Partially Synced', 'sourcehub'); ?>
                         <?php else: ?>
                             <?php _e('Not Syndicated', 'sourcehub'); ?>
                         <?php endif; ?>
@@ -507,9 +558,15 @@ class SourceHub_Hub_Manager {
                                 $is_success = $has_status && $status_info['status'] === 'success';
                                 $is_failed = $has_status && $status_info['status'] === 'failed';
                                 $is_processing = $has_status && $status_info['status'] === 'processing';
+                                $is_draft_created = $has_status && $status_info['status'] === 'draft_created';
                                 ?>
                                 
-                                <?php if ($is_processing): ?>
+                                <?php if ($is_draft_created): ?>
+                                    <span class="sync-status-badge sync-draft-created" style="background: #f0f6fc; color: #0969da; border: 1px solid #0969da;">
+                                        <span class="dashicons dashicons-edit"></span>
+                                        <small><?php _e('Draft Created (Publishing...)', 'sourcehub'); ?></small>
+                                    </span>
+                                <?php elseif ($is_processing): ?>
                                     <span class="sync-status-badge sync-processing">
                                         <span class="dashicons dashicons-update"></span>
                                         <small><?php _e('Processing...', 'sourcehub'); ?></small>
