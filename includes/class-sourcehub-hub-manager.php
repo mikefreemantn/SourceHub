@@ -3056,6 +3056,26 @@ class SourceHub_Hub_Manager {
             $post_id = $post_id['post_id'];
         }
         
+        // CRITICAL: Prevent duplicate delayed sync execution
+        // This prevents race conditions where delayed sync is triggered multiple times
+        $delayed_sync_lock_key = 'sourcehub_delayed_sync_lock_' . $post_id;
+        $delayed_sync_lock = get_transient($delayed_sync_lock_key);
+        
+        if ($delayed_sync_lock) {
+            error_log('SourceHub: Delayed sync already running for post ' . $post_id . ' (locked at ' . date('Y-m-d H:i:s', $delayed_sync_lock) . '), skipping duplicate');
+            SourceHub_Logger::warning(
+                'Delayed sync blocked - already in progress',
+                array('post_id' => $post_id, 'locked_since' => date('Y-m-d H:i:s', $delayed_sync_lock)),
+                $post_id,
+                null,
+                'delayed_sync_duplicate_blocked'
+            );
+            return;
+        }
+        
+        // Set lock for 30 seconds (should be plenty for delayed sync to complete)
+        set_transient($delayed_sync_lock_key, time(), 30);
+        
         error_log('SourceHub: ========================================');
         error_log('SourceHub: *** DELAYED SYNC EXECUTING ***');
         error_log('SourceHub: handle_delayed_sync CALLED for post ' . $post_id);
@@ -3157,6 +3177,9 @@ class SourceHub_Hub_Manager {
         } else {
             error_log('SourceHub: Post ' . $post_id . ' not found for delayed sync');
         }
+        
+        // Clear the delayed sync lock
+        delete_transient($delayed_sync_lock_key);
     }
     
     /**

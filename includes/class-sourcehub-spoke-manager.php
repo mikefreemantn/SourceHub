@@ -1522,6 +1522,28 @@ class SourceHub_Spoke_Manager {
         error_log(sprintf('SourceHub Spoke: Notifying hub of completion - URL: %s, Payload: %s', 
             $callback_url, json_encode($payload)));
         
+        // CRITICAL: Wake up hub before sending callback
+        // Hub may have gone to sleep since it sent the syndication request
+        // This ensures hub is awake to receive and process the callback
+        $hub_base_url = rtrim($hub_url, '/');
+        error_log('SourceHub Spoke: Waking up hub before callback: ' . $hub_base_url);
+        
+        $wake_response = wp_remote_get($hub_base_url . '/wp-json/', array(
+            'timeout' => 10,
+            'headers' => array(
+                'User-Agent' => 'SourceHub-Spoke-Wake-Hub/1.0'
+            )
+        ));
+        
+        if (!is_wp_error($wake_response) && wp_remote_retrieve_response_code($wake_response) === 200) {
+            error_log('SourceHub Spoke: Hub is awake and ready for callback');
+        } else {
+            error_log('SourceHub Spoke: Hub wake-up check failed, proceeding with callback anyway');
+        }
+        
+        // Brief pause to ensure hub is fully responsive
+        sleep(1);
+        
         $response = wp_remote_post($callback_url, array(
             'headers' => array('Content-Type' => 'application/json'),
             'body' => json_encode($payload),

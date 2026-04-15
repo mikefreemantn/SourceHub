@@ -2,6 +2,44 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.4] - 2026-04-15
+
+### Fixed
+- **CRITICAL: Duplicate UPDATE Prevention**: Added delayed sync lock to prevent duplicate UPDATE requests
+  - Problem: `handle_delayed_sync()` was being triggered multiple times for the same post, sending duplicate UPDATE requests to spokes
+  - Hub would send 2 separate UPDATE operations (with different job IDs) 4-6 seconds apart
+  - Spokes processed both UPDATEs and sent 2 callbacks, creating race conditions
+  - Under load or slow network conditions, callbacks could arrive out of order or get lost
+  - Result: Intermittent failures where hub showed "synced" but articles remained in draft on spoke sites
+  - Solution: Added `sourcehub_delayed_sync_lock_` transient lock at the start of `handle_delayed_sync()`
+  - Lock prevents duplicate execution - if delayed sync is already running, subsequent triggers exit immediately
+  - Lock expires after 30 seconds (plenty of time for delayed sync to complete)
+  - Lock is cleared at the end of execution to allow future delayed syncs
+  - Logs duplicate attempts as warnings for debugging visibility
+  - Result: Only ONE UPDATE request sent per delayed sync, eliminating race conditions and ensuring consistent syndication
+
+- **CRITICAL: Hub Wake-Up Before Callbacks**: Spokes now wake up hub before sending completion callbacks
+  - Problem: On WP Engine, hub sites can go to sleep 15-30 minutes after inactivity
+  - Hub wakes up spoke to send syndication request, but hub may sleep again before spoke finishes processing
+  - Spoke processing can take 5-45+ seconds (especially with images, Yoast data, etc.)
+  - When spoke tries to send callback, hub is asleep and callback fails
+  - Result: Hub never receives completion notification, shows "processing" forever while spoke is actually published
+  - Solution: Spoke now pings hub's `/wp-json/` endpoint before sending callback
+  - Ensures hub is awake and ready to receive the completion notification
+  - 1-second pause after wake-up to ensure hub is fully responsive
+  - Callback retry system already in place for any remaining failures
+  - Result: Hub reliably receives callbacks even on low-traffic sites with sleeping enabled
+
+### Technical Details
+- Added lock check at beginning of `handle_delayed_sync()` in `class-sourcehub-hub-manager.php`
+- Uses `get_transient()` and `set_transient()` for atomic lock operations
+- Lock key format: `sourcehub_delayed_sync_lock_{post_id}`
+- Logs blocked duplicates with timestamp for debugging
+- Lock cleanup with `delete_transient()` at end of function
+- Added hub wake-up in `notify_hub_completion()` in `class-sourcehub-spoke-manager.php`
+- Pings hub's `/wp-json/` endpoint with 10-second timeout before sending callback
+- User-Agent: `SourceHub-Spoke-Wake-Hub/1.0` for tracking in logs
+
 ## [2.0.2.3] - 2026-04-03
 
 ### Fixed
