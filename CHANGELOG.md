@@ -2,6 +2,25 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.5] - 2026-04-15
+
+### Fixed
+- **CRITICAL: Duplicate UPDATE Fix (Part 2)**: Fixed `handle_delayed_sync()` calling `update_syndicated_post()` twice internally
+  - Problem: v2.0.2.4's delayed sync lock prevented the function from running twice, but didn't prevent duplicate calls WITHIN a single execution
+  - `handle_delayed_sync()` had multiple code paths that both called `update_syndicated_post()`
+  - When `pending_completion` flag was set AND `syndicated_spokes` existed, both paths would execute
+  - Result: Two UPDATE requests sent in the same second with different job IDs
+  - Solution: Modified `handle_delayed_sync()` to only call `update_syndicated_post()` once when completing drafts
+  - Other code paths now skip and log warnings instead of calling update again
+  - Added `delayed_sync_unexpected_state` warning for debugging edge cases
+  - Result: Only ONE UPDATE request sent per delayed sync execution
+
+### Technical Details
+- Modified `handle_delayed_sync()` in `class-sourcehub-hub-manager.php` (lines 3157-3185)
+- Changed else-if branches to skip updates and log warnings instead of calling `update_syndicated_post()`
+- Only the `pending_completion` path calls `update_syndicated_post()` now
+- Added warning logs for unexpected states (already-synced without pending flag, never-synced in delayed sync)
+
 ## [2.0.2.4] - 2026-04-15
 
 ### Fixed

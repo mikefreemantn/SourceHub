@@ -3152,15 +3152,36 @@ class SourceHub_Hub_Manager {
                     delete_post_meta($post_id, '_sourcehub_pending_completion');
                     
                     // Update with full data (image, Yoast, publish status)
+                    // Use syndicated_spokes (posts that were created) not selected_spokes
                     $this->update_syndicated_post($post_id, $syndicated_spokes);
                 } else if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                    error_log('SourceHub: Post already syndicated, updating existing posts');
-                    $this->update_syndicated_post($post_id, $syndicated_spokes);
+                    // Post was already syndicated before, just update it
+                    // This should NOT happen in delayed sync context - delayed sync is for completing drafts
+                    error_log('SourceHub: WARNING - Delayed sync called for already-syndicated post without pending flag');
+                    error_log('SourceHub: This may indicate a duplicate delayed sync trigger');
+                    SourceHub_Logger::warning(
+                        'Delayed sync called for already-syndicated post without pending completion flag',
+                        array('post_id' => $post_id, 'syndicated_spokes' => $syndicated_spokes),
+                        $post_id,
+                        null,
+                        'delayed_sync_unexpected_state'
+                    );
+                    // Skip the update to prevent duplicate - the post is already synced
+                    error_log('SourceHub: Skipping update to prevent duplicate');
                 } else {
-                    error_log('SourceHub: First time syndication');
-                    // Get spokes from status or use selected spokes
-                    $spokes_to_sync = ($sync_status && !empty($sync_status['spokes'])) ? $sync_status['spokes'] : $selected_spokes;
-                    $this->syndicate_post($post_id, $spokes_to_sync);
+                    // No syndicated spokes and no pending completion - this is first-time syndication
+                    // This should NOT happen in delayed sync - delayed sync is for completing drafts
+                    error_log('SourceHub: WARNING - Delayed sync called for never-syndicated post');
+                    error_log('SourceHub: First time syndication should use syndicate_post, not delayed sync');
+                    SourceHub_Logger::warning(
+                        'Delayed sync called for never-syndicated post',
+                        array('post_id' => $post_id, 'selected_spokes' => $selected_spokes),
+                        $post_id,
+                        null,
+                        'delayed_sync_unexpected_state'
+                    );
+                    // Skip to prevent issues
+                    error_log('SourceHub: Skipping to prevent issues');
                 }
                 
                 // Don't set status to completed here - the callback will handle it
