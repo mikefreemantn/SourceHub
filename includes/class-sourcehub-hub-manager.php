@@ -2192,9 +2192,10 @@ class SourceHub_Hub_Manager {
         // This prevents delayed sync from waiting for spokes that were never sent the post
         update_post_meta($post_id, '_sourcehub_syndicated_spokes', array_unique($syndicated_spokes));
         
-        // Clear the processing transient now that initial syndication is complete
-        // Individual spokes may still be processing async, but the overall "syncing" state is done
-        delete_transient('sourcehub_sync_status_' . $post_id);
+        // CRITICAL: Do NOT clear the processing transient here
+        // The transient must remain active until all callbacks are received
+        // It will be cleared in handle_sync_complete() when all spokes report back
+        // Clearing it here causes the hub to show "completed" even when spokes are stuck in draft
         
         // Delayed sync will be scheduled when spoke completion callbacks are received
         // This ensures the draft posts are fully created before we send the update
@@ -2392,8 +2393,10 @@ class SourceHub_Hub_Manager {
         update_post_meta($post_id, '_sourcehub_sync_status', $sync_status);
         update_post_meta($post_id, '_sourcehub_last_sync', current_time('mysql'));
         
-        // Clear the processing transient now that update syndication is complete
-        delete_transient('sourcehub_sync_status_' . $post_id);
+        // CRITICAL: Do NOT clear the processing transient here
+        // The transient must remain active until all UPDATE callbacks are received
+        // It will be cleared in handle_sync_complete() when all spokes report back
+        // Clearing it here causes the hub to show "completed" even when UPDATE never fired or spokes are stuck
         
         // Release sync locks (both persistent and instance)
         delete_transient('sourcehub_sync_lock_' . $post_id);

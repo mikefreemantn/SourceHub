@@ -2,6 +2,37 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.6] - 2026-04-16
+
+### Fixed
+- **CRITICAL: Accurate Status Tracking**: Fixed hub showing posts as "published" when they're actually stuck in draft on spoke sites
+  - Problem: Hub was clearing status transient immediately after sending requests, before callbacks were received
+  - `syndicate_post()` cleared transient after sending CREATE requests (line 2197)
+  - `update_syndicated_post()` cleared transient after sending UPDATE requests (line 2396)
+  - Result: Hub had no status tracking if delayed sync failed or UPDATE never fired
+  - UI would show "completed" even when spokes were stuck in draft state
+  - This masked the real issue: delayed sync not firing in poor hosting environments
+  - Solution: Removed premature `delete_transient()` calls from both functions
+  - Transient now only cleared in `handle_sync_complete()` when all callbacks received
+  - Hub now accurately shows which spokes are stuck vs completed
+  - Each spoke tracked independently - one failure doesn't affect others
+  - Result: Hub status accurately reflects actual spoke state (draft vs published)
+
+### Technical Details
+- Modified `syndicate_post()` in `class-sourcehub-hub-manager.php` (line 2195-2198)
+- Modified `update_syndicated_post()` in `class-sourcehub-hub-manager.php` (line 2396-2399)
+- Removed `delete_transient('sourcehub_sync_status_' . $post_id)` from both functions
+- Added comments explaining why transient must remain until callbacks received
+- Transient clearing logic remains in `handle_sync_complete()` (lines 395-398)
+- Only clears when `$all_done` is true (all spokes reported back)
+
+### Impact
+- Hub will now show accurate status for stuck posts instead of falsely showing "completed"
+- Admins can identify which posts need manual intervention
+- Reveals underlying issues (delayed sync failures, Action Scheduler problems)
+- No impact on successful syncs - they still complete normally
+- Each spoke operates independently - partial failures visible
+
 ## [2.0.2.5] - 2026-04-15
 
 ### Fixed
