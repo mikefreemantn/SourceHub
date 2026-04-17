@@ -1423,6 +1423,8 @@ class SourceHub_Spoke_Manager {
                     'race_prevented'
                 );
                 
+                // CRITICAL: Use the existing post ID so callback tells hub which post was actually created
+                // This allows hub to consolidate duplicate job IDs to the same spoke post
                 $post_id = $existing_post->ID;
             } elseif ($job->action === 'create') {
                 $post_id = $this->create_post_from_data($data);

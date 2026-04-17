@@ -282,6 +282,46 @@ class SourceHub_Hub_Manager {
                         $all_creates_complete ? 'TRUE' : 'FALSE',
                         $has_processing_spokes ? 'TRUE' : 'FALSE'));
                     
+                    // CRITICAL: Consolidate duplicate job IDs that point to the same spoke post
+                    // This happens when race condition prevention creates one post but multiple jobs report completion
+                    // We need to deduplicate so we only send ONE UPDATE per actual spoke post
+                    if ($all_creates_complete && is_array($sync_status)) {
+                        $spoke_post_map = array(); // Map spoke_post_id => connection_id
+                        $duplicates_found = false;
+                        
+                        foreach ($sync_status as $conn_id => $status_data) {
+                            if (isset($status_data['spoke_post_id']) && $status_data['spoke_post_id']) {
+                                $spoke_post_id = $status_data['spoke_post_id'];
+                                
+                                if (isset($spoke_post_map[$spoke_post_id])) {
+                                    // Duplicate! This spoke post was created by multiple jobs (race condition)
+                                    $duplicates_found = true;
+                                    error_log(sprintf('SourceHub Hub: Duplicate spoke post detected - spoke_post_id %d exists for both connection %d and %d', 
+                                        $spoke_post_id, $spoke_post_map[$spoke_post_id], $conn_id));
+                                    
+                                    SourceHub_Logger::info(
+                                        sprintf('Consolidated duplicate job IDs for spoke post %d', $spoke_post_id),
+                                        array(
+                                            'spoke_post_id' => $spoke_post_id,
+                                            'original_connection' => $spoke_post_map[$spoke_post_id],
+                                            'duplicate_connection' => $conn_id
+                                        ),
+                                        $hub_post_id,
+                                        null,
+                                        'duplicate_job_consolidated'
+                                    );
+                                } else {
+                                    $spoke_post_map[$spoke_post_id] = $conn_id;
+                                }
+                            }
+                        }
+                        
+                        if ($duplicates_found) {
+                            error_log(sprintf('SourceHub Hub: Consolidated %d unique spoke posts from %d job IDs', 
+                                count($spoke_post_map), count($sync_status)));
+                        }
+                    }
+                    
                     // If all CREATEs are done, schedule delayed sync with short delay to allow locks to clear
                     if ($all_creates_complete) {
                         // CRITICAL: Check if delayed sync is already scheduled to prevent duplicate scheduling
@@ -3143,9 +3183,58 @@ class SourceHub_Hub_Manager {
                 
                 if ($pending_completion) {
                     error_log('SourceHub: Completing pending draft - adding image, Yoast, and publishing');
+                    
+                    // CRITICAL: Deduplicate syndicated_spokes to prevent duplicate UPDATEs
+                    // Race condition prevention can cause multiple job IDs to point to same spoke post
+                    // We need to consolidate to only send ONE UPDATE per actual spoke post
+                    $sync_status_meta = get_post_meta($post_id, '_sourcehub_sync_status', true);
+                    $unique_spokes = array();
+                    $spoke_post_map = array(); // Map spoke_post_id => connection_id
+                    
+                    if (is_array($syndicated_spokes) && is_array($sync_status_meta)) {
+                        foreach ($syndicated_spokes as $spoke_id) {
+                            if (isset($sync_status_meta[$spoke_id]['spoke_post_id'])) {
+                                $spoke_post_id = $sync_status_meta[$spoke_id]['spoke_post_id'];
+                                
+                                if (!isset($spoke_post_map[$spoke_post_id])) {
+                                    // First time seeing this spoke post - include it
+                                    $spoke_post_map[$spoke_post_id] = $spoke_id;
+                                    $unique_spokes[] = $spoke_id;
+                                } else {
+                                    // Duplicate spoke post - skip this connection ID
+                                    error_log(sprintf('SourceHub: Skipping duplicate UPDATE - spoke_post_id %d already queued via connection %d (skipping connection %d)', 
+                                        $spoke_post_id, $spoke_post_map[$spoke_post_id], $spoke_id));
+                                    
+                                    SourceHub_Logger::info(
+                                        sprintf('Skipped duplicate UPDATE for spoke post %d', $spoke_post_id),
+                                        array(
+                                            'spoke_post_id' => $spoke_post_id,
+                                            'kept_connection' => $spoke_post_map[$spoke_post_id],
+                                            'skipped_connection' => $spoke_id
+                                        ),
+                                        $post_id,
+                                        null,
+                                        'duplicate_update_skipped'
+                                    );
+                                }
+                            } else {
+                                // No spoke_post_id in status - include it (shouldn't happen but be safe)
+                                $unique_spokes[] = $spoke_id;
+                            }
+                        }
+                        
+                        if (count($unique_spokes) < count($syndicated_spokes)) {
+                            error_log(sprintf('SourceHub: Deduplicated %d connection IDs to %d unique spoke posts', 
+                                count($syndicated_spokes), count($unique_spokes)));
+                        }
+                    } else {
+                        // Fallback if no deduplication possible
+                        $unique_spokes = $syndicated_spokes;
+                    }
+                    
                     SourceHub_Logger::info(
                         'Completing draft syndication - adding image, Yoast data, and publishing',
-                        array('post_id' => $post_id, 'spoke_count' => count($syndicated_spokes)),
+                        array('post_id' => $post_id, 'spoke_count' => count($unique_spokes), 'original_count' => count($syndicated_spokes)),
                         $post_id,
                         null,
                         'completing_draft'
@@ -3155,8 +3244,8 @@ class SourceHub_Hub_Manager {
                     delete_post_meta($post_id, '_sourcehub_pending_completion');
                     
                     // Update with full data (image, Yoast, publish status)
-                    // Use syndicated_spokes (posts that were created) not selected_spokes
-                    $this->update_syndicated_post($post_id, $syndicated_spokes);
+                    // Use unique_spokes (deduplicated) to prevent duplicate UPDATEs
+                    $this->update_syndicated_post($post_id, $unique_spokes);
                 } else if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
                     // Post was already syndicated before, just update it
                     // This should NOT happen in delayed sync context - delayed sync is for completing drafts

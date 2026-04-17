@@ -2,6 +2,46 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.7] - 2026-04-17
+
+### Fixed
+- **CRITICAL: Duplicate UPDATE Prevention for Race Conditions**: Fixed hub sending multiple UPDATE requests when race condition prevention creates one post but multiple jobs report completion
+  - Problem: When hub sends multiple simultaneous CREATE requests (due to duplicate delayed sync triggers), spoke's race condition prevention creates only ONE post but ALL job IDs send completion callbacks
+  - Hub receives multiple callbacks with same spoke_post_id but different job IDs
+  - Hub tracks all job IDs in sync_status and tries to UPDATE each one
+  - Result: Multiple UPDATE requests sent to same spoke post, causing duplicates
+  - Example: 3 CREATE jobs → 1 post created, 2 race-prevented → 3 callbacks → hub tries to send 3 UPDATEs
+  - Solution: Deduplicate syndicated_spokes before sending UPDATEs by mapping spoke_post_id to connection_id
+  - Only send ONE UPDATE per unique spoke post instead of one per job ID
+  - Added duplicate detection logging in handle_sync_complete()
+  - Added deduplication logic in handle_delayed_sync() before calling update_syndicated_post()
+  - Result: Only ONE UPDATE sent per actual spoke post, even when multiple jobs reported completion
+
+### Technical Details
+- **Hub Side** - Modified `handle_sync_complete()` in `class-sourcehub-hub-manager.php` (lines 285-323)
+  - Added spoke_post_map to detect duplicate spoke_post_ids across different connection IDs
+  - Logs when duplicates are detected for debugging
+- **Hub Side** - Modified `handle_delayed_sync()` in `class-sourcehub-hub-manager.php` (lines 3187-3248)
+  - Added deduplication logic before sending UPDATEs
+  - Maps spoke_post_id to connection_id to identify duplicates
+  - Only includes first occurrence of each spoke_post_id in unique_spokes array
+  - Logs skipped duplicates for transparency
+  - Passes deduplicated unique_spokes to update_syndicated_post()
+- **Spoke Side** - Added comment in `class-sourcehub-spoke-manager.php` (lines 1426-1428)
+  - Clarified that race-prevented jobs still send actual post ID in callback
+  - This allows hub to consolidate duplicate job IDs
+
+### Impact
+- Eliminates duplicate UPDATE requests when race conditions occur
+- Prevents posts from being updated multiple times unnecessarily
+- Reduces server load and potential for conflicts
+- Maintains all existing race condition prevention benefits
+- Backward compatible - works with older spoke versions
+
+### Deployment
+- **Hub sites:** Update to v2.0.2.7 (required for duplicate UPDATE prevention)
+- **Spoke sites:** Update to v2.0.2.7 (recommended but not required - already sends post IDs correctly)
+
 ## [2.0.2.6] - 2026-04-16
 
 ### Fixed
