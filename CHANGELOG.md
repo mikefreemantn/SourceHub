@@ -2,6 +2,80 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.1.0] - 2026-04-17
+
+### Added
+- **NEW FEATURE: Real-Time Messaging System** - AIM-style chat for hub users
+  - Direct messages (1-on-1) between logged-in users
+  - Group messaging with custom groups
+  - File attachments (images, PDFs, documents)
+  - Online user status tracking
+  - Unread message badges
+  - Pop-up notifications for new messages
+  - WordPress Heartbeat API integration for real-time delivery (15-second polling)
+  - Slide-out chat panel accessible from admin bar
+  - Message history and read receipts
+  - Group creation and member management
+  - File upload support via WordPress media library
+  - Sound notifications (optional)
+  - Mobile-responsive design
+
+### Technical Details
+- **Database Tables** (4 new tables created automatically on activation):
+  - `sourcehub_message_groups` - Message group definitions
+  - `sourcehub_group_members` - Group membership tracking
+  - `sourcehub_messages` - All messages (direct and group)
+  - `sourcehub_message_reads` - Read receipts for group messages
+- **New Class**: `SourceHub_Messaging` - Core messaging functionality
+- **Frontend**: `admin/js/messaging.js` - Real-time UI with Heartbeat integration
+- **Styling**: `admin/css/messaging.css` - Modern chat interface
+- **Template**: `admin/views/messaging-panel.php` - Slide-out panel HTML
+- **AJAX Endpoints**: 10 new endpoints for messaging operations
+  - `sourcehub_send_message` - Send direct or group message
+  - `sourcehub_get_messages` - Retrieve messages
+  - `sourcehub_mark_read` - Mark messages as read
+  - `sourcehub_create_group` - Create message group
+  - `sourcehub_get_groups` - Get user's groups
+  - `sourcehub_add_group_member` - Add member to group
+  - `sourcehub_remove_group_member` - Remove member from group
+  - `sourcehub_get_online_users` - Get currently online users
+  - `sourcehub_get_all_users` - Get all users for group creation
+- **Heartbeat Integration**: Automatic message checking every 15 seconds
+- **Admin Bar**: Chat icon with unread badge in WordPress admin bar
+
+### Features
+- **Direct Messages**: Click any online user to start private conversation
+- **Group Messages**: Create groups, add members, broadcast to entire group
+- **File Attachments**: Upload images, PDFs, documents via WordPress media library
+- **Online Status**: See who's currently active (last 5 minutes)
+- **Unread Tracking**: Badge shows total unread count, individual conversation badges
+- **Notifications**: Pop-up notifications appear bottom-right for new messages
+- **Message History**: All messages stored permanently, searchable by conversation
+- **Read Receipts**: Track who has read group messages
+- **User Activity**: Automatic activity tracking via Heartbeat API
+
+### Architecture
+- **Backend**: PHP class-based with WordPress best practices
+- **Frontend**: jQuery-based with WordPress Heartbeat API
+- **Real-time**: 15-second polling (upgradeable to WebSockets later)
+- **Storage**: WordPress database with proper indexing
+- **Security**: Nonce verification, capability checks, sanitization
+- **Scalability**: Designed for easy migration to WebSockets if needed
+
+### Future Enhancements (Easy to Add)
+- Typing indicators
+- Message editing/deletion
+- Emoji support
+- @mentions
+- Message search
+- Conversation archiving
+- WebSocket upgrade for true real-time (< 1 second)
+
+### Deployment
+- **All sites**: Update to v2.1.0 to get messaging feature
+- **Database**: Tables created automatically on plugin activation
+- **No manual setup required**
+
 ## [2.0.2.8] - 2026-04-17
 
 ### Fixed

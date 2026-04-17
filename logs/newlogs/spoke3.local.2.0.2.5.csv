@@ -1,0 +1,18 @@
+Date,Status,Action,Message,Connection,Details
+"2026-04-15 19:34:37",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""http:\/\/hub-primary.local"",""job_id"":""9lZs4lQTOJhHLZCWECA6wodnGPLxwVFr"",""spoke_post_id"":266}"
+"2026-04-15 19:34:36",INFO,job_processing,"Job processing started: ""Sync Test""",-,"{""job_id"":""9lZs4lQTOJhHLZCWECA6wodnGPLxwVFr"",""action"":""update"",""hub_id"":1026}"
+"2026-04-15 19:34:36",INFO,find_author,"Found matching author by email: dev-email@wpengine.local",-,"{""matched_user_id"":1,""display_name"":""root""}"
+"2026-04-15 19:34:36",SUCCESS,set_featured_image,"Featured image set successfully",-,"{""attachment_id"":268,""post_id"":266}"
+"2026-04-15 19:34:36",SUCCESS,async_update,"Async update completed for ""Sync Test"" (0.08s)",-,"{""hub_id"":1026,""local_id"":266,""processing_time"":0.076519012451171875,""job_id"":""9lZs4lQTOJhHLZCWECA6wodnGPLxwVFr""}"
+"2026-04-15 19:33:52",INFO,job_queued,"Update job queued for processing: ""Sync Test""",-,"{""job_id"":""9lZs4lQTOJhHLZCWECA6wodnGPLxwVFr"",""hub_id"":1026,""hub_url"":""http:\/\/hub-primary.local"",""action"":""update""}"
+"2026-04-15 19:33:42",INFO,hub_notified,"Successfully notified hub of completion",-,"{""hub_url"":""http:\/\/hub-primary.local"",""job_id"":""6CbzBrQXxLtXgl6iTBIsyslNwQ8FtuC2"",""spoke_post_id"":266}"
+"2026-04-15 19:33:41",INFO,job_processing,"Job processing started: ""Sync Test""",-,"{""job_id"":""6CbzBrQXxLtXgl6iTBIsyslNwQ8FtuC2"",""action"":""create"",""hub_id"":1026}"
+"2026-04-15 19:33:41",INFO,debug_content,"DEBUG: Content received from hub: Sync Test",-,"{""full_content_length"":9}"
+"2026-04-15 19:33:41",INFO,find_author,"Found matching author by email: dev-email@wpengine.local",-,"{""matched_user_id"":1,""display_name"":""root""}"
+"2026-04-15 19:33:41",INFO,gallery_sync,"No gallery_images found in syndication data",-,[]
+"2026-04-15 19:33:41",INFO,yoast_sync,"Post created as draft, now updating with Yoast meta",-,"{""post_id"":266,""intended_status"":""draft""}"
+"2026-04-15 19:33:41",INFO,find_author,"Found matching author by email: dev-email@wpengine.local",-,"{""matched_user_id"":1,""display_name"":""root""}"
+"2026-04-15 19:33:41",SUCCESS,yoast_sync,"Post updated with Yoast meta as draft",-,"{""post_id"":266}"
+"2026-04-15 19:33:41",SUCCESS,async_create,"Async create completed for ""Sync Test"" (0.01s)",-,"{""hub_id"":1026,""local_id"":266,""processing_time"":0.014337062835693359,""job_id"":""6CbzBrQXxLtXgl6iTBIsyslNwQ8FtuC2""}"
+"2026-04-15 19:33:37",INFO,receive_request,"Received syndication request from hub",-,"{""hub_url"":""http:\/\/hub-primary.local"",""hub_id"":1026,""title"":""Sync Test""}"
+"2026-04-15 19:33:37",INFO,job_queued,"Job queued for processing: ""Sync Test""",-,"{""job_id"":""6CbzBrQXxLtXgl6iTBIsyslNwQ8FtuC2"",""hub_id"":1026,""hub_url"":""http:\/\/hub-primary.local"",""action"":""create""}"

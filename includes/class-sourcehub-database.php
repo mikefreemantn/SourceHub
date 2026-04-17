@@ -116,6 +116,67 @@ class SourceHub_Database {
             KEY created_at (created_at)
         ) $charset_collate;";
 
+        // Messaging tables
+        $messages_table = $wpdb->prefix . 'sourcehub_messages';
+        $messages_sql = "CREATE TABLE $messages_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            from_user_id bigint(20) unsigned NOT NULL,
+            to_user_id bigint(20) unsigned DEFAULT NULL,
+            group_id bigint(20) unsigned DEFAULT NULL,
+            message text NOT NULL,
+            attachment_id bigint(20) unsigned DEFAULT NULL,
+            is_read tinyint(1) NOT NULL DEFAULT 0,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY from_user_id (from_user_id),
+            KEY to_user_id (to_user_id),
+            KEY group_id (group_id),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+        
+        $groups_table = $wpdb->prefix . 'sourcehub_groups';
+        $groups_sql = "CREATE TABLE $groups_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            name varchar(255) NOT NULL,
+            created_by bigint(20) unsigned NOT NULL,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY created_by (created_by)
+        ) $charset_collate;";
+        
+        $group_members_table = $wpdb->prefix . 'sourcehub_group_members';
+        $group_members_sql = "CREATE TABLE $group_members_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            group_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            added_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY group_user (group_id, user_id),
+            KEY group_id (group_id),
+            KEY user_id (user_id)
+        ) $charset_collate;";
+        
+        $message_reads_table = $wpdb->prefix . 'sourcehub_message_reads';
+        $message_reads_sql = "CREATE TABLE $message_reads_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            message_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            read_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY message_user (message_id, user_id),
+            KEY message_id (message_id),
+            KEY user_id (user_id)
+        ) $charset_collate;";
+        
+        $user_activity_table = $wpdb->prefix . 'sourcehub_user_activity';
+        $user_activity_sql = "CREATE TABLE $user_activity_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) unsigned NOT NULL,
+            last_activity datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY user_id (user_id)
+        ) $charset_collate;";
+
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
         $results = array();
@@ -123,6 +184,11 @@ class SourceHub_Database {
         $results['logs'] = dbDelta($logs_sql);
         $results['queue'] = dbDelta($queue_sql);
         $results['sync_jobs'] = dbDelta($sync_jobs_sql);
+        $results['messages'] = dbDelta($messages_sql);
+        $results['groups'] = dbDelta($groups_sql);
+        $results['group_members'] = dbDelta($group_members_sql);
+        $results['message_reads'] = dbDelta($message_reads_sql);
+        $results['user_activity'] = dbDelta($user_activity_sql);
         
         // Check for errors
         if ($wpdb->last_error) {
@@ -135,6 +201,11 @@ class SourceHub_Database {
         $tables_created['logs'] = ($wpdb->get_var("SHOW TABLES LIKE '$logs_table'") == $logs_table);
         $tables_created['queue'] = ($wpdb->get_var("SHOW TABLES LIKE '$queue_table'") == $queue_table);
         $tables_created['sync_jobs'] = ($wpdb->get_var("SHOW TABLES LIKE '$sync_jobs_table'") == $sync_jobs_table);
+        $tables_created['messages'] = ($wpdb->get_var("SHOW TABLES LIKE '$messages_table'") == $messages_table);
+        $tables_created['groups'] = ($wpdb->get_var("SHOW TABLES LIKE '$groups_table'") == $groups_table);
+        $tables_created['group_members'] = ($wpdb->get_var("SHOW TABLES LIKE '$group_members_table'") == $group_members_table);
+        $tables_created['message_reads'] = ($wpdb->get_var("SHOW TABLES LIKE '$message_reads_table'") == $message_reads_table);
+        $tables_created['user_activity'] = ($wpdb->get_var("SHOW TABLES LIKE '$user_activity_table'") == $user_activity_table);
         
         foreach ($tables_created as $table => $created) {
             if (!$created) {

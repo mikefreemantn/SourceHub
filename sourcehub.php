@@ -3,7 +3,7 @@
  * Plugin Name: SourceHub - Hub & Spoke Publisher
  * Plugin URI: https://github.com/mikefreemantn/SourceHub
  * Description: A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
- * Version: 2.0.2.8
+ * Version: 2.1.0
  * Author: Mike Freeman
  * Author URI: https://manovermachine.com
  * License: GPL v2 or later
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SOURCEHUB_VERSION', '2.0.2.8');
+define('SOURCEHUB_VERSION', '2.1.0');
 define('SOURCEHUB_PLUGIN_FILE', __FILE__);
 define('SOURCEHUB_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOURCEHUB_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -91,6 +91,13 @@ final class SourceHub {
     public $calendar;
 
     /**
+     * Messaging instance
+     *
+     * @var SourceHub_Messaging
+     */
+    public $messaging;
+
+    /**
      * Get plugin instance
      *
      * @return SourceHub
@@ -142,6 +149,7 @@ final class SourceHub {
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-gallery-handler.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-bug-tracker.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-log-viewer.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-messaging.php';
 
         // Load admin classes
         if (is_admin()) {
@@ -167,6 +175,9 @@ final class SourceHub {
         
         // Initialize Log Viewer
         SourceHub_Log_Viewer::init();
+        
+        // Initialize Messaging
+        $this->messaging = new SourceHub_Messaging();
 
         // Initialize admin
         if (is_admin()) {
@@ -215,6 +226,7 @@ final class SourceHub {
         // Create database tables
         SourceHub_Database::create_tables();
         SourceHub_Bug_Tracker::create_tables();
+        SourceHub_Messaging::create_tables();
         
         // Verify tables were created
         global $wpdb;

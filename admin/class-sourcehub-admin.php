@@ -52,6 +52,11 @@ class SourceHub_Admin {
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
+        add_action('admin_footer', array($this, 'render_messaging_panel'));
+        add_action('wp_ajax_sourcehub_get_all_users', array($this, 'ajax_get_all_users'));
+        add_action('wp_ajax_sourcehub_upload_attachment', array($this, 'ajax_upload_attachment'));
+        add_action('wp_ajax_sourcehub_update_activity', array($this, 'ajax_update_activity'));
+        add_action('wp_ajax_sourcehub_update_group_name', array($this, 'ajax_update_group_name'));
     }
 
     /**
@@ -324,6 +329,31 @@ class SourceHub_Admin {
                 'smartLinkTemplates' => get_option('sourcehub_smart_link_templates', array())
             ));
         }
+        
+        // Enqueue messaging styles and scripts on ALL admin pages (for chat panel)
+        wp_enqueue_style(
+            'sourcehub-messaging',
+            SOURCEHUB_PLUGIN_URL . 'admin/css/messaging.css',
+            array(),
+            SOURCEHUB_VERSION
+        );
+        
+        wp_enqueue_script(
+            'sourcehub-messaging',
+            SOURCEHUB_PLUGIN_URL . 'admin/js/messaging.js',
+            array('jquery', 'heartbeat'),
+            SOURCEHUB_VERSION,
+            true
+        );
+        
+        wp_localize_script('sourcehub-messaging', 'sourcehubMessaging', array(
+            'nonce' => wp_create_nonce('sourcehub_messaging_nonce'),
+            'uploadNonce' => wp_create_nonce('media-form'),
+            'currentUserId' => get_current_user_id(),
+            'pluginUrl' => SOURCEHUB_PLUGIN_URL,
+            'soundEnabled' => true,
+            'notificationSound' => SOURCEHUB_PLUGIN_URL . 'admin/sounds/notification.mp3'
+        ));
         
         // Only load on SourceHub admin pages
         if (strpos($hook, 'sourcehub') === false) {
@@ -1386,9 +1416,12 @@ class SourceHub_Admin {
      * Add mode badge to admin bar
      */
     public function add_admin_bar_badge($wp_admin_bar) {
+        error_log('SourceHub: add_admin_bar_badge called');
         $mode = sourcehub()->get_mode();
+        error_log('SourceHub: Mode is ' . $mode);
         
         if (empty($mode)) {
+            error_log('SourceHub: Mode is empty, returning');
             return;
         }
 
@@ -1404,6 +1437,23 @@ class SourceHub_Admin {
                 'class' => 'sourcehub-admin-bar-item'
             )
         ));
+        
+        // Add chat icon - only for hub mode and users who can edit posts
+        $is_hub = (sourcehub() && sourcehub()->is_hub());
+        if ($is_hub && current_user_can('edit_posts')) {
+            error_log('SourceHub: Adding chat icon to admin bar');
+            $wp_admin_bar->add_node(array(
+                'id'     => 'sourcehub-chat',
+                'parent' => 'top-secondary',
+                'title'  => '<span id="sourcehub-chat-icon"><span class="dashicons dashicons-format-chat"></span> HubChat<span id="sourcehub-chat-badge" style="display:none;"></span></span>',
+                'href'   => '#',
+                'meta'   => array(
+                    'class' => 'sourcehub-chat-item',
+                    'onclick' => 'return false;'
+                )
+            ));
+            error_log('SourceHub: Chat icon added to admin bar');
+        }
     }
 
     /**
@@ -1613,6 +1663,88 @@ class SourceHub_Admin {
         ));
     }
 
+    /**
+     * Render messaging panel in admin footer
+     */
+    public function render_messaging_panel() {
+        // Only render for hub mode and users who can edit posts
+        $is_hub = (sourcehub() && sourcehub()->is_hub());
+        if (!$is_hub || !current_user_can('edit_posts')) {
+            return;
+        }
+        include plugin_dir_path(dirname(__FILE__)) . 'admin/views/messaging-panel.php';
+    }
+    
+    /**
+     * AJAX: Get all users for group creation
+     */
+    public function ajax_get_all_users() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        if (!current_user_can('read')) {
+            wp_send_json_error(array('message' => 'Not authorized'));
+        }
+        
+        $users = get_users(array(
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+            'fields' => array('ID', 'display_name', 'user_email')
+        ));
+        
+        wp_send_json_success(array('users' => $users));
+    }
+    
+    /**
+     * AJAX: Upload attachment for messaging
+     */
+    public function ajax_upload_attachment() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        if (!current_user_can('upload_files')) {
+            wp_send_json_error(array('message' => 'Not authorized to upload files'));
+        }
+        
+        if (empty($_FILES['file'])) {
+            wp_send_json_error(array('message' => 'No file uploaded'));
+        }
+        
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        
+        $attachment_id = media_handle_upload('file', 0);
+        
+        if (is_wp_error($attachment_id)) {
+            wp_send_json_error(array('message' => $attachment_id->get_error_message()));
+        }
+        
+        $attachment_url = wp_get_attachment_url($attachment_id);
+        $attachment_type = get_post_mime_type($attachment_id);
+        
+        wp_send_json_success(array(
+            'id' => $attachment_id,
+            'url' => $attachment_url,
+            'type' => $attachment_type,
+            'thumbnail' => wp_get_attachment_image_url($attachment_id, 'thumbnail')
+        ));
+    }
+    
+    /**
+     * AJAX: Update user activity timestamp
+     */
+    public function ajax_update_activity() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => 'Not logged in'));
+        }
+        
+        update_user_meta($current_user_id, 'sourcehub_last_activity', current_time('mysql'));
+        
+        wp_send_json_success();
+    }
+    
     /**
      * AJAX handler to toggle Post Logs settings collapsed state
      */
