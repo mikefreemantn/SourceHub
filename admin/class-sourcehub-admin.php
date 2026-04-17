@@ -519,22 +519,44 @@ class SourceHub_Admin {
                 ));
                 $spoke_stats['syndicated_this_month'] = $month_query->found_posts;
                 
-                // Last sync time (most recent post with _sourcehub_hub_id)
+                // Last sync time (most recent _sourcehub_last_sync timestamp)
+                // Query all posts with _sourcehub_hub_id and find the most recent sync
                 $last_sync_query = new WP_Query(array(
                     'post_type' => 'any',
                     'post_status' => 'any',
                     'meta_key' => '_sourcehub_hub_id',
-                    'posts_per_page' => 1,
-                    'orderby' => 'date',
+                    'posts_per_page' => 100, // Check last 100 synced posts
+                    'orderby' => 'modified',
                     'order' => 'DESC',
                     'fields' => 'ids'
                 ));
                 
                 if ($last_sync_query->have_posts()) {
-                    $last_post_id = $last_sync_query->posts[0];
-                    $last_post = get_post($last_post_id);
-                    if ($last_post) {
-                        $spoke_stats['last_sync'] = $last_post->post_date;
+                    // Find the most recent _sourcehub_last_sync timestamp
+                    $most_recent_sync = null;
+                    foreach ($last_sync_query->posts as $post_id) {
+                        $sync_time = get_post_meta($post_id, '_sourcehub_last_sync', true);
+                        if ($sync_time) {
+                            if (!$most_recent_sync || strtotime($sync_time) > strtotime($most_recent_sync)) {
+                                $most_recent_sync = $sync_time;
+                            }
+                        }
+                    }
+                    
+                    // Fallback to _sourcehub_received_at if no _sourcehub_last_sync found
+                    if (!$most_recent_sync) {
+                        foreach ($last_sync_query->posts as $post_id) {
+                            $received_time = get_post_meta($post_id, '_sourcehub_received_at', true);
+                            if ($received_time) {
+                                if (!$most_recent_sync || strtotime($received_time) > strtotime($most_recent_sync)) {
+                                    $most_recent_sync = $received_time;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($most_recent_sync) {
+                        $spoke_stats['last_sync'] = $most_recent_sync;
                     }
                 }
             } catch (Exception $e) {

@@ -2,6 +2,37 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.0.2.8] - 2026-04-17
+
+### Fixed
+- **Spoke Dashboard Last Sync Display**: Fixed spoke dashboard showing scheduled post publish date instead of actual sync time
+  - Problem: Dashboard query used `post_date` (scheduled publish date like 5/18/26 @ 1PM) instead of actual sync timestamp
+  - For scheduled posts, this showed the future publish date instead of when the post was actually synced
+  - Example: Post synced on 4/17/26 morning but scheduled for 5/18/26 @ 1PM showed "5/18/26 8:00 AM" as Last Sync
+  - Solution: Modified dashboard query to use `_sourcehub_last_sync` meta field instead of `post_date`
+  - Checks last 100 synced posts and finds the most recent `_sourcehub_last_sync` timestamp
+  - Falls back to `_sourcehub_received_at` if `_sourcehub_last_sync` not found
+  - Time display already uses site's local timezone via `get_date_from_gmt()` in `time_ago()` function
+  - Result: Dashboard now shows when post was actually synced, not when it's scheduled to publish
+
+### Technical Details
+- Modified `render_dashboard()` in `class-sourcehub-admin.php` (lines 522-561)
+- Changed query from `orderby => 'date'` to `orderby => 'modified'`
+- Increased `posts_per_page` from 1 to 100 to check recent synced posts
+- Added loop to find most recent `_sourcehub_last_sync` timestamp across posts
+- Added fallback to `_sourcehub_received_at` for older posts without `_sourcehub_last_sync`
+- Timezone conversion already handled by existing `time_ago()` function using `get_date_from_gmt()`
+
+### Impact
+- Spoke dashboard now accurately shows when last sync occurred
+- No longer misleading for scheduled posts
+- Displays time in site's local timezone (not UTC)
+- More accurate monitoring of sync activity
+
+### Deployment
+- **Spoke sites:** Update to v2.0.2.8 (fixes dashboard display)
+- **Hub sites:** No changes needed for this fix
+
 ## [2.0.2.7] - 2026-04-17
 
 ### Fixed
