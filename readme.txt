@@ -4,7 +4,7 @@ Tags: syndication, content distribution, multi-site, seo, hub-spoke
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.4.3
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI: mikefreemantn/SourceHub
@@ -42,6 +42,29 @@ A powerful content syndication plugin that enables centralized editorial teams t
 4. Configure your connections and start syndicating!
 
 == Changelog ==
+
+= 2.2.0 - 2026-04-20 =
+* Feature: Message reactions system with 6 emoji types (👍 👎 ❤️ 😂 🎉 🤔)
+* Feature: Hover-based reaction picker on messages
+* Feature: 3-dot message menu with Copy Text and Delete Message options
+* Feature: Visual feedback for copy operations (green checkmark)
+* Feature: Anyone can delete any message (designed for admin environments)
+* Fix: OG tag preview infinite reload loop resolved
+* Fix: OG preview persistence across message refreshes
+* Enhancement: OG data caching for better performance
+* Database: New wp_sourcehub_message_reactions table (requires plugin reactivation)
+
+= 2.1.0 - 2026-04-20 =
+* Feature: Real-time messaging system with WordPress Heartbeat API
+* Feature: Direct messages and group conversations
+* Feature: Online/offline user status indicators
+* Feature: Message attachments (images and files)
+* Feature: Link preview with OG tag fetching
+* Feature: Group management (create, edit, add/remove members)
+* Feature: Unread message counts and notifications
+* Feature: Message read receipts
+* Enhancement: Modern chat panel UI
+* Enhancement: Infinite scroll for message history
 
 = 1.4.3 - 2025-10-29 =
 * Feature: Added profile pictures/avatars to @mention autocomplete dropdown
