@@ -32,6 +32,9 @@ class SourceHub_Messaging {
         add_action('wp_ajax_sourcehub_get_group_members', array($this, 'ajax_get_group_members'));
         add_action('wp_ajax_sourcehub_leave_group', array($this, 'ajax_leave_group'));
         add_action('wp_ajax_sourcehub_fetch_og_tags', array($this, 'ajax_fetch_og_tags'));
+        add_action('wp_ajax_sourcehub_add_reaction', array($this, 'ajax_add_reaction'));
+        add_action('wp_ajax_sourcehub_remove_reaction', array($this, 'ajax_remove_reaction'));
+        add_action('wp_ajax_sourcehub_delete_message', array($this, 'ajax_delete_message'));
         
         // Heartbeat API integration
         add_filter('heartbeat_received', array($this, 'heartbeat_received'), 10, 2);
@@ -221,11 +224,13 @@ class SourceHub_Messaging {
         $messages = $wpdb->get_results($sql);
         error_log('SourceHub get_messages: Found ' . count($messages) . ' messages for user ' . $user_id);
         
-        // Add attachment data if present
+        // Add attachment data and reactions if present
         foreach ($messages as &$message) {
             if ($message->attachment_id) {
                 $message->attachment = $this->get_attachment_data($message->attachment_id);
             }
+            // Add reactions for this message
+            $message->reactions = $this->get_message_reactions($message->id);
         }
         
         return $messages;
@@ -519,6 +524,127 @@ class SourceHub_Messaging {
      */
     public function update_user_activity($user_id) {
         update_user_meta($user_id, 'sourcehub_last_activity', current_time('mysql'));
+    }
+    
+    /**
+     * Add reaction to message
+     */
+    public function add_reaction($message_id, $user_id, $reaction_type) {
+        global $wpdb;
+        
+        $table = $wpdb->prefix . 'sourcehub_message_reactions';
+        
+        // Check if user already reacted with this type
+        $existing = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $table WHERE message_id = %d AND user_id = %d AND reaction_type = %s",
+            $message_id, $user_id, $reaction_type
+        ));
+        
+        if ($existing) {
+            return true; // Already exists
+        }
+        
+        $result = $wpdb->insert(
+            $table,
+            array(
+                'message_id' => $message_id,
+                'user_id' => $user_id,
+                'reaction_type' => $reaction_type,
+                'created_at' => current_time('mysql')
+            ),
+            array('%d', '%d', '%s', '%s')
+        );
+        
+        return $result !== false;
+    }
+    
+    /**
+     * Remove reaction from message
+     */
+    public function remove_reaction($message_id, $user_id, $reaction_type) {
+        global $wpdb;
+        
+        $table = $wpdb->prefix . 'sourcehub_message_reactions';
+        
+        $result = $wpdb->delete(
+            $table,
+            array(
+                'message_id' => $message_id,
+                'user_id' => $user_id,
+                'reaction_type' => $reaction_type
+            ),
+            array('%d', '%d', '%s')
+        );
+        
+        return $result !== false;
+    }
+    
+    /**
+     * Get all reactions for a message
+     */
+    public function get_message_reactions($message_id) {
+        global $wpdb;
+        
+        $table = $wpdb->prefix . 'sourcehub_message_reactions';
+        
+        $reactions = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.reaction_type, r.user_id, u.display_name, COUNT(*) as count
+             FROM $table r
+             LEFT JOIN {$wpdb->users} u ON r.user_id = u.ID
+             WHERE r.message_id = %d
+             GROUP BY r.reaction_type
+             ORDER BY r.created_at ASC",
+            $message_id
+        ));
+        
+        // Format reactions with user lists
+        $formatted = array();
+        foreach ($reactions as $reaction) {
+            if (!isset($formatted[$reaction->reaction_type])) {
+                $formatted[$reaction->reaction_type] = array(
+                    'count' => 0,
+                    'users' => array()
+                );
+            }
+            
+            // Get all users who reacted with this type
+            $users = $wpdb->get_results($wpdb->prepare(
+                "SELECT r.user_id, u.display_name
+                 FROM $table r
+                 LEFT JOIN {$wpdb->users} u ON r.user_id = u.ID
+                 WHERE r.message_id = %d AND r.reaction_type = %s",
+                $message_id, $reaction->reaction_type
+            ));
+            
+            $formatted[$reaction->reaction_type] = array(
+                'count' => count($users),
+                'users' => $users
+            );
+        }
+        
+        return $formatted;
+    }
+    
+    /**
+     * Delete a message
+     */
+    public function delete_message($message_id) {
+        global $wpdb;
+        
+        $messages_table = $wpdb->prefix . 'sourcehub_messages';
+        $reactions_table = $wpdb->prefix . 'sourcehub_message_reactions';
+        $reads_table = $wpdb->prefix . 'sourcehub_message_reads';
+        
+        // Delete reactions
+        $wpdb->delete($reactions_table, array('message_id' => $message_id), array('%d'));
+        
+        // Delete read receipts
+        $wpdb->delete($reads_table, array('message_id' => $message_id), array('%d'));
+        
+        // Delete the message
+        $result = $wpdb->delete($messages_table, array('id' => $message_id), array('%d'));
+        
+        return $result !== false;
     }
     
     /**
@@ -1012,6 +1138,88 @@ class SourceHub_Messaging {
             wp_send_json_success(array('og_data' => $og_data));
         } else {
             wp_send_json_error(array('message' => 'Failed to fetch OG tags'));
+        }
+    }
+    
+    /**
+     * AJAX: Add reaction to message
+     */
+    public function ajax_add_reaction() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => 'Not logged in'));
+        }
+        
+        $message_id = isset($_POST['message_id']) ? intval($_POST['message_id']) : 0;
+        $reaction_type = isset($_POST['reaction_type']) ? sanitize_text_field($_POST['reaction_type']) : '';
+        
+        if (!$message_id || !$reaction_type) {
+            wp_send_json_error(array('message' => 'Invalid parameters'));
+        }
+        
+        $result = $this->add_reaction($message_id, $current_user_id, $reaction_type);
+        
+        if ($result) {
+            $reactions = $this->get_message_reactions($message_id);
+            wp_send_json_success(array('reactions' => $reactions));
+        } else {
+            wp_send_json_error(array('message' => 'Failed to add reaction'));
+        }
+    }
+    
+    /**
+     * AJAX: Remove reaction from message
+     */
+    public function ajax_remove_reaction() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => 'Not logged in'));
+        }
+        
+        $message_id = isset($_POST['message_id']) ? intval($_POST['message_id']) : 0;
+        $reaction_type = isset($_POST['reaction_type']) ? sanitize_text_field($_POST['reaction_type']) : '';
+        
+        if (!$message_id || !$reaction_type) {
+            wp_send_json_error(array('message' => 'Invalid parameters'));
+        }
+        
+        $result = $this->remove_reaction($message_id, $current_user_id, $reaction_type);
+        
+        if ($result) {
+            $reactions = $this->get_message_reactions($message_id);
+            wp_send_json_success(array('reactions' => $reactions));
+        } else {
+            wp_send_json_error(array('message' => 'Failed to remove reaction'));
+        }
+    }
+    
+    /**
+     * AJAX: Delete message
+     */
+    public function ajax_delete_message() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => 'Not logged in'));
+        }
+        
+        $message_id = isset($_POST['message_id']) ? intval($_POST['message_id']) : 0;
+        
+        if (!$message_id) {
+            wp_send_json_error(array('message' => 'Invalid message ID'));
+        }
+        
+        $result = $this->delete_message($message_id);
+        
+        if ($result) {
+            wp_send_json_success(array('message' => 'Message deleted'));
+        } else {
+            wp_send_json_error(array('message' => 'Failed to delete message'));
         }
     }
     

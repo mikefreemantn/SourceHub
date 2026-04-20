@@ -176,6 +176,19 @@ class SourceHub_Database {
             PRIMARY KEY (id),
             UNIQUE KEY user_id (user_id)
         ) $charset_collate;";
+        
+        $message_reactions_table = $wpdb->prefix . 'sourcehub_message_reactions';
+        $message_reactions_sql = "CREATE TABLE $message_reactions_table (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            message_id bigint(20) unsigned NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            reaction_type varchar(20) NOT NULL,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY message_user_reaction (message_id, user_id, reaction_type),
+            KEY message_id (message_id),
+            KEY user_id (user_id)
+        ) $charset_collate;";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
@@ -189,6 +202,7 @@ class SourceHub_Database {
         $results['group_members'] = dbDelta($group_members_sql);
         $results['message_reads'] = dbDelta($message_reads_sql);
         $results['user_activity'] = dbDelta($user_activity_sql);
+        $results['message_reactions'] = dbDelta($message_reactions_sql);
         
         // Check for errors
         if ($wpdb->last_error) {
@@ -206,6 +220,7 @@ class SourceHub_Database {
         $tables_created['group_members'] = ($wpdb->get_var("SHOW TABLES LIKE '$group_members_table'") == $group_members_table);
         $tables_created['message_reads'] = ($wpdb->get_var("SHOW TABLES LIKE '$message_reads_table'") == $message_reads_table);
         $tables_created['user_activity'] = ($wpdb->get_var("SHOW TABLES LIKE '$user_activity_table'") == $user_activity_table);
+        $tables_created['message_reactions'] = ($wpdb->get_var("SHOW TABLES LIKE '$message_reactions_table'") == $message_reactions_table);
         
         foreach ($tables_created as $table => $created) {
             if (!$created) {

@@ -338,6 +338,13 @@ class SourceHub_Admin {
             SOURCEHUB_VERSION
         );
         
+        wp_enqueue_style(
+            'sourcehub-reactions',
+            SOURCEHUB_PLUGIN_URL . 'admin/css/reactions.css',
+            array('sourcehub-messaging'),
+            SOURCEHUB_VERSION
+        );
+        
         wp_enqueue_script(
             'sourcehub-messaging',
             SOURCEHUB_PLUGIN_URL . 'admin/js/messaging.js',

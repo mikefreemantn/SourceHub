@@ -104,6 +104,26 @@
             }
         },
 
+        disablePublishButton: function() {
+            var $publishButton = $('#publish');
+            if ($publishButton.length) {
+                $publishButton.prop('disabled', true);
+                $publishButton.addClass('disabled');
+                $publishButton.attr('title', 'Please meet all SourceHub requirements before publishing');
+                console.log('Publish button disabled - requirements not met');
+            }
+        },
+
+        enablePublishButton: function() {
+            var $publishButton = $('#publish');
+            if ($publishButton.length) {
+                $publishButton.prop('disabled', false);
+                $publishButton.removeClass('disabled');
+                $publishButton.attr('title', '');
+                console.log('Publish button enabled - all requirements met');
+            }
+        },
+
         performRealTimeValidation: function() {
             var self = this;
             var $status = $('#sourcehub-validation-status');
@@ -154,10 +174,12 @@
                         if (response.data.valid) {
                             $message.text('Ready for optimal syndication');
                             $status.addClass('validation-success').css('background', '#d4edda');
+                            self.enablePublishButton();
                         } else {
                             var warningText = 'Warning: You should ' + response.data.errors.join(', ') + ' for optimal syndication';
                             $message.text(warningText);
                             $status.addClass('validation-warning').css('background', '#fff3cd');
+                            self.disablePublishButton();
                         }
                     }
                 },

@@ -17,6 +17,8 @@
         currentConversation: null,
         currentGroup: null,
         unreadCount: 0,
+        loadedPreviews: new Set(), // Track which URLs have been fetched
+        ogDataCache: {}, // Cache OG data by URL
         
         /**
          * Initialize messaging
@@ -605,15 +607,27 @@
                     }
                 }
                 
+                // Add reactions
+                html += this.renderReactions(msg.id, msg.reactions || {});
+                
                 $msg.html(html);
+                $msg.attr('data-message-id', msg.id);
                 $list.append($msg);
                 
                 // Auto-fetch link previews for URLs in message
                 const urls = this.extractUrls(msg.message);
                 urls.forEach(url => {
                     const $preview = $msg.find(`.sh-link-preview[data-url="${url}"]`);
-                    if ($preview.length && !$preview.data('loaded')) {
-                        this.autoFetchLinkPreview(url, $preview);
+                    if ($preview.length) {
+                        // Check if we have cached OG data for this URL
+                        if (this.ogDataCache[url]) {
+                            // Render from cache immediately
+                            this.renderLinkPreview(this.ogDataCache[url], $preview);
+                            $preview.data('loaded', true);
+                        } else if (!$preview.data('loaded')) {
+                            // Fetch if not in cache and not already loaded
+                            this.autoFetchLinkPreview(url, $preview);
+                        }
                     }
                 });
             });
@@ -1404,6 +1418,14 @@
          * Auto-fetch link preview (OG tags) - no button required
          */
         autoFetchLinkPreview: function(url, $preview) {
+            // Check if we've already fetched this URL
+            if (this.loadedPreviews.has(url)) {
+                return;
+            }
+            
+            // Mark as being fetched
+            this.loadedPreviews.add(url);
+            
             // Show loading state
             $preview.html('<div class="sh-preview-loading">Loading preview...</div>').addClass('show');
             
@@ -1417,6 +1439,8 @@
                 },
                 success: (response) => {
                     if (response.success && response.data.og_data) {
+                        // Cache the OG data for this URL
+                        this.ogDataCache[url] = response.data.og_data;
                         this.renderLinkPreview(response.data.og_data, $preview);
                         $preview.data('loaded', true);
                     } else {
@@ -1467,7 +1491,7 @@
             
             html += '</div></div>';
             
-            $preview.html(html);
+            $preview.html(html).addClass('show');
         },
         
         /**
@@ -1558,8 +1582,281 @@
             
             // Format as date
             return date.toLocaleDateString();
+        },
+        
+        /**
+         * Render reactions for a message
+         */
+        renderReactions: function(messageId, reactions) {
+            const reactionEmojis = {
+                'thumbs_up': '👍',
+                'thumbs_down': '👎',
+                'heart': '❤️',
+                'laugh': '😂',
+                'celebrate': '🎉',
+                'thinking': '🤔'
+            };
+            
+            let html = '<div class="sh-message-reactions">';
+            
+            // Reaction picker (shows on hover)
+            html += '<div class="sh-reaction-picker">';
+            Object.keys(reactionEmojis).forEach(type => {
+                html += `<span class="sh-reaction-option" data-reaction="${type}">${reactionEmojis[type]}</span>`;
+            });
+            // Add 3-dot menu button
+            html += `<span class="sh-message-menu-btn" data-message-id="${messageId}">⋯</span>`;
+            html += '</div>';
+            
+            // Message actions dropdown (hidden by default)
+            html += `<div class="sh-message-menu" data-message-id="${messageId}">
+                <div class="sh-message-menu-item sh-copy-text" data-message-id="${messageId}">
+                    <span class="dashicons dashicons-admin-page"></span> Copy Text
+                </div>
+                <div class="sh-message-menu-item sh-delete-message" data-message-id="${messageId}">
+                    <span class="dashicons dashicons-trash"></span> Delete Message
+                </div>
+            </div>`;
+            
+            // Existing reactions display
+            html += '<div class="sh-reactions-display">';
+            if (reactions && Object.keys(reactions).length > 0) {
+                Object.keys(reactions).forEach(type => {
+                    const reaction = reactions[type];
+                    const emoji = reactionEmojis[type] || type;
+                    const currentUserId = sourcehubMessaging.currentUserId;
+                    const userReacted = reaction.users.some(u => u.user_id == currentUserId);
+                    const className = userReacted ? 'sh-reaction-bubble sh-user-reacted' : 'sh-reaction-bubble';
+                    const userNames = reaction.users.map(u => u.display_name).join(', ');
+                    
+                    html += `<span class="${className}" data-reaction="${type}" data-message-id="${messageId}" title="${userNames}">
+                        ${emoji} ${reaction.count}
+                    </span>`;
+                });
+            }
+            html += '</div>';
+            html += '</div>';
+            
+            return html;
+        },
+        
+        /**
+         * Add reaction to message
+         */
+        addReaction: function(messageId, reactionType) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_add_reaction',
+                    nonce: sourcehubMessaging.nonce,
+                    message_id: messageId,
+                    reaction_type: reactionType
+                },
+                success: (response) => {
+                    if (response.success) {
+                        this.updateMessageReactions(messageId, response.data.reactions);
+                    }
+                }
+            });
+        },
+        
+        /**
+         * Remove reaction from message
+         */
+        removeReaction: function(messageId, reactionType) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_remove_reaction',
+                    nonce: sourcehubMessaging.nonce,
+                    message_id: messageId,
+                    reaction_type: reactionType
+                },
+                success: (response) => {
+                    if (response.success) {
+                        this.updateMessageReactions(messageId, response.data.reactions);
+                    }
+                }
+            });
+        },
+        
+        /**
+         * Update reactions display for a message
+         */
+        updateMessageReactions: function(messageId, reactions) {
+            const $message = $(`.sh-message[data-message-id="${messageId}"]`);
+            if ($message.length) {
+                const $reactionsContainer = $message.find('.sh-message-reactions');
+                const newHtml = this.renderReactions(messageId, reactions);
+                $reactionsContainer.replaceWith(newHtml);
+            }
+        },
+        
+        /**
+         * Delete message
+         */
+        deleteMessage: function(messageId) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_delete_message',
+                    nonce: sourcehubMessaging.nonce,
+                    message_id: messageId
+                },
+                success: (response) => {
+                    if (response.success) {
+                        // Remove message from UI
+                        $(`.sh-message[data-message-id="${messageId}"]`).fadeOut(300, function() {
+                            $(this).remove();
+                        });
+                        
+                        // Reload conversation to update counts
+                        if (this.currentConversation) {
+                            this.loadConversations();
+                        } else if (this.currentGroup) {
+                            this.loadConversations();
+                        }
+                    } else {
+                        alert('Failed to delete message: ' + (response.data.message || 'Unknown error'));
+                    }
+                },
+                error: () => {
+                    alert('Failed to delete message. Please try again.');
+                }
+            });
         }
     };
+    
+    // Event delegation for reactions
+    $(document).on('click', '.sh-reaction-option', function(e) {
+        e.stopPropagation();
+        const reactionType = $(this).data('reaction');
+        const $message = $(this).closest('.sh-message');
+        const messageId = $message.data('messageId');
+        
+        if (messageId && reactionType) {
+            SourceHubMessaging.addReaction(messageId, reactionType);
+        }
+    });
+    
+    $(document).on('click', '.sh-reaction-bubble', function(e) {
+        e.stopPropagation();
+        const reactionType = $(this).data('reaction');
+        const messageId = $(this).data('messageId');
+        
+        if (messageId && reactionType) {
+            // If user already reacted, remove it; otherwise add it
+            if ($(this).hasClass('sh-user-reacted')) {
+                SourceHubMessaging.removeReaction(messageId, reactionType);
+            } else {
+                SourceHubMessaging.addReaction(messageId, reactionType);
+            }
+        }
+    });
+    
+    // Toggle message menu
+    $(document).on('click', '.sh-message-menu-btn', function(e) {
+        e.stopPropagation();
+        const messageId = $(this).data('messageId');
+        const $menu = $(`.sh-message-menu[data-message-id="${messageId}"]`);
+        
+        // Close all other menus
+        $('.sh-message-menu').not($menu).removeClass('show');
+        
+        // Toggle this menu
+        $menu.toggleClass('show');
+    });
+    
+    // Close menu when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.sh-message-menu, .sh-message-menu-btn').length) {
+            $('.sh-message-menu').removeClass('show');
+        }
+    });
+    
+    // Copy text
+    $(document).on('click', '.sh-copy-text', function(e) {
+        e.stopPropagation();
+        const messageId = $(this).data('messageId');
+        
+        console.log('Copy text clicked for message ID:', messageId);
+        
+        const $message = $(`.sh-message[data-message-id="${messageId}"]`);
+        console.log('Found message element:', $message.length);
+        
+        const $messageBody = $message.find('.sh-message-body');
+        console.log('Found message body:', $messageBody.length, $messageBody.html());
+        
+        if (!$messageBody.length) {
+            alert('Could not find message text');
+            return;
+        }
+        
+        // Get text content, stripping HTML but preserving line breaks
+        let messageText = $messageBody.html() || '';
+        
+        if (messageText) {
+            // Convert <br> to newlines
+            messageText = messageText.replace(/<br\s*\/?>/gi, '\n');
+            // Strip remaining HTML tags
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = messageText;
+            messageText = tempDiv.textContent || tempDiv.innerText || '';
+        }
+        
+        if (!messageText || messageText.trim() === '') {
+            alert('No text to copy');
+            return;
+        }
+        
+        console.log('Copying text:', messageText);
+        
+        // Copy to clipboard using fallback method (more reliable)
+        const textArea = document.createElement('textarea');
+        textArea.value = messageText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            console.log('Copy successful:', successful);
+            if (successful) {
+                // Close menu
+                $('.sh-message-menu').removeClass('show');
+                // Show brief success indicator
+                const $btn = $(`.sh-message-menu-btn[data-message-id="${messageId}"]`);
+                const originalText = $btn.text();
+                $btn.text('✓').css('color', '#46b450');
+                setTimeout(() => {
+                    $btn.text(originalText).css('color', '');
+                }, 1000);
+            } else {
+                alert('Failed to copy text');
+            }
+        } catch (err) {
+            console.error('Copy failed:', err);
+            alert('Failed to copy text: ' + err.message);
+        }
+        
+        document.body.removeChild(textArea);
+    });
+    
+    // Delete message
+    $(document).on('click', '.sh-delete-message', function(e) {
+        e.stopPropagation();
+        const messageId = $(this).data('messageId');
+        
+        if (messageId && confirm('Are you sure you want to delete this message?')) {
+            SourceHubMessaging.deleteMessage(messageId);
+        }
+    });
     
     // Initialize when ready
     $(document).ready(function() {
