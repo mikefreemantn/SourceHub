@@ -236,6 +236,16 @@ class SourceHub_Admin {
             array($this, 'render_bug_tracker')
         );
 
+        // HubChat Settings - accessible to editors and above
+        add_submenu_page(
+            'sourcehub',
+            __('HubChat', 'sourcehub'),
+            __('HubChat', 'sourcehub'),
+            $dashboard_capability,
+            'sourcehub-hubchat',
+            array($this, 'render_hubchat_settings')
+        );
+
         // Smart Links Documentation (only for hub mode) - accessible to editors and above
         if ($mode === 'hub') {
             add_submenu_page(
@@ -353,13 +363,19 @@ class SourceHub_Admin {
             true
         );
         
+        $user_id = get_current_user_id();
+        $mute_notifications = get_user_meta($user_id, 'sourcehub_mute_notifications', true);
+        $notification_duration = get_user_meta($user_id, 'sourcehub_notification_duration', true);
+        
         wp_localize_script('sourcehub-messaging', 'sourcehubMessaging', array(
             'nonce' => wp_create_nonce('sourcehub_messaging_nonce'),
             'uploadNonce' => wp_create_nonce('media-form'),
-            'currentUserId' => get_current_user_id(),
+            'currentUserId' => $user_id,
             'pluginUrl' => SOURCEHUB_PLUGIN_URL,
             'soundEnabled' => true,
-            'notificationSound' => SOURCEHUB_PLUGIN_URL . 'admin/sounds/notification.mp3'
+            'notificationSound' => SOURCEHUB_PLUGIN_URL . 'admin/sounds/notification.mp3',
+            'muteNotifications' => $mute_notifications ? $mute_notifications : '0',
+            'notificationDuration' => $notification_duration ? intval($notification_duration) : 5
         ));
         
         // Only load on SourceHub admin pages
@@ -1148,6 +1164,40 @@ class SourceHub_Admin {
         }
 
         include SOURCEHUB_PLUGIN_DIR . 'admin/views/bug-tracker.php';
+    }
+
+    /**
+     * Render HubChat Settings page
+     */
+    public function render_hubchat_settings() {
+        // Check permissions
+        if (!current_user_can('edit_posts')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        // Handle form submission
+        if (isset($_POST['sourcehub_hubchat_settings_nonce']) && 
+            wp_verify_nonce($_POST['sourcehub_hubchat_settings_nonce'], 'sourcehub_hubchat_settings')) {
+            
+            $user_id = get_current_user_id();
+            
+            // Save email digest preference
+            $email_digest = isset($_POST['sourcehub_email_digest']) ? '1' : '0';
+            update_user_meta($user_id, 'sourcehub_email_digest', $email_digest);
+            
+            // Save mute notifications preference
+            $mute_notifications = isset($_POST['sourcehub_mute_notifications']) ? '1' : '0';
+            update_user_meta($user_id, 'sourcehub_mute_notifications', $mute_notifications);
+            
+            // Save notification duration (validate between 1-30 seconds)
+            $notification_duration = isset($_POST['sourcehub_notification_duration']) ? intval($_POST['sourcehub_notification_duration']) : 5;
+            $notification_duration = max(1, min(30, $notification_duration)); // Clamp between 1-30
+            update_user_meta($user_id, 'sourcehub_notification_duration', $notification_duration);
+            
+            echo '<div class="notice notice-success is-dismissible"><p>Settings saved successfully.</p></div>';
+        }
+
+        include SOURCEHUB_PLUGIN_DIR . 'admin/views/hubchat-settings.php';
     }
 
     /**

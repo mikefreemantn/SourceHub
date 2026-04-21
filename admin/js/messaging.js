@@ -28,6 +28,21 @@
             this.initHeartbeat();
             this.loadInitialData();
             this.updateActivity(); // Update activity on page load
+            this.checkUrlParameters(); // Check for auto-open parameter
+        },
+        
+        /**
+         * Check URL parameters for auto-open
+         */
+        checkUrlParameters: function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('open_chat') === '1') {
+                // Auto-open chat panel to inbox
+                setTimeout(() => {
+                    this.openPanel();
+                    this.switchView('inbox');
+                }, 500); // Small delay to ensure everything is loaded
+            }
         },
         
         /**
@@ -205,6 +220,7 @@
                 
                 if (item.type === 'conversation') {
                     // Direct conversation
+                    const messagePreview = item.last_message ? this.escapeHtml(this.truncateText(item.last_message, 50)) : 'No messages yet';
                     const $item = $('<div class="sh-conversation-item"></div>');
                     $item.html(`
                         <div class="sh-user-avatar">
@@ -212,6 +228,7 @@
                         </div>
                         <div class="sh-conversation-content">
                             <div class="sh-conversation-name">${this.escapeHtml(item.name)}</div>
+                            <div class="sh-conversation-preview">${messagePreview}</div>
                             <div class="sh-conversation-time">${this.formatTime(item.last_activity)}</div>
                         </div>
                         ${unreadBadge}
@@ -221,6 +238,7 @@
                     $list.append($item);
                 } else if (item.type === 'group') {
                     // Group conversation
+                    const messagePreview = item.last_message ? this.escapeHtml(this.truncateText(item.last_message, 50)) : 'No messages yet';
                     const $item = $('<div class="sh-group-item"></div>');
                     $item.html(`
                         <div class="sh-group-icon">
@@ -228,6 +246,7 @@
                         </div>
                         <div class="sh-group-content">
                             <div class="sh-group-name">${this.escapeHtml(item.name)}</div>
+                            <div class="sh-conversation-preview">${messagePreview}</div>
                             <div class="sh-conversation-time">${this.formatTime(item.last_activity)}</div>
                         </div>
                         ${unreadBadge}
@@ -1046,7 +1065,26 @@
          * Check unread count
          */
         checkUnreadCount: function() {
-            // Will be updated via heartbeat
+            // Fetch initial unread count on page load
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_get_unread_count',
+                    nonce: sourcehubMessaging.nonce
+                },
+                success: (response) => {
+                    if (response.success) {
+                        this.unreadCount = response.data.unread_count;
+                        const $badge = $('#sourcehub-chat-badge');
+                        if (this.unreadCount > 0) {
+                            $badge.text(this.unreadCount).show();
+                        } else {
+                            $badge.hide();
+                        }
+                    }
+                }
+            });
         },
         
         /**
@@ -1085,7 +1123,7 @@
                 } else if (this.currentView === 'group' && this.currentGroup) {
                     this.loadGroupMessages();
                 } else if (this.currentView === 'inbox') {
-                    this.loadInbox();
+                    this.loadConversations(); // Refresh conversation list
                 }
             }
         },
@@ -1115,11 +1153,13 @@
                 
                 console.log('SourceHub: Notification header:', header);
                 
-                // Build notification HTML with optional image
+                // Build notification HTML with color accent and optional image
                 let notificationHTML = `
-                    <div class="sh-notif-header">
-                        ${header}
-                    </div>
+                    <div class="sh-notif-accent"></div>
+                    <div class="sh-notif-content">
+                        <div class="sh-notif-header">
+                            ${header}
+                        </div>
                 `;
                 
                 // Add image thumbnail if message has attachment
@@ -1133,7 +1173,8 @@
                 
                 // Add message text
                 notificationHTML += `
-                    <div class="sh-notif-body">${this.truncate(this.escapeHtml(message.message), 100)}</div>
+                        <div class="sh-notif-body">${this.truncate(this.escapeHtml(message.message), 100)}</div>
+                    </div>
                 `;
                 
                 $notification.html(notificationHTML);
@@ -1160,9 +1201,11 @@
                     console.log('SourceHub: Notification shown');
                 }, 100);
                 
+                // Use custom duration from settings (default 5 seconds)
+                const duration = (sourcehubMessaging.notificationDuration || 5) * 1000;
                 setTimeout(() => {
                     $notification.fadeOut(() => $notification.remove());
-                }, 5000);
+                }, duration);
             } catch (error) {
                 console.error('SourceHub: Error showing notification:', error);
             }
@@ -1515,6 +1558,11 @@
          * Play notification sound
          */
         playSound: function(isGroup) {
+            // Check if notifications are muted
+            if (sourcehubMessaging.muteNotifications === '1') {
+                return; // Don't play sound if muted
+            }
+            
             const soundFile = isGroup ? 'groupmessage.mp3' : 'individualmessage.mp3';
             const soundUrl = sourcehubMessaging.pluginUrl + '/admin/sounds/' + soundFile;
             
@@ -1532,6 +1580,16 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        },
+        
+        /**
+         * Utility: Truncate text
+         */
+        truncateText: function(text, maxLength) {
+            if (!text) return '';
+            text = text.replace(/<[^>]*>/g, ''); // Strip HTML tags
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
         },
         
         /**

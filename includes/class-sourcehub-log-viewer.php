@@ -84,19 +84,7 @@ class SourceHub_Log_Viewer {
             rest_url('sourcehub/v1/logs')
         );
         
-        ?>
-        <div class="notice notice-info" style="padding: 12px; border-left-color: #2271b1;">
-            <p style="margin: 0;">
-                <strong>📊 Activity Log API:</strong> 
-                <a href="<?php echo esc_url($log_url); ?>" target="_blank" style="text-decoration: none;">
-                    <?php echo esc_html($log_url); ?>
-                </a>
-                <button type="button" class="button button-small" onclick="navigator.clipboard.writeText('<?php echo esc_js($log_url); ?>'); this.textContent='Copied!';" style="margin-left: 10px;">
-                    Copy URL
-                </button>
-            </p>
-        </div>
-        <?php
+        ?><?php
     }
     
     /**

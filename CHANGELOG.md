@@ -2,6 +2,36 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.2.1] - 2026-04-21
+
+### Added
+- **HubChat Settings Page** - New dedicated settings page for messaging preferences
+  - Email digest opt-in/opt-out toggle
+  - Mute notification sounds option
+  - Customizable notification duration (1-30 seconds)
+  - Modern green-branded UI with gradient header and card-based layout
+  - Accessible via SourceHub → HubChat menu
+
+### Fixed
+- **Email Digest System** - Major improvements to digest email accuracy
+  - Fixed timezone bug (now uses UTC for all timestamp comparisons)
+  - Fixed unread count accuracy by splitting direct/group message queries
+  - Email subject now shows actual unread count instead of always showing 20
+  - Email body shows correct total with "(showing X most recent)" note when applicable
+  - Fixed messages query to properly exclude read messages using `is_read` column for direct messages
+  - Added check to prevent sending digest to users with 0 unread messages
+  - Digest now respects user's email preference setting
+
+### Improved
+- **Notification Popups** - Enhanced visibility and customization
+  - Added vibrant green gradient accent bar on left side of notifications
+  - Notifications now use user's custom duration setting
+  - Better visual hierarchy with flexbox layout
+  - More noticeable and professional appearance
+
+### Removed
+- Activity Log API notice from log viewer page
+
 ## [2.1.0] - 2026-04-17
 
 ### Added

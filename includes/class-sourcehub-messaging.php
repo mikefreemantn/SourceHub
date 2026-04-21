@@ -35,10 +35,48 @@ class SourceHub_Messaging {
         add_action('wp_ajax_sourcehub_add_reaction', array($this, 'ajax_add_reaction'));
         add_action('wp_ajax_sourcehub_remove_reaction', array($this, 'ajax_remove_reaction'));
         add_action('wp_ajax_sourcehub_delete_message', array($this, 'ajax_delete_message'));
+        add_action('wp_ajax_sourcehub_get_unread_count', array($this, 'ajax_get_unread_count'));
         
         // Heartbeat API integration
         add_filter('heartbeat_received', array($this, 'heartbeat_received'), 10, 2);
         add_filter('heartbeat_settings', array($this, 'heartbeat_settings'));
+        
+        // Email digest for unread messages
+        add_action('sourcehub_check_message_digests', array($this, 'check_and_send_digests'));
+        add_filter('cron_schedules', array($this, 'add_cron_schedules'));
+        
+        // Clear old cron event if it exists with wrong schedule
+        $timestamp = wp_next_scheduled('sourcehub_check_message_digests');
+        if ($timestamp) {
+            $cron = _get_cron_array();
+            if (isset($cron[$timestamp]['sourcehub_check_message_digests'])) {
+                foreach ($cron[$timestamp]['sourcehub_check_message_digests'] as $key => $event) {
+                    if (isset($event['schedule']) && $event['schedule'] !== 'sourcehub_2min') {
+                        wp_unschedule_event($timestamp, 'sourcehub_check_message_digests');
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Register new cron event
+        if (!wp_next_scheduled('sourcehub_check_message_digests')) {
+            wp_schedule_event(time(), 'sourcehub_2min', 'sourcehub_check_message_digests');
+        }
+        
+        // Add admin action to manually trigger digest (for testing)
+        add_action('admin_init', array($this, 'maybe_trigger_digest_manually'));
+    }
+    
+    /**
+     * Add custom cron schedules
+     */
+    public function add_cron_schedules($schedules) {
+        $schedules['sourcehub_2min'] = array(
+            'interval' => 120, // 2 minutes in seconds
+            'display'  => __('Every 2 Minutes (SourceHub Testing)')
+        );
+        return $schedules;
     }
     
     /**
@@ -1000,13 +1038,19 @@ class SourceHub_Messaging {
                 (SELECT COUNT(*) FROM $table m2 
                  WHERE m2.to_user_id = %d 
                  AND m2.from_user_id = CASE WHEN m.from_user_id = %d THEN m.to_user_id ELSE m.from_user_id END
-                 AND m2.is_read = 0) as unread_count
+                 AND m2.is_read = 0) as unread_count,
+                (SELECT m3.message FROM $table m3
+                 WHERE (m3.from_user_id = %d AND m3.to_user_id = CASE WHEN m.from_user_id = %d THEN m.to_user_id ELSE m.from_user_id END)
+                    OR (m3.to_user_id = %d AND m3.from_user_id = CASE WHEN m.from_user_id = %d THEN m.to_user_id ELSE m.from_user_id END)
+                 AND m3.group_id IS NULL
+                 ORDER BY m3.created_at DESC
+                 LIMIT 1) as last_message
             FROM $table m
             LEFT JOIN {$wpdb->users} u ON u.ID = CASE WHEN m.from_user_id = %d THEN m.to_user_id ELSE m.from_user_id END
             WHERE (m.from_user_id = %d OR m.to_user_id = %d)
             AND m.group_id IS NULL
             GROUP BY user_id",
-            $user_id, $user_id, $user_id, $user_id, $user_id, $user_id
+            $user_id, $user_id, $user_id, $user_id, $user_id, $user_id, $user_id, $user_id, $user_id, $user_id
         );
         
         // Get groups
@@ -1022,7 +1066,11 @@ class SourceHub_Messaging {
                  LEFT JOIN $reads_table mr ON m2.id = mr.message_id AND mr.user_id = %d
                  WHERE m2.group_id = g.id 
                  AND m2.from_user_id != %d
-                 AND mr.id IS NULL) as unread_count
+                 AND mr.id IS NULL) as unread_count,
+                (SELECT m3.message FROM $table m3
+                 WHERE m3.group_id = g.id
+                 ORDER BY m3.created_at DESC
+                 LIMIT 1) as last_message
             FROM $groups_table g
             INNER JOIN $members_table gm ON g.id = gm.group_id
             LEFT JOIN $table m ON m.group_id = g.id
@@ -1224,6 +1272,22 @@ class SourceHub_Messaging {
     }
     
     /**
+     * AJAX: Get unread count
+     */
+    public function ajax_get_unread_count() {
+        check_ajax_referer('sourcehub_messaging_nonce', 'nonce');
+        
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => 'Not logged in'));
+        }
+        
+        $unread_count = $this->get_unread_count($current_user_id);
+        
+        wp_send_json_success(array('unread_count' => $unread_count));
+    }
+    
+    /**
      * Heartbeat API: Receive and process
      */
     public function heartbeat_received($response, $data) {
@@ -1262,5 +1326,243 @@ class SourceHub_Messaging {
         // Set heartbeat to 15 seconds for messaging
         $settings['interval'] = 15;
         return $settings;
+    }
+    
+    /**
+     * Manual trigger for digest (testing only)
+     */
+    public function maybe_trigger_digest_manually() {
+        if (isset($_GET['sourcehub_trigger_digest']) && current_user_can('manage_options')) {
+            $this->check_and_send_digests();
+            wp_die('Digest check completed. Check Mailpit for emails.');
+        }
+    }
+    
+    /**
+     * Check for unread messages and send email digests
+     * Runs every 2 minutes via cron
+     */
+    public function check_and_send_digests() {
+        error_log('SourceHub Digest: check_and_send_digests() called');
+        global $wpdb;
+        
+        $messages_table = $wpdb->prefix . 'sourcehub_messages';
+        $reads_table = $wpdb->prefix . 'sourcehub_message_reads';
+        
+        // Find messages that are:
+        // 1. Older than 2 minutes (for testing - change to 1 hour for production)
+        // 2. Not read by the recipient
+        // 3. Recipient hasn't received a digest for this message yet
+        $two_minutes_ago = gmdate('Y-m-d H:i:s', strtotime('-2 minutes'));
+        
+        // Get all users with unread messages older than 2 minutes
+        error_log('SourceHub Digest: Checking for messages older than ' . $two_minutes_ago);
+        $users_with_unread = $wpdb->get_results($wpdb->prepare(
+            "SELECT DISTINCT 
+                CASE 
+                    WHEN m.group_id IS NOT NULL THEN gm.user_id
+                    ELSE m.to_user_id 
+                END as user_id
+            FROM $messages_table m
+            LEFT JOIN {$wpdb->prefix}sourcehub_group_members gm ON m.group_id = gm.group_id
+            LEFT JOIN $reads_table r ON m.id = r.message_id AND (
+                CASE 
+                    WHEN m.group_id IS NOT NULL THEN r.user_id = gm.user_id
+                    ELSE r.user_id = m.to_user_id
+                END
+            )
+            WHERE m.created_at < %s
+            AND r.id IS NULL
+            AND m.from_user_id != CASE 
+                WHEN m.group_id IS NOT NULL THEN gm.user_id
+                ELSE m.to_user_id 
+            END",
+            $two_minutes_ago
+        ));
+        
+        error_log('SourceHub Digest: Found ' . count($users_with_unread) . ' users with unread messages');
+        
+        foreach ($users_with_unread as $row) {
+            $user_id = $row->user_id;
+            
+            // Get timestamp of last digest sent
+            $last_digest = get_user_meta($user_id, 'sourcehub_last_digest_sent', true);
+            
+            // Only get messages that are:
+            // 1. Older than 2 minutes (or 1 hour in production)
+            // 2. Created AFTER the last digest was sent (to avoid re-sending same messages)
+            $since_timestamp = $last_digest ? date('Y-m-d H:i:s', $last_digest) : '2000-01-01 00:00:00';
+            
+            // Check if user has email digest enabled (default to enabled if not set)
+            $email_digest_enabled = get_user_meta($user_id, 'sourcehub_email_digest', true);
+            if ($email_digest_enabled === '') {
+                $email_digest_enabled = '1'; // Default to enabled
+            }
+            
+            if ($email_digest_enabled !== '1') {
+                error_log("SourceHub Digest: User $user_id has email digest disabled, skipping");
+                continue;
+            }
+            
+            // Get unread messages that haven't been sent in a digest yet
+            error_log("SourceHub Digest: Checking user $user_id, last digest: " . ($last_digest ? date('Y-m-d H:i:s', $last_digest) : 'never'));
+            $result = $this->get_unread_messages_for_digest($user_id, $two_minutes_ago, $since_timestamp);
+            
+            error_log("SourceHub Digest: User $user_id has " . count($result['messages']) . " messages to send (total count: {$result['total_count']})");
+            
+            if (!empty($result['messages']) && $result['total_count'] > 0) {
+                error_log("SourceHub Digest: Sending email to user $user_id");
+                $this->send_digest_email($user_id, $result['messages'], $result['total_count']);
+                update_user_meta($user_id, 'sourcehub_last_digest_sent', time());
+                error_log("SourceHub Digest: Email sent to user $user_id");
+            }
+        }
+    }
+    
+    /**
+     * Get unread messages for a user (for digest email)
+     */
+    private function get_unread_messages_for_digest($user_id, $older_than, $since_timestamp) {
+        global $wpdb;
+        
+        $messages_table = $wpdb->prefix . 'sourcehub_messages';
+        $reads_table = $wpdb->prefix . 'sourcehub_message_reads';
+        $groups_table = $wpdb->prefix . 'sourcehub_groups';
+        
+        // First get the total count - split into direct and group messages like get_unread_count does
+        $members_table = $wpdb->prefix . 'sourcehub_group_members';
+        
+        // Direct messages count
+        $direct_count = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*)
+            FROM $messages_table
+            WHERE to_user_id = %d
+            AND group_id IS NULL
+            AND is_read = 0
+            AND created_at < %s
+            AND created_at > %s",
+            $user_id,
+            $older_than,
+            $since_timestamp
+        ));
+        
+        // Group messages count
+        $group_count = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT m.id)
+            FROM $messages_table m
+            INNER JOIN $members_table gm ON m.group_id = gm.group_id
+            LEFT JOIN $reads_table mr ON m.id = mr.message_id AND mr.user_id = %d
+            WHERE gm.user_id = %d
+            AND m.from_user_id != %d
+            AND mr.id IS NULL
+            AND m.created_at < %s
+            AND m.created_at > %s",
+            $user_id,
+            $user_id,
+            $user_id,
+            $older_than,
+            $since_timestamp
+        ));
+        
+        $total_count = intval($direct_count) + intval($group_count);
+        error_log("SourceHub Digest: User $user_id - direct_count: $direct_count, group_count: $group_count, total_count: $total_count");
+        
+        // Then get the messages (limited to 20 for email display)
+        // Split into direct and group messages like the count query
+        $messages = $wpdb->get_results($wpdb->prepare(
+            "SELECT m.*, 
+                u.display_name as sender_name,
+                u.user_email as sender_email,
+                g.name as group_name
+            FROM $messages_table m
+            LEFT JOIN {$wpdb->users} u ON m.from_user_id = u.ID
+            LEFT JOIN $groups_table g ON m.group_id = g.id
+            LEFT JOIN $members_table gm ON m.group_id = gm.group_id AND gm.user_id = %d
+            LEFT JOIN $reads_table r ON m.id = r.message_id AND r.user_id = %d
+            WHERE m.created_at < %s
+            AND m.created_at > %s
+            AND (
+                (m.to_user_id = %d AND m.group_id IS NULL AND m.is_read = 0)
+                OR (m.group_id IS NOT NULL AND gm.user_id IS NOT NULL AND r.id IS NULL AND m.from_user_id != %d)
+            )
+            ORDER BY m.created_at DESC
+            LIMIT 20",
+            $user_id,
+            $user_id,
+            $older_than,
+            $since_timestamp,
+            $user_id,
+            $user_id
+        ));
+        
+        return array(
+            'messages' => $messages,
+            'total_count' => (int) $total_count
+        );
+    }
+    
+    /**
+     * Send digest email to user
+     */
+    private function send_digest_email($user_id, $messages, $total_count) {
+        $user = get_userdata($user_id);
+        if (!$user) {
+            return;
+        }
+        
+        $site_name = get_bloginfo('name');
+        $site_url = get_site_url();
+        $message_count = count($messages); // Count of messages shown in this email (max 20)
+        
+        // Email subject - use total_count (actual unread count)
+        $subject = sprintf('[%s] You have %d unread message%s', 
+            $site_name, 
+            $total_count,
+            $total_count > 1 ? 's' : ''
+        );
+        
+        // Build email body
+        $body = "<html><body style='font-family: Arial, sans-serif; color: #333;'>";
+        $body .= "<h2 style='color: #46b450;'>You have unread messages</h2>";
+        $body .= "<p>Hi {$user->display_name},</p>";
+        $body .= "<p>You have <strong>{$total_count} unread message" . ($total_count > 1 ? 's' : '') . "</strong> waiting for you" . ($total_count > $message_count ? " (showing {$message_count} most recent)" : "") . ":</p>";
+        
+        $body .= "<div style='background: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;'>";
+        
+        foreach ($messages as $msg) {
+            $timestamp = date('M j, Y \a\t g:i A', strtotime($msg->created_at));
+            $message_preview = wp_trim_words(strip_tags($msg->message), 20, '...');
+            
+            $body .= "<div style='background: white; padding: 15px; margin-bottom: 15px; border-left: 3px solid #46b450; border-radius: 3px;'>";
+            $body .= "<div style='font-weight: bold; color: #46b450; margin-bottom: 5px;'>";
+            $body .= htmlspecialchars($msg->sender_name);
+            if ($msg->group_name) {
+                $body .= " <span style='color: #666; font-weight: normal;'>in " . htmlspecialchars($msg->group_name) . "</span>";
+            }
+            $body .= "</div>";
+            $body .= "<div style='color: #666; font-size: 12px; margin-bottom: 8px;'>{$timestamp}</div>";
+            $body .= "<div style='color: #333;'>" . htmlspecialchars($message_preview) . "</div>";
+            $body .= "</div>";
+        }
+        
+        $body .= "</div>";
+        
+        // Add link to view messages (auto-opens chat panel to inbox)
+        $messages_url = admin_url('admin.php?page=sourcehub&open_chat=1');
+        $body .= "<p style='margin-top: 30px;'>";
+        $body .= "<a href='{$messages_url}' style='background: #46b450; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;'>View Messages</a>";
+        $body .= "</p>";
+        
+        $body .= "<p style='color: #666; font-size: 12px; margin-top: 30px;'>You're receiving this email because you have unread messages on {$site_name}.</p>";
+        $body .= "</body></html>";
+        
+        // Email headers
+        $headers = array(
+            'Content-Type: text/html; charset=UTF-8',
+            'From: ' . $site_name . ' <' . get_option('admin_email') . '>'
+        );
+        
+        // Send email
+        wp_mail($user->user_email, $subject, $body, $headers);
     }
 }

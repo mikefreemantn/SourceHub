@@ -34,12 +34,18 @@
 #sourcehub-chat-badge {
     background: #d63638;
     color: white;
-    border-radius: 10px;
-    padding: 2px 6px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
     font-size: 11px;
     font-weight: bold;
-    min-width: 18px;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+#sourcehub-chat-badge:empty {
     display: none;
 }
 
@@ -163,20 +169,21 @@
     background: #d63638;
     color: white;
     border-radius: 50%;
-    min-width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
     font-weight: 600;
-    padding: 0 6px;
+    flex-shrink: 0;
 }
 
 .sh-conversation-item {
     display: flex;
     align-items: center;
     padding: 12px;
+    padding-right: 40px;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f1;
     transition: background 0.2s;
@@ -197,6 +204,15 @@
     font-weight: 600;
     color: #2c3338;
     margin-bottom: 4px;
+}
+
+.sh-conversation-preview {
+    font-size: 13px;
+    color: #787c82;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .sh-conversation-time {
@@ -277,6 +293,12 @@
     margin-right: 12px;
     flex-shrink: 0;
     position: relative;
+}
+
+.sh-group-icon .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .sh-online-dot {
@@ -754,7 +776,6 @@
     bottom: 20px;
     right: 20px;
     background: white;
-    padding: 15px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     max-width: 350px;
@@ -764,11 +785,24 @@
     transition: all 0.3s ease;
     cursor: pointer;
     z-index: 99998;
+    overflow: hidden;
+    display: flex;
 }
 
 .sh-notification.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+.sh-notif-accent {
+    width: 4px;
+    background: linear-gradient(180deg, #46b450 0%, #2c8e35 100%);
+    flex-shrink: 0;
+}
+
+.sh-notif-content {
+    padding: 15px 20px;
+    flex: 1;
 }
 
 .sh-notif-header {
