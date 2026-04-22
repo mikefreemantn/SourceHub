@@ -49,6 +49,7 @@ class SourceHub_Admin {
         add_action('wp_ajax_sourcehub_manual_retry', array($this, 'ajax_manual_retry'));
         add_action('wp_ajax_sourcehub_clear_post_status', array($this, 'ajax_clear_post_status'));
         add_action('wp_ajax_sourcehub_toggle_post_logs_settings', array($this, 'ajax_toggle_post_logs_settings'));
+        add_action('wp_ajax_sourcehub_send_hubchat_notification', array($this, 'ajax_send_hubchat_notification'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_filter('admin_footer_text', array($this, 'admin_footer_text'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_badge'), 100);
@@ -1819,5 +1820,102 @@ class SourceHub_Admin {
         update_user_meta($user_id, 'sourcehub_post_logs_settings_collapsed', $collapsed);
         
         wp_send_json_success();
+    }
+    
+    /**
+     * AJAX handler to send HubChat notification about stuck post
+     */
+    public function ajax_send_hubchat_notification() {
+        check_ajax_referer('sourcehub_hubchat_notify', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'sourcehub')));
+            return;
+        }
+
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+        $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+        
+        if (!$post_id || !$user_id) {
+            wp_send_json_error(array('message' => __('Invalid post or user ID.', 'sourcehub')));
+            return;
+        }
+        
+        $post = get_post($post_id);
+        if (!$post) {
+            wp_send_json_error(array('message' => __('Post not found.', 'sourcehub')));
+            return;
+        }
+        
+        $user = get_user_by('id', $user_id);
+        if (!$user) {
+            wp_send_json_error(array('message' => __('User not found.', 'sourcehub')));
+            return;
+        }
+        
+        // Get sync status to include in message
+        $sync_status = get_post_meta($post_id, '_sourcehub_sync_status', true);
+        $stuck_spokes = array();
+        $failed_spokes = array();
+        
+        if (is_array($sync_status)) {
+            foreach ($sync_status as $spoke_id => $status_data) {
+                $connection = SourceHub_Database::get_connection($spoke_id);
+                $spoke_name = $connection ? $connection->name : "Connection $spoke_id";
+                
+                if ($status_data['status'] === 'processing') {
+                    if (isset($status_data['started_at'])) {
+                        $elapsed = time() - strtotime($status_data['started_at']);
+                        if ($elapsed > 600) { // 10 minutes
+                            $stuck_spokes[] = $spoke_name . ' (' . round($elapsed / 60) . ' min)';
+                        }
+                    }
+                } elseif ($status_data['status'] === 'failed') {
+                    $failed_spokes[] = $spoke_name;
+                }
+            }
+        }
+        
+        // Build notification message
+        $post_logs_url = admin_url('admin.php?page=sourcehub-post-logs');
+        $post_edit_url = get_edit_post_link($post_id, 'raw');
+        
+        $message = "🚨 **Post Syndication Issue Alert**\n\n";
+        $message .= "**Post:** [{$post->post_title}]({$post_edit_url})\n\n";
+        
+        if (!empty($stuck_spokes)) {
+            $message .= "**Stuck Processing:**\n";
+            foreach ($stuck_spokes as $spoke) {
+                $message .= "• {$spoke}\n";
+            }
+            $message .= "\n";
+        }
+        
+        if (!empty($failed_spokes)) {
+            $message .= "**Failed:**\n";
+            foreach ($failed_spokes as $spoke) {
+                $message .= "• {$spoke}\n";
+            }
+            $message .= "\n";
+        }
+        
+        $message .= "Please check the [Post Logs page]({$post_logs_url}) for details and next steps.";
+        
+        // Send HubChat message
+        $messaging = new SourceHub_Messaging();
+        $result = $messaging->send_message(
+            get_current_user_id(), // from current user
+            $user_id, // to selected user
+            $message,
+            null, // no group
+            null  // no attachment
+        );
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error(array('message' => $result->get_error_message()));
+            return;
+        }
+        
+        wp_send_json_success(array('message' => __('Notification sent successfully.', 'sourcehub')));
     }
 }

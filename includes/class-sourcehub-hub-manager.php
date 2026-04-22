@@ -3569,32 +3569,55 @@ class SourceHub_Hub_Manager {
                                 // Retry the syndication
                                 $retry_count++;
                                 
-                                // Log as WARNING for retries (not ERROR to avoid webhook spam)
-                                // Only the initial failure logs as ERROR
+                                // Log as ERROR for first stuck detection, WARNING for subsequent retries
                                 $error_type = $is_failed ? 'failed' : 'stuck in processing';
-                                SourceHub_Logger::warning(
-                                    sprintf('Post %s for %d minutes - attempting retry %d/%d to %s', 
-                                        $error_type, floor($elapsed / 60), $retry_count, $max_retries, $connection_name),
-                                    array(
-                                        'connection_id' => $connection_id,
-                                        'elapsed_seconds' => $elapsed,
-                                        'retry_count' => $retry_count,
-                                        'post_id' => $post_id,
-                                        'status' => $status_data['status']
-                                    ),
-                                    $post_id,
-                                    $connection_id,
-                                    $is_failed ? 'failed_retry' : 'timeout_retry'
-                                );
+                                $log_message = sprintf('Post %s for %d minutes - attempting retry %d/%d to %s', 
+                                    $error_type, floor($elapsed / 60), $retry_count, $max_retries, $connection_name);
+                                
+                                if ($retry_count === 1) {
+                                    // First detection - log as ERROR to trigger notifications
+                                    SourceHub_Logger::error(
+                                        $log_message,
+                                        array(
+                                            'connection_id' => $connection_id,
+                                            'elapsed_seconds' => $elapsed,
+                                            'retry_count' => $retry_count,
+                                            'post_id' => $post_id,
+                                            'status' => $status_data['status']
+                                        ),
+                                        $post_id,
+                                        $connection_id,
+                                        $is_failed ? 'failed_retry' : 'timeout_retry'
+                                    );
+                                } else {
+                                    // Subsequent retries - log as WARNING
+                                    SourceHub_Logger::warning(
+                                        $log_message,
+                                        array(
+                                            'connection_id' => $connection_id,
+                                            'elapsed_seconds' => $elapsed,
+                                            'retry_count' => $retry_count,
+                                            'post_id' => $post_id,
+                                            'status' => $status_data['status']
+                                        ),
+                                        $post_id,
+                                        $connection_id,
+                                        $is_failed ? 'failed_retry' : 'timeout_retry'
+                                    );
+                                }
+                                
+                                // CRITICAL: Preserve original started_at timestamp to track total elapsed time
+                                // Only update last_sync to show when retry was triggered
+                                $original_started_at = $status_data['started_at'] ?? current_time('mysql');
                                 
                                 // Update status to show retry in progress
                                 $sync_status[$connection_id] = array(
                                     'status' => 'processing',
                                     'last_sync' => current_time('mysql'),
                                     'action' => $status_data['action'] ?? 'unknown',
-                                    'started_at' => current_time('mysql'),
+                                    'started_at' => $original_started_at, // PRESERVE original timestamp
                                     'retry_count' => $retry_count,
-                                    'previous_timeout' => $status_data['started_at']
+                                    'last_retry_at' => current_time('mysql')
                                 );
                                 
                                 $updated = true;

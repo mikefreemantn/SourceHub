@@ -2,6 +2,35 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.2.2] - 2026-04-22
+
+### Fixed
+- **Syndication Retry Logic** - Fixed retry count always showing 1/6
+  - Preserves original `started_at` timestamp across retries
+  - Retry count now properly increments (1/6, 2/6, 3/6, etc.)
+  - Fixed elapsed time calculation for stuck post detection
+- **Race Condition Handling** - Posts now publish correctly when race conditions occur
+  - When second request is publish after draft creation, post status is updated to publish
+  - Prevents posts from remaining stuck in draft status
+- **Error Notifications** - Stuck posts now trigger immediate notifications
+  - First stuck detection (after 1 minute) logs as ERROR instead of WARNING
+  - Triggers email, webhook, and HubChat notifications immediately
+  - Subsequent retries log as WARNING to avoid notification spam
+
+### Added
+- **HubChat Notifications for Stuck Posts** - Automatic alerts via internal messaging
+  - New "HubChat Notification Recipient" setting in Post Logs to select who receives alerts
+  - New "HubChat Notification Sender" setting to control who notifications appear from
+  - Clean, readable notification format with post title, spoke name, error details, and Post Logs link
+  - Manual per-post notification dropdown on Post Logs page as backup option
+  - Notifications sent automatically when posts get stuck or fail syndication
+
+### Improved
+- **Post Logs Notification Settings** - Enhanced configuration options
+  - Added HubChat notification controls alongside email and webhook settings
+  - Better organization of notification preferences
+  - Clearer labels and descriptions
+
 ## [2.2.1] - 2026-04-21
 
 ### Added

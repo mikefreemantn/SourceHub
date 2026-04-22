@@ -1426,6 +1426,29 @@ class SourceHub_Spoke_Manager {
                 // CRITICAL: Use the existing post ID so callback tells hub which post was actually created
                 // This allows hub to consolidate duplicate job IDs to the same spoke post
                 $post_id = $existing_post->ID;
+                
+                // Check if this request has a different status than existing post (e.g., publish after draft)
+                if (isset($data['status']) && $data['status'] !== $existing_post->post_status) {
+                    error_log(sprintf('SourceHub: Race condition - updating post status from %s to %s', 
+                        $existing_post->post_status, $data['status']));
+                    
+                    wp_update_post(array(
+                        'ID' => $existing_post->ID,
+                        'post_status' => $data['status']
+                    ));
+                    
+                    SourceHub_Logger::info(
+                        sprintf('Race condition - updated post status to %s', $data['status']),
+                        array(
+                            'post_id' => $existing_post->ID,
+                            'old_status' => $existing_post->post_status,
+                            'new_status' => $data['status']
+                        ),
+                        $existing_post->ID,
+                        null,
+                        'race_status_update'
+                    );
+                }
             } elseif ($job->action === 'create') {
                 $post_id = $this->create_post_from_data($data);
             } else {

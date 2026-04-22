@@ -15,9 +15,13 @@ if (!defined('ABSPATH')) {
 if (isset($_POST['save_post_logs_settings']) && check_admin_referer('sourcehub_post_logs_settings', 'sourcehub_post_logs_nonce')) {
     $notification_emails = isset($_POST['notification_emails']) ? sanitize_textarea_field($_POST['notification_emails']) : '';
     $webhook_url = isset($_POST['webhook_url']) ? esc_url_raw($_POST['webhook_url']) : '';
+    $hubchat_user_id = isset($_POST['hubchat_user_id']) ? intval($_POST['hubchat_user_id']) : 0;
+    $hubchat_sender_id = isset($_POST['hubchat_sender_id']) ? intval($_POST['hubchat_sender_id']) : 1;
     
     update_option('sourcehub_post_logs_notification_emails', $notification_emails);
     update_option('sourcehub_post_logs_webhook_url', $webhook_url);
+    update_option('sourcehub_post_logs_hubchat_user', $hubchat_user_id);
+    update_option('sourcehub_post_logs_hubchat_sender', $hubchat_sender_id);
     
     echo '<div class="notice notice-success is-dismissible"><p>Notification settings saved.</p></div>';
 }
@@ -25,6 +29,8 @@ if (isset($_POST['save_post_logs_settings']) && check_admin_referer('sourcehub_p
 // Get current settings
 $notification_emails = get_option('sourcehub_post_logs_notification_emails', '');
 $webhook_url = get_option('sourcehub_post_logs_webhook_url', '');
+$hubchat_user_id = get_option('sourcehub_post_logs_hubchat_user', 0);
+$hubchat_sender_id = get_option('sourcehub_post_logs_hubchat_sender', 1);
 
 // Get user's collapsed state preference
 $user_id = get_current_user_id();
@@ -163,6 +169,41 @@ foreach ($posts_with_status as $post_data) {
                         <td>
                             <input type="url" name="webhook_url" id="webhook_url" value="<?php echo esc_attr($webhook_url); ?>" class="large-text" placeholder="https://example.com/webhook">
                             <p class="description"><?php _e('Optional webhook URL to receive POST requests with error details in JSON format.', 'sourcehub'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="hubchat_user_id"><?php _e('HubChat Notification Recipient', 'sourcehub'); ?></label>
+                        </th>
+                        <td>
+                            <select name="hubchat_user_id" id="hubchat_user_id" class="regular-text">
+                                <option value="0"><?php _e('None - Disable HubChat Notifications', 'sourcehub'); ?></option>
+                                <?php
+                                $users = get_users(array('orderby' => 'display_name'));
+                                foreach ($users as $user) {
+                                    $selected = ($user->ID == $hubchat_user_id) ? 'selected' : '';
+                                    echo '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . ' (' . esc_html($user->user_email) . ')</option>';
+                                }
+                                ?>
+                            </select>
+                            <p class="description"><?php _e('Select a user to receive automatic HubChat notifications when posts get stuck or fail.', 'sourcehub'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="hubchat_sender_id"><?php _e('HubChat Notification Sender', 'sourcehub'); ?></label>
+                        </th>
+                        <td>
+                            <select name="hubchat_sender_id" id="hubchat_sender_id" class="regular-text">
+                                <?php
+                                $users = get_users(array('orderby' => 'display_name'));
+                                foreach ($users as $user) {
+                                    $selected = ($user->ID == $hubchat_sender_id) ? 'selected' : '';
+                                    echo '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . ' (' . esc_html($user->user_email) . ')</option>';
+                                }
+                                ?>
+                            </select>
+                            <p class="description"><?php _e('Select which user the automatic notifications will appear to come from.', 'sourcehub'); ?></p>
                         </td>
                     </tr>
                 </table>
@@ -308,6 +349,21 @@ foreach ($posts_with_status as $post_data) {
                                     data-post-id="<?php echo esc_attr($post['id']); ?>">
                                 <?php _e('Clear from List', 'sourcehub'); ?>
                             </button>
+                            <br><br>
+                            <div class="sourcehub-notify-user">
+                                <label style="font-size: 11px; display: block; margin-bottom: 3px;">
+                                    <?php _e('Notify via HubChat:', 'sourcehub'); ?>
+                                </label>
+                                <select class="notify-user-select" data-post-id="<?php echo esc_attr($post['id']); ?>" style="width: 100%; font-size: 11px;">
+                                    <option value=""><?php _e('Select user...', 'sourcehub'); ?></option>
+                                    <?php
+                                    $users = get_users(array('orderby' => 'display_name'));
+                                    foreach ($users as $user) {
+                                        echo '<option value="' . esc_attr($user->ID) . '">' . esc_html($user->display_name) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -461,6 +517,50 @@ jQuery(document).ready(function($) {
             error: function() {
                 alert('<?php _e('Connection error. Please try again.', 'sourcehub'); ?>');
                 $btn.prop('disabled', false).text('<?php _e('Clear from List', 'sourcehub'); ?>');
+            }
+        });
+    });
+    
+    // Handle HubChat notification dropdown
+    $('.notify-user-select').on('change', function() {
+        var $select = $(this);
+        var userId = $select.val();
+        var postId = $select.data('post-id');
+        
+        if (!userId) {
+            return;
+        }
+        
+        var userName = $select.find('option:selected').text();
+        
+        if (!confirm('<?php _e('Send HubChat notification to', 'sourcehub'); ?> ' + userName + '?')) {
+            $select.val('');
+            return;
+        }
+        
+        $select.prop('disabled', true);
+        
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'sourcehub_send_hubchat_notification',
+                post_id: postId,
+                user_id: userId,
+                nonce: '<?php echo wp_create_nonce('sourcehub_hubchat_notify'); ?>'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('<?php _e('HubChat notification sent successfully!', 'sourcehub'); ?>');
+                    $select.val('').prop('disabled', false);
+                } else {
+                    alert('<?php _e('Failed to send notification:', 'sourcehub'); ?> ' + (response.data.message || 'Unknown error'));
+                    $select.val('').prop('disabled', false);
+                }
+            },
+            error: function() {
+                alert('<?php _e('Connection error. Please try again.', 'sourcehub'); ?>');
+                $select.val('').prop('disabled', false);
             }
         });
     });
