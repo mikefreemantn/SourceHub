@@ -55,6 +55,7 @@ if (!defined('ABSPATH')) {
             <table class="sourcehub-table">
                 <thead>
                     <tr>
+                        <th><?php echo __('ID', 'sourcehub'); ?></th>
                         <th><?php echo __('Name', 'sourcehub'); ?></th>
                         <th><?php echo __('URL', 'sourcehub'); ?></th>
                         <th><?php echo __('Status', 'sourcehub'); ?></th>
@@ -66,6 +67,9 @@ if (!defined('ABSPATH')) {
                 <tbody>
                     <?php foreach ($connections as $connection): ?>
                         <tr>
+                            <td>
+                                <code style="font-weight: 600; color: #2271b1;"><?php echo esc_html($connection->id); ?></code>
+                            </td>
                             <td>
                                 <strong><?php echo esc_html($connection->name); ?></strong>
                                 <?php if (!empty($connection->sync_settings)): ?>
@@ -115,6 +119,262 @@ if (!defined('ABSPATH')) {
             </table>
         <?php endif; ?>
     </div>
+
+    <?php if ($mode === 'hub' && !empty($connections)): ?>
+        <!-- Auto-Syndication API Reference -->
+        <div class="auto-syndication-api-wrap" style="margin-top: 30px;">
+            <div class="api-header">
+                <h2>
+                    <span class="dashicons dashicons-admin-plugins"></span>
+                    <?php echo __('Auto-Syndication API', 'sourcehub'); ?>
+                </h2>
+                <p><?php echo __('Trigger automatic syndication from your plugins using custom fields', 'sourcehub'); ?></p>
+            </div>
+            
+            <div class="api-content">
+                <div class="api-cards">
+                    <!-- Card 1: All Sites -->
+                    <div class="api-card">
+                        <div class="api-card-header">
+                            <div class="api-card-icon">
+                                <span class="dashicons dashicons-networking"></span>
+                            </div>
+                            <h3><?php echo __('Syndicate to All Sites', 'sourcehub'); ?></h3>
+                        </div>
+                        <div class="api-card-body">
+                            <div class="api-field">
+                                <label><?php echo __('Custom Field:', 'sourcehub'); ?></label>
+                                <code>sourcehub_auto_syndicate</code>
+                            </div>
+                            <div class="api-field">
+                                <label><?php echo __('Accepted Values:', 'sourcehub'); ?></label>
+                                <code>'true'</code>, <code>'1'</code>, or <code>1</code>
+                            </div>
+                            <div class="api-example">
+                                <strong><?php echo __('Example:', 'sourcehub'); ?></strong>
+                                <pre>update_post_meta($post_id, 'sourcehub_auto_syndicate', 'true');</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Specific Sites -->
+                    <div class="api-card">
+                        <div class="api-card-header">
+                            <div class="api-card-icon">
+                                <span class="dashicons dashicons-admin-site-alt3"></span>
+                            </div>
+                            <h3><?php echo __('Syndicate to Specific Sites', 'sourcehub'); ?></h3>
+                        </div>
+                        <div class="api-card-body">
+                            <div class="api-field">
+                                <label><?php echo __('Custom Field:', 'sourcehub'); ?></label>
+                                <code>sourcehub_auto_syndicate_to_id</code>
+                            </div>
+                            <div class="api-field">
+                                <label><?php echo __('Accepted Values:', 'sourcehub'); ?></label>
+                                <span><?php echo __('Comma-separated connection IDs', 'sourcehub'); ?></span><br>
+                                <small style="color: #666;"><?php echo __('Example:', 'sourcehub'); ?> <code>'11,14,16'</code></small>
+                            </div>
+                            <div class="api-example">
+                                <strong><?php echo __('Example:', 'sourcehub'); ?></strong>
+                                <pre>update_post_meta($post_id, 'sourcehub_auto_syndicate_to_id', '11,14,16');</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="api-note">
+                    <span class="dashicons dashicons-info"></span>
+                    <div>
+                        <strong><?php echo __('Note:', 'sourcehub'); ?></strong>
+                        <?php echo __('Syndication occurs 30 seconds after the custom field is set, allowing WordPress to fully index the post and process all metadata.', 'sourcehub'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        .auto-syndication-api-wrap {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .api-header {
+            background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+            color: white;
+            padding: 30px 40px;
+            margin: 0;
+        }
+
+        .api-header h2 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .api-header h2 .dashicons {
+            font-size: 28px;
+            width: 28px;
+            height: 28px;
+        }
+
+        .api-header p {
+            margin: 0;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+
+        .api-content {
+            padding: 30px 40px;
+        }
+
+        .api-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .api-card {
+            background: #f9f9f9;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .api-card:hover {
+            border-color: #2271b1;
+            box-shadow: 0 4px 12px rgba(34, 113, 177, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .api-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .api-card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .api-card-icon .dashicons {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .api-card-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d2327;
+        }
+
+        .api-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .api-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .api-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .api-field code {
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            color: #d63638;
+            display: inline-block;
+        }
+
+        .api-example {
+            margin-top: 5px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .api-example strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #1d2327;
+        }
+
+        .api-example pre {
+            background: #1d2327;
+            color: #50fa7b;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .api-note {
+            background: #f0f6fc;
+            border: 1px solid #c5d9ed;
+            border-radius: 6px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: #0a4275;
+        }
+
+        .api-note .dashicons {
+            color: #2271b1;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .api-note strong {
+            color: #0a4275;
+        }
+
+        @media (max-width: 782px) {
+            .api-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .api-header,
+            .api-content {
+                padding: 20px;
+            }
+        }
+        </style>
+    <?php endif; ?>
 </div>
 
 <!-- Add Connection Modal -->

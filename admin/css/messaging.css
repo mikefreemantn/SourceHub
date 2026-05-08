@@ -391,6 +391,106 @@
     font-size: 15px;
 }
 
+/* Group Members Section */
+.sh-group-members-section {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.sh-group-members-toggle {
+    width: 100%;
+    background: #f6f7f7;
+    border: none;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c3338;
+    transition: background 0.2s;
+}
+
+.sh-group-members-toggle:hover {
+    background: #ebebeb;
+}
+
+.sh-group-members-toggle .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s;
+}
+
+.sh-members-label {
+    flex: 1;
+    text-align: left;
+}
+
+.sh-members-count {
+    color: #646970;
+    font-weight: 400;
+}
+
+.sh-group-members-display {
+    padding: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.sh-group-member-item {
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.sh-group-member-item:last-child {
+    border-bottom: none;
+}
+
+.sh-member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.sh-member-name {
+    font-weight: 500;
+    font-size: 13px;
+    color: #2c3338;
+}
+
+.sh-member-email {
+    font-size: 12px;
+    color: #646970;
+}
+
+.sh-member-status {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sh-member-online .sh-member-status {
+    background: #d4edda;
+    color: #155724;
+}
+
+.sh-member-offline .sh-member-status {
+    background: #f0f0f1;
+    color: #646970;
+}
+
 .sh-view {
     display: none;
     position: absolute;

@@ -469,15 +469,24 @@ class SourceHub_Messaging {
         $table = $wpdb->prefix . 'sourcehub_group_members';
         
         $sql = $wpdb->prepare(
-            "SELECT gm.*, u.display_name, u.user_email
+            "SELECT gm.*, u.display_name, u.user_email, um.meta_value as last_activity
             FROM $table gm
             LEFT JOIN {$wpdb->users} u ON gm.user_id = u.ID
+            LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = 'sourcehub_last_activity'
             WHERE gm.group_id = %d
             ORDER BY u.display_name ASC",
             $group_id
         );
         
-        return $wpdb->get_results($sql);
+        $members = $wpdb->get_results($sql);
+        
+        // Add online status (same logic as get_online_users)
+        $cutoff = date('Y-m-d H:i:s', strtotime('-5 minutes', current_time('timestamp')));
+        foreach ($members as $member) {
+            $member->is_online = ($member->last_activity && $member->last_activity > $cutoff);
+        }
+        
+        return $members;
     }
     
     /**

@@ -119,6 +119,20 @@
                 }
             });
             
+            // Toggle group members list
+            $(document).on('click', '#sh-toggle-members', function() {
+                const $list = $('#sh-group-members-display');
+                const $icon = $(this).find('.dashicons');
+                
+                if ($list.is(':visible')) {
+                    $list.slideUp(200);
+                    $icon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+                } else {
+                    $list.slideDown(200);
+                    $icon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+                }
+            });
+            
             // Close modal on background click
             $(document).on('click', '.sh-modal', function(e) {
                 if ($(e.target).hasClass('sh-modal')) {
@@ -449,6 +463,7 @@
          * Open group
          */
         openGroup: function(groupIdOrEvent, groupName) {
+            console.log('SourceHub: openGroup called with:', groupIdOrEvent, groupName);
             let groupId, name;
             
             // Check if it's an event object or direct parameters
@@ -460,11 +475,71 @@
                 name = groupName || 'Group';
             }
             
+            console.log('SourceHub: Parsed groupId:', groupId, 'name:', name);
+            
             this.currentGroup = groupId;
             this.currentConversation = null;
             
             $('#sh-group-title').text(name);
+            this.loadGroupMembersDisplay(groupId);
             this.switchView('group');
+        },
+        
+        /**
+         * Load group members for display
+         */
+        loadGroupMembersDisplay: function(groupId) {
+            console.log('SourceHub: Loading group members for group ID:', groupId);
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'sourcehub_get_group_members',
+                    nonce: sourcehubMessaging.nonce,
+                    group_id: groupId
+                },
+                success: (response) => {
+                    console.log('SourceHub: Group members response:', response);
+                    if (response.success && response.data.members) {
+                        this.renderGroupMembersDisplay(response.data.members);
+                    } else {
+                        console.error('SourceHub: Failed to load group members:', response);
+                        // Show 0 members if failed
+                        $('#sh-members-count').text('(0)');
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.error('SourceHub: Group members AJAX error:', { xhr, status, error });
+                    $('#sh-members-count').text('(0)');
+                }
+            });
+        },
+        
+        /**
+         * Render group members list for display
+         */
+        renderGroupMembersDisplay: function(members) {
+            const $list = $('#sh-group-members-display');
+            $list.empty();
+            
+            $('#sh-members-count').text(`(${members.length})`);
+            
+            members.forEach(member => {
+                const isOnline = member.is_online;
+                const statusClass = isOnline ? 'sh-member-online' : 'sh-member-offline';
+                const statusText = isOnline ? 'Online' : 'Offline';
+                
+                const $member = $(`
+                    <div class="sh-group-member-item ${statusClass}">
+                        <div class="sh-member-info">
+                            <span class="sh-member-name">${this.escapeHtml(member.display_name)}</span>
+                            <span class="sh-member-email">${this.escapeHtml(member.user_email)}</span>
+                        </div>
+                        <span class="sh-member-status">${statusText}</span>
+                    </div>
+                `);
+                $list.append($member);
+            });
         },
         
         /**

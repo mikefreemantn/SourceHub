@@ -89,6 +89,18 @@ if (!defined('ABSPATH')) {
                 <span id="sh-group-title" class="sh-group-title"></span>
             </div>
             
+            <!-- Group Members Section (Collapsible) -->
+            <div class="sh-group-members-section">
+                <button type="button" class="sh-group-members-toggle" id="sh-toggle-members">
+                    <span class="dashicons dashicons-arrow-down-alt2"></span>
+                    <span class="sh-members-label">Group Members</span>
+                    <span class="sh-members-count" id="sh-members-count">(0)</span>
+                </button>
+                <div class="sh-group-members-display" id="sh-group-members-display" style="display: none;">
+                    <!-- Members will be loaded here -->
+                </div>
+            </div>
+            
             <div id="sh-group-messages-list"></div>
             
             <div class="sh-message-composer">

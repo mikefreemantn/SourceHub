@@ -90,6 +90,133 @@ class SourceHub_Hub_Manager {
             'callback' => array($this, 'handle_sync_complete'),
             'permission_callback' => '__return_true' // Spokes will authenticate via data
         ));
+
+        // 3rd-tier safety net: spokes report stuck SourceHub-created drafts here
+        register_rest_route('sourcehub/v1', '/report-stuck-draft', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_stuck_draft_report'),
+            'permission_callback' => '__return_true' // Authenticated by spoke_url match against connections
+        ));
+    }
+
+    /**
+     * Handle stuck-draft report from a spoke.
+     *
+     * Triggered by the spoke-side cron when a SourceHub-created post has been
+     * sitting in 'draft' for longer than the configured threshold (default 10 min).
+     * Logs an ERROR-level entry tied to the original hub post so the operator
+     * sees it in Activity Logs.
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function handle_stuck_draft_report($request) {
+        $data = $request->get_json_params();
+
+        $hub_post_id      = isset($data['hub_post_id']) ? (int) $data['hub_post_id'] : 0;
+        $spoke_post_id    = isset($data['spoke_post_id']) ? (int) $data['spoke_post_id'] : 0;
+        $spoke_url        = isset($data['spoke_url']) ? esc_url_raw($data['spoke_url']) : '';
+        $spoke_post_title = isset($data['spoke_post_title']) ? sanitize_text_field($data['spoke_post_title']) : '';
+        $spoke_edit_url   = isset($data['spoke_edit_url']) ? esc_url_raw($data['spoke_edit_url']) : '';
+        $age_minutes      = isset($data['age_minutes']) ? (int) $data['age_minutes'] : null;
+        $threshold        = isset($data['threshold_minutes']) ? (int) $data['threshold_minutes'] : null;
+
+        if (!$hub_post_id || !$spoke_url) {
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'Missing required fields',
+            ), 400);
+        }
+
+        // Light authentication: only accept reports from URLs we have an active connection for
+        $connection = null;
+        $connections = SourceHub_Database::get_connections(array('mode' => 'spoke', 'status' => 'active'));
+        if (is_array($connections)) {
+            $needle = untrailingslashit($spoke_url);
+            foreach ($connections as $conn) {
+                if (untrailingslashit($conn->url) === $needle) {
+                    $connection = $conn;
+                    break;
+                }
+            }
+        }
+
+        if (!$connection) {
+            error_log('SourceHub Hub: Rejected stuck-draft report from unknown spoke URL: ' . $spoke_url);
+            return new WP_REST_Response(array(
+                'success' => false,
+                'message' => 'Spoke URL not recognized',
+            ), 403);
+        }
+
+        $hub_post = get_post($hub_post_id);
+        $title    = $hub_post ? $hub_post->post_title : ($spoke_post_title ?: '(unknown)');
+
+        $message = sprintf(
+            'STUCK DRAFT detected on %s: "%s" has been a draft for %s minutes (threshold: %s) - hub post #%d, spoke post #%d',
+            $connection->name,
+            $title,
+            $age_minutes !== null ? $age_minutes : '?',
+            $threshold !== null ? $threshold : '?',
+            $hub_post_id,
+            $spoke_post_id
+        );
+
+        error_log('SourceHub Hub: ' . $message);
+
+        SourceHub_Logger::error(
+            $message,
+            array(
+                'hub_post_id'      => $hub_post_id,
+                'spoke_post_id'    => $spoke_post_id,
+                'spoke_url'        => $spoke_url,
+                'spoke_edit_url'   => $spoke_edit_url,
+                'spoke_post_title' => $spoke_post_title,
+                'age_minutes'      => $age_minutes,
+                'threshold'        => $threshold,
+                'reported_at'      => isset($data['reported_at']) ? sanitize_text_field($data['reported_at']) : null,
+            ),
+            $hub_post_id,
+            $connection->id,
+            'stuck_draft_reported'
+        );
+
+        // Surface this in the "Post Logs" admin page, which queries posts whose
+        // _sourcehub_sync_status meta contains a 'failed' spoke. Without this
+        // update, a stuck draft only shows in Activity Logs, not Post Logs.
+        if ($hub_post) {
+            $sync_status = get_post_meta($hub_post_id, '_sourcehub_sync_status', true);
+            if (!is_array($sync_status)) {
+                $sync_status = array();
+            }
+
+            $existing = isset($sync_status[$connection->id]) && is_array($sync_status[$connection->id])
+                ? $sync_status[$connection->id]
+                : array();
+
+            $sync_status[$connection->id] = array_merge($existing, array(
+                'status'        => 'failed',
+                'last_sync'     => current_time('mysql'),
+                'action'        => 'update',
+                'spoke_post_id' => $spoke_post_id ?: ($existing['spoke_post_id'] ?? null),
+                'error'         => sprintf(
+                    'Stuck as draft on spoke for %s minutes (threshold %s). Spoke post #%d. Edit: %s',
+                    $age_minutes !== null ? $age_minutes : '?',
+                    $threshold !== null ? $threshold : '?',
+                    $spoke_post_id,
+                    $spoke_edit_url ?: '(unknown)'
+                ),
+                'stuck_draft'   => true,
+                'reported_at'   => current_time('mysql'),
+            ));
+
+            update_post_meta($hub_post_id, '_sourcehub_sync_status', $sync_status);
+        }
+
+        return new WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Report received',
+        ), 200);
     }
 
     /**
@@ -3247,19 +3374,53 @@ class SourceHub_Hub_Manager {
                     // Use unique_spokes (deduplicated) to prevent duplicate UPDATEs
                     $this->update_syndicated_post($post_id, $unique_spokes);
                 } else if (!empty($syndicated_spokes) && is_array($syndicated_spokes)) {
-                    // Post was already syndicated before, just update it
-                    // This should NOT happen in delayed sync context - delayed sync is for completing drafts
-                    error_log('SourceHub: WARNING - Delayed sync called for already-syndicated post without pending flag');
-                    error_log('SourceHub: This may indicate a duplicate delayed sync trigger');
+                    // Delayed sync fired but pending_completion flag is already cleared.
+                    // This typically means a prior delayed_sync run completed the flag-clear
+                    // step but did NOT actually send UPDATEs to every spoke (race condition
+                    // with duplicate CREATE callbacks / duplicate scheduled actions).
+                    //
+                    // SAFETY NET: Replay update_syndicated_post() for all syndicated spokes.
+                    // This is safe against duplicates because:
+                    //   1. update_syndicated_post uses a sync_lock transient - a legit in-flight
+                    //      update will block this replay.
+                    //   2. The spoke resolves the target via find_existing_post(hub_id, origin_url)
+                    //      and uses the /update-post endpoint, so a duplicate UPDATE updates
+                    //      the existing spoke post - it never creates a new one.
+                    //   3. Spoke-side CREATE is also idempotent via the same lookup, so even
+                    //      the fallback path on the spoke (missing existing_post) wouldn't
+                    //      duplicate for a post that genuinely exists.
+                    error_log('SourceHub: Delayed sync replay - already-syndicated post without pending flag, ensuring all spokes get UPDATE');
                     SourceHub_Logger::warning(
-                        'Delayed sync called for already-syndicated post without pending completion flag',
+                        'Delayed sync replay triggered for already-syndicated post (safety net)',
                         array('post_id' => $post_id, 'syndicated_spokes' => $syndicated_spokes),
                         $post_id,
                         null,
-                        'delayed_sync_unexpected_state'
+                        'delayed_sync_replay'
                     );
-                    // Skip the update to prevent duplicate - the post is already synced
-                    error_log('SourceHub: Skipping update to prevent duplicate');
+
+                    // Deduplicate against spoke_post_ids (same logic as the primary branch)
+                    $sync_status_meta = get_post_meta($post_id, '_sourcehub_sync_status', true);
+                    $unique_spokes = array();
+                    $spoke_post_map = array();
+
+                    if (is_array($sync_status_meta)) {
+                        foreach ($syndicated_spokes as $spoke_id) {
+                            if (isset($sync_status_meta[$spoke_id]['spoke_post_id'])) {
+                                $spoke_post_id = $sync_status_meta[$spoke_id]['spoke_post_id'];
+                                if (!isset($spoke_post_map[$spoke_post_id])) {
+                                    $spoke_post_map[$spoke_post_id] = $spoke_id;
+                                    $unique_spokes[] = $spoke_id;
+                                }
+                            } else {
+                                $unique_spokes[] = $spoke_id;
+                            }
+                        }
+                    } else {
+                        $unique_spokes = $syndicated_spokes;
+                    }
+
+                    // update_syndicated_post has its own sync_lock guard, so this is safe
+                    $this->update_syndicated_post($post_id, $unique_spokes);
                 } else {
                     // No syndicated spokes and no pending completion - this is first-time syndication
                     // This should NOT happen in delayed sync - delayed sync is for completing drafts

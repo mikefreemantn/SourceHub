@@ -15,12 +15,14 @@ if (!defined('ABSPATH')) {
 if (isset($_POST['save_post_logs_settings']) && check_admin_referer('sourcehub_post_logs_settings', 'sourcehub_post_logs_nonce')) {
     $notification_emails = isset($_POST['notification_emails']) ? sanitize_textarea_field($_POST['notification_emails']) : '';
     $webhook_url = isset($_POST['webhook_url']) ? esc_url_raw($_POST['webhook_url']) : '';
-    $hubchat_user_id = isset($_POST['hubchat_user_id']) ? intval($_POST['hubchat_user_id']) : 0;
+    $hubchat_users = isset($_POST['hubchat_users']) && is_array($_POST['hubchat_users']) ? array_map('intval', $_POST['hubchat_users']) : array();
+    $hubchat_group_id = isset($_POST['hubchat_group_id']) ? intval($_POST['hubchat_group_id']) : 0;
     $hubchat_sender_id = isset($_POST['hubchat_sender_id']) ? intval($_POST['hubchat_sender_id']) : 1;
     
     update_option('sourcehub_post_logs_notification_emails', $notification_emails);
     update_option('sourcehub_post_logs_webhook_url', $webhook_url);
-    update_option('sourcehub_post_logs_hubchat_user', $hubchat_user_id);
+    update_option('sourcehub_post_logs_hubchat_users', $hubchat_users);
+    update_option('sourcehub_post_logs_hubchat_group', $hubchat_group_id);
     update_option('sourcehub_post_logs_hubchat_sender', $hubchat_sender_id);
     
     echo '<div class="notice notice-success is-dismissible"><p>Notification settings saved.</p></div>';
@@ -29,7 +31,8 @@ if (isset($_POST['save_post_logs_settings']) && check_admin_referer('sourcehub_p
 // Get current settings
 $notification_emails = get_option('sourcehub_post_logs_notification_emails', '');
 $webhook_url = get_option('sourcehub_post_logs_webhook_url', '');
-$hubchat_user_id = get_option('sourcehub_post_logs_hubchat_user', 0);
+$hubchat_users = get_option('sourcehub_post_logs_hubchat_users', array());
+$hubchat_group_id = get_option('sourcehub_post_logs_hubchat_group', 0);
 $hubchat_sender_id = get_option('sourcehub_post_logs_hubchat_sender', 1);
 
 // Get user's collapsed state preference
@@ -173,20 +176,45 @@ foreach ($posts_with_status as $post_data) {
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="hubchat_user_id"><?php _e('HubChat Notification Recipient', 'sourcehub'); ?></label>
+                            <label><?php _e('HubChat Notification Recipients', 'sourcehub'); ?></label>
                         </th>
                         <td>
-                            <select name="hubchat_user_id" id="hubchat_user_id" class="regular-text">
-                                <option value="0"><?php _e('None - Disable HubChat Notifications', 'sourcehub'); ?></option>
+                            <fieldset>
+                                <legend class="screen-reader-text"><span><?php _e('Select users to notify', 'sourcehub'); ?></span></legend>
+                                <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #fff;">
+                                    <?php
+                                    $users = get_users(array('orderby' => 'display_name'));
+                                    foreach ($users as $user) {
+                                        $checked = in_array($user->ID, $hubchat_users) ? 'checked' : '';
+                                        echo '<label style="display: block; margin-bottom: 5px;">';
+                                        echo '<input type="checkbox" name="hubchat_users[]" value="' . esc_attr($user->ID) . '" ' . $checked . '> ';
+                                        echo esc_html($user->display_name) . ' (' . esc_html($user->user_email) . ')';
+                                        echo '</label>';
+                                    }
+                                    ?>
+                                </div>
+                                <p class="description"><?php _e('Select individual users to receive automatic HubChat notifications when posts get stuck or fail.', 'sourcehub'); ?></p>
+                            </fieldset>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="hubchat_group_id"><?php _e('HubChat Notification Group', 'sourcehub'); ?></label>
+                        </th>
+                        <td>
+                            <select name="hubchat_group_id" id="hubchat_group_id" class="regular-text">
+                                <option value="0"><?php _e('None - No Group Notifications', 'sourcehub'); ?></option>
                                 <?php
-                                $users = get_users(array('orderby' => 'display_name'));
-                                foreach ($users as $user) {
-                                    $selected = ($user->ID == $hubchat_user_id) ? 'selected' : '';
-                                    echo '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . ' (' . esc_html($user->user_email) . ')</option>';
+                                global $wpdb;
+                                $groups_table = $wpdb->prefix . 'sourcehub_groups';
+                                $groups = $wpdb->get_results("SELECT id, name FROM $groups_table ORDER BY name ASC");
+                                foreach ($groups as $group) {
+                                    $selected = ($group->id == $hubchat_group_id) ? 'selected' : '';
+                                    echo '<option value="' . esc_attr($group->id) . '" ' . $selected . '>' . esc_html($group->name) . '</option>';
                                 }
                                 ?>
                             </select>
-                            <p class="description"><?php _e('Select a user to receive automatic HubChat notifications when posts get stuck or fail.', 'sourcehub'); ?></p>
+                            <p class="description"><?php _e('Optionally select a HubChat group to notify. All members of the group will receive notifications.', 'sourcehub'); ?></p>
                         </td>
                     </tr>
                     <tr>

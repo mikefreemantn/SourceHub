@@ -3,7 +3,7 @@
  * Plugin Name: SourceHub - Hub & Spoke Publisher
  * Plugin URI: https://github.com/mikefreemantn/SourceHub
  * Description: A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration.
- * Version: 2.2.2
+ * Version: 2.3.0
  * Author: Mike Freeman
  * Author URI: https://manovermachine.com
  * License: GPL v2 or later
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SOURCEHUB_VERSION', '2.2.2');
+define('SOURCEHUB_VERSION', '2.3.0');
 define('SOURCEHUB_PLUGIN_FILE', __FILE__);
 define('SOURCEHUB_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOURCEHUB_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -150,6 +150,7 @@ final class SourceHub {
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-bug-tracker.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-log-viewer.php';
         require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-messaging.php';
+        require_once SOURCEHUB_PLUGIN_DIR . 'includes/class-sourcehub-auto-syndicate.php';
 
         // Load admin classes
         if (is_admin()) {
@@ -178,6 +179,9 @@ final class SourceHub {
         
         // Initialize Messaging
         $this->messaging = new SourceHub_Messaging();
+        
+        // Initialize Auto-Syndication
+        SourceHub_Auto_Syndicate::init();
 
         // Initialize admin
         if (is_admin()) {
@@ -267,7 +271,13 @@ final class SourceHub {
     public function deactivate() {
         // Flush rewrite rules
         flush_rewrite_rules();
-        
+
+        // Clear scheduled cron events
+        $stuck_drafts_event = wp_next_scheduled('sourcehub_check_stuck_drafts');
+        if ($stuck_drafts_event) {
+            wp_unschedule_event($stuck_drafts_event, 'sourcehub_check_stuck_drafts');
+        }
+
         // Log deactivation
         SourceHub_Logger::log('Plugin deactivated', 'INFO');
     }

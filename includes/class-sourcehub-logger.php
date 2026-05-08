@@ -103,7 +103,8 @@ class SourceHub_Logger {
         // Get notification settings
         $notification_emails = get_option('sourcehub_post_logs_notification_emails', '');
         $webhook_url = get_option('sourcehub_post_logs_webhook_url', '');
-        $hubchat_user_id = get_option('sourcehub_post_logs_hubchat_user', 0);
+        $hubchat_users = get_option('sourcehub_post_logs_hubchat_users', array());
+        $hubchat_group_id = get_option('sourcehub_post_logs_hubchat_group', 0);
         
         // Prepare error data
         $error_data = array(
@@ -144,9 +145,9 @@ class SourceHub_Logger {
             self::send_webhook_notification($error_data, $webhook_url);
         }
         
-        // Send HubChat notification
-        if ($hubchat_user_id > 0) {
-            self::send_hubchat_notification($error_data, $hubchat_user_id);
+        // Send HubChat notifications
+        if (!empty($hubchat_users) || $hubchat_group_id > 0) {
+            self::send_hubchat_notification($error_data, $hubchat_users, $hubchat_group_id);
         }
     }
     
@@ -304,10 +305,11 @@ class SourceHub_Logger {
      * Send HubChat notification
      *
      * @param array $error_data Error data
-     * @param int $user_id User ID to notify
+     * @param array $user_ids Array of user IDs to notify
+     * @param int $group_id Group ID to notify (optional)
      */
-    private static function send_hubchat_notification($error_data, $user_id) {
-        if (empty($user_id) || !class_exists('SourceHub_Messaging')) {
+    private static function send_hubchat_notification($error_data, $user_ids = array(), $group_id = 0) {
+        if ((empty($user_ids) && $group_id <= 0) || !class_exists('SourceHub_Messaging')) {
             return;
         }
         
@@ -333,20 +335,35 @@ class SourceHub_Logger {
         $message .= "Error: " . $error_msg . "\n\n";
         $message .= "→ Check Post Logs for details:\n" . $post_logs_url;
         
-        // Send HubChat message from configured sender
+        // Get configured sender (defaults to user ID 1 if not set)
+        $from_user_id = get_option('sourcehub_post_logs_hubchat_sender', 1);
+        
         try {
             $messaging = new SourceHub_Messaging();
             
-            // Get configured sender (defaults to user ID 1 if not set)
-            $from_user_id = get_option('sourcehub_post_logs_hubchat_sender', 1);
+            // Send to individual users
+            if (!empty($user_ids)) {
+                foreach ($user_ids as $user_id) {
+                    $messaging->send_message(
+                        $from_user_id, // from configured sender
+                        $message, // message content
+                        $user_id, // to individual user
+                        null, // no group
+                        null  // no attachment
+                    );
+                }
+            }
             
-            $messaging->send_message(
-                $from_user_id, // from configured sender
-                $message, // message content
-                $user_id, // to configured notification user
-                null, // no group
-                null  // no attachment
-            );
+            // Send to group
+            if ($group_id > 0) {
+                $messaging->send_message(
+                    $from_user_id, // from configured sender
+                    $message, // message content
+                    null, // no individual user
+                    $group_id, // to group
+                    null  // no attachment
+                );
+            }
         } catch (Exception $e) {
             // Log HubChat failures silently to avoid infinite loops
             error_log('SourceHub: HubChat notification failed - ' . $e->getMessage());

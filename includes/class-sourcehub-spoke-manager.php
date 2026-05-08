@@ -24,6 +24,26 @@ class SourceHub_Spoke_Manager {
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('sourcehub_process_sync_job', array($this, 'process_sync_job'));
         add_action('sourcehub_retry_hub_callback', array($this, 'handle_callback_retry'), 10, 4);
+
+        // 3rd-tier safety net: detect & report stuck SourceHub drafts to the hub
+        add_filter('cron_schedules', array($this, 'add_cron_schedules'));
+        add_action('sourcehub_check_stuck_drafts', array($this, 'check_stuck_drafts'));
+        if (!wp_next_scheduled('sourcehub_check_stuck_drafts')) {
+            wp_schedule_event(time() + 60, 'sourcehub_every_five_minutes', 'sourcehub_check_stuck_drafts');
+        }
+    }
+
+    /**
+     * Register custom cron schedule for stuck-draft check
+     */
+    public function add_cron_schedules($schedules) {
+        if (!isset($schedules['sourcehub_every_five_minutes'])) {
+            $schedules['sourcehub_every_five_minutes'] = array(
+                'interval' => 5 * MINUTE_IN_SECONDS,
+                'display'  => __('Every 5 minutes (SourceHub)', 'sourcehub'),
+            );
+        }
+        return $schedules;
     }
 
     /**
@@ -521,6 +541,11 @@ class SourceHub_Spoke_Manager {
                     'crossorigin' => true,
                     'integrity' => true
                 ),
+                'style' => array(
+                    'type' => true,
+                    'media' => true,
+                    'scoped' => true
+                ),
                 'embed' => array(
                     'src' => true,
                     'width' => true,
@@ -606,6 +631,8 @@ class SourceHub_Spoke_Manager {
         update_post_meta($post_id, '_sourcehub_hub_id', intval($data['hub_id']));
         update_post_meta($post_id, '_sourcehub_origin_url', esc_url_raw($data['hub_url']));
         update_post_meta($post_id, '_sourcehub_received_at', current_time('mysql'));
+        // Public-facing marker so 3rd-tier stuck-draft safety net can identify SourceHub posts
+        update_post_meta($post_id, 'from_SourceHub', true);
 
         // Handle page template
         if (isset($data['page_template']) && !empty($data['page_template'])) {
@@ -1521,6 +1548,169 @@ class SourceHub_Spoke_Manager {
             // Notify hub of failure
             $this->notify_hub_completion($job_id, $data['hub_url'], $data['hub_id'], null, $e->getMessage());
         }
+    }
+
+    /**
+     * Cron callback: scan for SourceHub-created posts that have been stuck as drafts
+     * for longer than the threshold and report them back to the hub.
+     *
+     * This is the 3rd-tier safety net (belt + suspenders) that catches posts the
+     * 2-step syndication failed to publish for any reason.
+     */
+    public function check_stuck_drafts() {
+        $threshold_minutes = (int) apply_filters('sourcehub_stuck_draft_threshold_minutes', 10);
+        $cutoff_ts = time() - ($threshold_minutes * MINUTE_IN_SECONDS);
+
+        // Can't filter by _sourcehub_received_at in the SQL meta_query because that
+        // value is stored in WP local time (via current_time('mysql')) and MySQL
+        // datetime comparison would mix timezones. Filter broadly in SQL, then
+        // compare ages in PHP using get_gmt_from_date() for correct tz handling.
+        $candidates = get_posts(array(
+            'post_type'      => 'any',
+            'post_status'    => 'draft',
+            'posts_per_page' => 100,
+            'no_found_rows'  => true,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'from_SourceHub',
+                    'value'   => '1',
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => '_sourcehub_stuck_notified',
+                    'compare' => 'NOT EXISTS',
+                ),
+            ),
+        ));
+
+        if (empty($candidates)) {
+            return;
+        }
+
+        $reported = 0;
+        foreach ($candidates as $post) {
+            $received_at = get_post_meta($post->ID, '_sourcehub_received_at', true);
+            if (empty($received_at)) {
+                continue;
+            }
+
+            // Convert the locally-stored timestamp to GMT, then to unix seconds
+            $received_ts = strtotime(get_gmt_from_date($received_at) . ' UTC');
+            if (!$received_ts || $received_ts > $cutoff_ts) {
+                continue; // Not yet past the threshold
+            }
+
+            $hub_url = get_post_meta($post->ID, '_sourcehub_origin_url', true);
+            $hub_id  = (int) get_post_meta($post->ID, '_sourcehub_hub_id', true);
+
+            if (empty($hub_url) || empty($hub_id)) {
+                // Marker present but missing origin info - mark to suppress repeated scans
+                update_post_meta($post->ID, '_sourcehub_stuck_notified', current_time('mysql'));
+                continue;
+            }
+
+            $age_minutes = (int) round((time() - $received_ts) / MINUTE_IN_SECONDS);
+            $this->notify_hub_stuck_draft($post, $hub_url, $hub_id, $threshold_minutes, $age_minutes);
+
+            // Mark notified so we don't spam the hub on every cron tick
+            update_post_meta($post->ID, '_sourcehub_stuck_notified', current_time('mysql'));
+            $reported++;
+
+            if ($reported >= 25) {
+                break; // Cap per run
+            }
+        }
+
+        if ($reported > 0) {
+            error_log(sprintf('SourceHub Spoke: Stuck-draft sweep reported %d draft(s) older than %d minutes',
+                $reported, $threshold_minutes));
+        }
+    }
+
+    /**
+     * POST a stuck-draft report to the hub's /report-stuck-draft endpoint.
+     *
+     * @param WP_Post  $post              The stuck spoke post
+     * @param string   $hub_url           The hub site URL (from _sourcehub_origin_url)
+     * @param int      $hub_post_id       The original hub post ID (from _sourcehub_hub_id)
+     * @param int      $threshold_minutes The threshold age that triggered this report
+     * @param int|null $age_minutes       Pre-computed age in minutes (timezone-corrected)
+     */
+    private function notify_hub_stuck_draft($post, $hub_url, $hub_post_id, $threshold_minutes, $age_minutes = null) {
+        $endpoint = trailingslashit($hub_url) . 'wp-json/sourcehub/v1/report-stuck-draft';
+
+        $received_at = get_post_meta($post->ID, '_sourcehub_received_at', true);
+        if ($age_minutes === null && $received_at) {
+            // Fallback: compute via GMT-aware conversion (WP local time -> GMT -> unix)
+            $received_ts = strtotime(get_gmt_from_date($received_at) . ' UTC');
+            if ($received_ts) {
+                $age_minutes = (int) round((time() - $received_ts) / MINUTE_IN_SECONDS);
+            }
+        }
+
+        $payload = array(
+            'hub_post_id'       => $hub_post_id,
+            'spoke_post_id'     => $post->ID,
+            'spoke_url'         => home_url(),
+            'spoke_post_title'  => $post->post_title,
+            'spoke_edit_url'    => get_edit_post_link($post->ID, 'raw'),
+            'received_at'       => $received_at,
+            'age_minutes'       => $age_minutes,
+            'threshold_minutes' => $threshold_minutes,
+            'reported_at'       => current_time('mysql'),
+        );
+
+        error_log(sprintf('SourceHub Spoke: Reporting stuck draft to hub - post %d (hub_id %d), age %s min',
+            $post->ID, $hub_post_id, $age_minutes !== null ? $age_minutes : 'unknown'));
+
+        $response = wp_remote_post($endpoint, array(
+            'headers' => array('Content-Type' => 'application/json'),
+            'body'    => wp_json_encode($payload),
+            'timeout' => 15,
+        ));
+
+        if (is_wp_error($response)) {
+            SourceHub_Logger::warning(
+                'Failed to report stuck draft to hub',
+                array(
+                    'hub_url' => $hub_url,
+                    'spoke_post_id' => $post->ID,
+                    'error' => $response->get_error_message(),
+                ),
+                $post->ID,
+                null,
+                'stuck_draft_report_failed'
+            );
+            return;
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        if ($code !== 200) {
+            SourceHub_Logger::warning(
+                'Hub returned non-200 for stuck-draft report',
+                array(
+                    'hub_url' => $hub_url,
+                    'spoke_post_id' => $post->ID,
+                    'response_code' => $code,
+                    'response_body' => wp_remote_retrieve_body($response),
+                ),
+                $post->ID,
+                null,
+                'stuck_draft_report_failed'
+            );
+            return;
+        }
+
+        SourceHub_Logger::warning(
+            sprintf('Reported stuck draft "%s" to hub (age %s min)',
+                $post->post_title,
+                $age_minutes !== null ? $age_minutes : 'unknown'),
+            $payload,
+            $post->ID,
+            null,
+            'stuck_draft_reported'
+        );
     }
 
     /**
