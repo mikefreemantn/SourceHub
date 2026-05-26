@@ -2,6 +2,12 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.1] - 2026-05-26
+
+### Fixed
+- **GitUpdater release detection** - Added `Release Asset: true` and `Update URI` headers to the main plugin file so GitUpdater tracks tagged releases instead of falling back to branch HEAD. Release zip is now uploaded as an explicit asset on the GitHub release to remove any ambiguity around auto-zipball fetching.
+- Documented required GitUpdater headers and the branch-install vs release-install gotcha in `DEPLOYMENT.md`.
+
 ## [2.4.0] - 2026-05-26
 
 ### Fixed
