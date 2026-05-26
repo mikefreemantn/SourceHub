@@ -2,6 +2,24 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.0] - 2026-05-26
+
+### Fixed
+- **Premature publishing of scheduled posts** - Multiple defenses against the WP core auto-flip behavior that turned `future` -> `publish` whenever `post_date_gmt` was already in the past at save time.
+  - **Retry preserves future date** - `handle_spoke_retry()` no longer stamps `post_date` with "now" when the original post is in `future` status. This prevents a Retry click on a scheduled post from publishing it immediately.
+  - **Hub-side stale-future guard** - In `prepare_post_data()`, when status would be sent as `future` but `post_date_gmt` has already passed (cron lag, late delayed-sync), the hub downgrades to `publish` and logs a `stale_future_guard_hub` warning instead of relying on WP's silent auto-flip.
+  - **Spoke-side stale-future guard** - `update_post_from_data()` and the create-path deferred publish in `create_post_from_data()` now coerce stale `future` -> `publish` explicitly with a logged `stale_future_guard_spoke` warning. Belt-and-suspenders for anything that slips past the hub guard.
+
+### Fixed
+- **Stuck-draft cron false positives** - The 3rd-tier safety net introduced in 2.3.0 was firing on posts that were legitimately scheduled for future publish (the hub creates a draft on the spoke immediately at scheduling time, then sends the publish UPDATE only when the future->publish transition fires - potentially days later). The cron now skips any draft whose `post_date_gmt` is in the future. This eliminates spurious "stuck draft" alerts and the manual-Retry chain they were prompting.
+
+### Added
+- **"View" link on synced spokes** - Synced posts now display a direct link to the published spoke article in the SourceHub Syndication meta box.
+  - Spoke sends the final permalink via `get_permalink()` in the `sync-complete` callback as `spoke_post_url`.
+  - Hub stores the URL in `_sourcehub_sync_status[connection_id]['spoke_post_url']`.
+  - Renders as a "View" button next to the Synced badge (PHP on page load, JS on dynamic AJAX status updates).
+  - Falls back to constructing `{connection_url}/{post_name}/` when called against an older spoke that does not yet send the URL.
+
 ## [2.2.2] - 2026-04-22
 
 ### Fixed

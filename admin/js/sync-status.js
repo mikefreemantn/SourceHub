@@ -131,8 +131,9 @@
             
             const $infoDiv = $item.find('.syndication-info');
             
-            // Remove existing badges
-            $infoDiv.find('.sync-status-badge').remove();
+            // Remove existing badges and any previously-rendered View link
+            // (the PHP-rendered one is replaced by the JS one to keep the URL fresh)
+            $infoDiv.find('.sync-status-badge, .sourcehub-view-spoke-btn').remove();
             
             let badgeHtml = '';
             
@@ -151,6 +152,13 @@
                     '<span class="dashicons dashicons-yes-alt"></span>' +
                     '<small>Synced</small>' +
                     '</span>';
+                // Append a View link if we have the spoke post URL
+                if (spokeStatus.spoke_post_url) {
+                    badgeHtml += ' <a href="' + spokeStatus.spoke_post_url +
+                        '" target="_blank" rel="noopener noreferrer" class="button button-small sourcehub-view-spoke-btn" title="' +
+                        spokeStatus.spoke_post_url + '">' +
+                        '<span class="dashicons dashicons-external" style="font-size:14px;line-height:1.5;height:14px;width:14px;"></span> View</a>';
+                }
             } else if (spokeStatus.status === 'failed') {
                 const errorMsg = spokeStatus.error || 'Unknown error';
                 badgeHtml = '<span class="sync-status-badge sync-failed" title="' + errorMsg + '">' +

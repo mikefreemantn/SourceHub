@@ -233,6 +233,7 @@ class SourceHub_Hub_Manager {
         $job_id = $data['job_id'] ?? null;
         $hub_post_id = $data['hub_post_id'] ?? null;
         $spoke_post_id = $data['spoke_post_id'] ?? null;
+        $spoke_post_url = isset($data['spoke_post_url']) ? esc_url_raw($data['spoke_post_url']) : '';
         $status = $data['status'] ?? 'failed';
         $error_message = $data['error_message'] ?? null;
         $spoke_url = $data['spoke_url'] ?? null;
@@ -276,7 +277,8 @@ class SourceHub_Hub_Manager {
                     'status' => 'draft_created',
                     'last_sync' => current_time('mysql'),
                     'action' => $action,
-                    'spoke_post_id' => $spoke_post_id
+                    'spoke_post_id' => $spoke_post_id,
+                    'spoke_post_url' => $spoke_post_url ?: ($sync_status[$connection->id]['spoke_post_url'] ?? '')
                 );
                 
                 error_log(sprintf('SourceHub Hub: Post %d draft created on %s (spoke post ID: %d), waiting for UPDATE to publish', 
@@ -301,7 +303,8 @@ class SourceHub_Hub_Manager {
                     'status' => 'success',
                     'last_sync' => current_time('mysql'),
                     'action' => $action,
-                    'spoke_post_id' => $spoke_post_id
+                    'spoke_post_id' => $spoke_post_id,
+                    'spoke_post_url' => $spoke_post_url ?: ($sync_status[$connection->id]['spoke_post_url'] ?? '')
                 );
                 
                 error_log(sprintf('SourceHub Hub: Post %d synced successfully to %s (spoke post ID: %d)', 
@@ -743,6 +746,25 @@ class SourceHub_Hub_Manager {
                                         <span class="dashicons dashicons-yes-alt"></span>
                                         <small><?php _e('Synced', 'sourcehub'); ?></small>
                                     </span>
+                                    <?php
+                                    // Build the spoke post URL: prefer the value reported back via
+                                    // the sync-complete callback; fall back to constructing from
+                                    // the connection URL + current slug for legacy syncs.
+                                    $spoke_view_url = isset($status_info['spoke_post_url']) ? $status_info['spoke_post_url'] : '';
+                                    if (empty($spoke_view_url) && !empty($post->post_name)) {
+                                        $spoke_view_url = trailingslashit($connection->url) . $post->post_name . '/';
+                                    }
+                                    if (!empty($spoke_view_url)):
+                                    ?>
+                                        <a href="<?php echo esc_url($spoke_view_url); ?>"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="button button-small sourcehub-view-spoke-btn"
+                                           title="<?php echo esc_attr($spoke_view_url); ?>">
+                                            <span class="dashicons dashicons-external" style="font-size: 14px; line-height: 1.5; height: 14px; width: 14px;"></span>
+                                            <?php _e('View', 'sourcehub'); ?>
+                                        </a>
+                                    <?php endif; ?>
                                     <button type="button" 
                                             class="button button-small sourcehub-resync-btn" 
                                             data-connection-id="<?php echo esc_attr($connection->id); ?>"
@@ -2791,13 +2813,34 @@ class SourceHub_Hub_Manager {
             $post_date = $post->post_date;
             $post_date_gmt = $post->post_date_gmt;
         }
-        
+
+        // STALE-FUTURE GUARD: If hub is about to send status='future' but the
+        // scheduled time has already passed (hub WP-cron lag, late delayed_sync,
+        // etc.), WordPress core on the spoke silently auto-flips to 'publish' the
+        // moment we save with a past date_gmt. Detect and downgrade to 'publish'
+        // explicitly so the spoke handles it cleanly and we get a log entry.
+        $status_to_send = $skip_image ? 'draft' : $post->post_status;
+        if ($status_to_send === 'future') {
+            $sched_ts = strtotime($post_date_gmt . ' UTC');
+            if ($sched_ts && $sched_ts <= time()) {
+                SourceHub_Logger::warning(
+                    sprintf('Hub stale-future detected for post %d (scheduled %s UTC, now %s UTC) - sending as publish',
+                        $post->ID, $post_date_gmt, gmdate('Y-m-d H:i:s')),
+                    array('post_id' => $post->ID, 'connection_id' => $connection->id),
+                    $post->ID,
+                    $connection->id,
+                    'stale_future_guard_hub'
+                );
+                $status_to_send = 'publish';
+            }
+        }
+
         $data = array(
             'hub_id' => $post->ID,
             'title' => $post->post_title,
             'content' => $processed_content,
             'excerpt' => $post->post_excerpt,
-            'status' => $skip_image ? 'draft' : $post->post_status, // Pass actual status (publish, future, draft)
+            'status' => $status_to_send, // Pass actual status (publish, future, draft) - guarded against stale future
             'slug' => $post->post_name,
             'date' => $post_date, // Current time for retries, original time for first publish
             'date_gmt' => $post_date_gmt,
@@ -3907,8 +3950,21 @@ class SourceHub_Hub_Manager {
         
         // Determine if this is a create or update based on sync status
         $is_create = ($action === 'create');
-        
-        // Retry the syndication with current time (not original publish time)
+
+        // CRITICAL: For posts scheduled in the future, do NOT use current_time on
+        // retry. Doing so would set post_date_gmt to "now" while still passing
+        // status='future', which causes WordPress core on the spoke to silently
+        // auto-flip future->publish (because "now" is treated as past by the time
+        // the request lands), publishing a scheduled post immediately.
+        $is_future_post = ($post->post_status === 'future');
+        $use_current_time_for_retry = !$is_future_post;
+
+        if ($is_future_post) {
+            error_log(sprintf('SourceHub Hub: Retry on future-scheduled post %d - preserving original post_date %s',
+                $post_id, $post->post_date_gmt));
+        }
+
+        // Retry the syndication
         $result = $this->send_post_to_spoke(
             $post, 
             $connection, 
@@ -3916,7 +3972,7 @@ class SourceHub_Hub_Manager {
             !$is_create, // include_image for updates
             1, 
             $is_create, // send_as_draft for creates
-            true // use_current_time - use NOW instead of original publish time
+            $use_current_time_for_retry // false for future posts to preserve schedule
         );
         
         if ($result['success']) {

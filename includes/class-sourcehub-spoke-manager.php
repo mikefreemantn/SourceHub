@@ -758,13 +758,32 @@ class SourceHub_Spoke_Manager {
         if ($intended_status !== 'draft') {
             // Get the post to preserve its date
             $post = get_post($post_id);
+
+            // STALE-FUTURE GUARD: prevent WP from silently auto-flipping a 'future'
+            // status to 'publish' when the scheduled time has already passed.
+            $status_to_set = $intended_status;
+            if ($status_to_set === 'future' && !empty($post->post_date_gmt)) {
+                $sched_ts = strtotime($post->post_date_gmt . ' UTC');
+                if ($sched_ts && $sched_ts <= time()) {
+                    SourceHub_Logger::warning(
+                        sprintf('Spoke create-path: stale future for post %d (scheduled %s UTC) - coercing to publish',
+                            $post_id, $post->post_date_gmt),
+                        array('post_id' => $post_id),
+                        $post_id,
+                        null,
+                        'stale_future_guard_spoke'
+                    );
+                    $status_to_set = 'publish';
+                }
+            }
+
             wp_update_post(array(
                 'ID' => $post_id,
-                'post_status' => $intended_status,
+                'post_status' => $status_to_set,
                 'post_date' => $post->post_date,
                 'post_date_gmt' => $post->post_date_gmt
             ));
-            error_log("SourceHub: Published post {$post_id} with status '{$intended_status}' after Yoast meta set");
+            error_log("SourceHub: Published post {$post_id} with status '{$status_to_set}' after Yoast meta set");
             SourceHub_Logger::success(
                 'Post published after Yoast meta set',
                 array('post_id' => $post_id, 'status' => $intended_status),
@@ -813,13 +832,33 @@ class SourceHub_Spoke_Manager {
         // Temporarily disable content filtering to preserve iframes and embeds
         add_filter('wp_kses_allowed_html', array($this, 'allow_all_html_for_sourcehub'), 10, 2);
         
+        // STALE-FUTURE GUARD: If the hub sent status='future' but post_date_gmt has
+        // already passed (hub WP-cron lag, manual retry, etc.), WordPress core would
+        // silently auto-flip the post to 'publish' on save. Detect and coerce
+        // explicitly so we (a) log the anomaly and (b) avoid surprising behavior.
+        $incoming_status = isset($data['status']) ? sanitize_text_field($data['status']) : 'publish';
+        if ($incoming_status === 'future' && !empty($data['date_gmt'])) {
+            $sched_ts = strtotime($data['date_gmt'] . ' UTC');
+            if ($sched_ts && $sched_ts <= time()) {
+                SourceHub_Logger::warning(
+                    sprintf('Spoke received stale future status for post %d (scheduled %s UTC, now %s UTC) - coercing to publish to prevent WP auto-flip',
+                        $post_id, $data['date_gmt'], gmdate('Y-m-d H:i:s')),
+                    array('post_id' => $post_id, 'hub_id' => isset($data['hub_id']) ? $data['hub_id'] : null),
+                    $post_id,
+                    null,
+                    'stale_future_guard_spoke'
+                );
+                $incoming_status = 'publish';
+            }
+        }
+
         // Prepare post data with already-processed gallery content
         $post_data = array(
             'ID' => $post_id,
             'post_title' => sanitize_text_field($data['title']),
             'post_content' => $content_to_save, // Use processed content with correct gallery IDs
             'post_excerpt' => isset($data['excerpt']) ? sanitize_textarea_field($data['excerpt']) : '',
-            'post_status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'publish',
+            'post_status' => $incoming_status,
             'post_name' => isset($data['slug']) ? sanitize_title($data['slug']) : '',
             'post_date' => isset($data['date']) ? sanitize_text_field($data['date']) : current_time('mysql'),
             'post_date_gmt' => isset($data['date_gmt']) ? sanitize_text_field($data['date_gmt']) : current_time('mysql', 1),
@@ -1595,6 +1634,17 @@ class SourceHub_Spoke_Manager {
                 continue;
             }
 
+            // FALSE-POSITIVE GUARD: Skip drafts intentionally scheduled for future
+            // publish. The hub creates a draft on the spoke immediately at scheduling
+            // time but only sends the publish UPDATE when the future->publish
+            // transition fires (could be days later). Such drafts are NOT stuck.
+            if (!empty($post->post_date_gmt) && $post->post_date_gmt !== '0000-00-00 00:00:00') {
+                $sched_ts = strtotime($post->post_date_gmt . ' UTC');
+                if ($sched_ts && $sched_ts > time()) {
+                    continue; // Scheduled for future, draft state is intentional
+                }
+            }
+
             // Convert the locally-stored timestamp to GMT, then to unix seconds
             $received_ts = strtotime(get_gmt_from_date($received_at) . ' UTC');
             if (!$received_ts || $received_ts > $cutoff_ts) {
@@ -1725,10 +1775,21 @@ class SourceHub_Spoke_Manager {
     private function notify_hub_completion($job_id, $hub_url, $hub_post_id, $spoke_post_id = null, $error_message = null) {
         $callback_url = trailingslashit($hub_url) . 'wp-json/sourcehub/v1/sync-complete';
         
+        // Include the final permalink for the spoke post so the hub can display
+        // a direct "View" link in the syndication meta box.
+        $spoke_post_url = '';
+        if ($spoke_post_id) {
+            $permalink = get_permalink($spoke_post_id);
+            if ($permalink) {
+                $spoke_post_url = $permalink;
+            }
+        }
+
         $payload = array(
             'job_id' => $job_id,
             'hub_post_id' => $hub_post_id,
             'spoke_post_id' => $spoke_post_id,
+            'spoke_post_url' => $spoke_post_url,
             'status' => $spoke_post_id ? 'completed' : 'failed',
             'error_message' => $error_message,
             'spoke_url' => home_url()
