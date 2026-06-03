@@ -19,6 +19,16 @@ class SourceHub_Spoke_Manager {
      * Initialize spoke functionality
      */
     public function init() {
+        // Guard against duplicate hook registration (matches pattern used in
+        // SourceHub_Hub_Manager, SourceHub_Admin, and SourceHub_Validation).
+        // See class-sourcehub-hub-manager.php init() for full rationale.
+        static $initialized = false;
+        if ($initialized) {
+            error_log('SourceHub: Spoke_Manager::init() called again in same request - ignoring duplicate registration');
+            return;
+        }
+        $initialized = true;
+
         add_action('wp_head', array($this, 'add_canonical_tags'));
         add_filter('the_content', array($this, 'maybe_add_attribution'), 999);
         add_action('rest_api_init', array($this, 'register_rest_routes'));

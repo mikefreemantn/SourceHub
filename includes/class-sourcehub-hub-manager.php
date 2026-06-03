@@ -28,6 +28,19 @@ class SourceHub_Hub_Manager {
     /**
      */
     public function init() {
+        // Guard against duplicate hook registration (matches pattern used in
+        // SourceHub_Admin and SourceHub_Validation). If init() is called more
+        // than once in the same request (e.g., via two SourceHub_Hub_Manager
+        // instances on certain hosting environments), every hook would fire
+        // twice, causing duplicate syndication requests, "race_prevented"
+        // entries on slow spokes, and last-write-wins content corruption.
+        static $initialized = false;
+        if ($initialized) {
+            error_log('SourceHub: Hub_Manager::init() called again in same request - ignoring duplicate registration');
+            return;
+        }
+        $initialized = true;
+
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_post_meta'), 99, 2); // High priority to run after theme meta saves
         add_action('post_updated', array($this, 'handle_post_update'), 100, 3); // Run AFTER save_post_meta (priority 99)

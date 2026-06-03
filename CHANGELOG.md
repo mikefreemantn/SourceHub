@@ -2,6 +2,16 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.2] - 2026-06-01
+
+### Fixed
+- **Duplicate hook registration on hub and spokes** — Added `static $initialized` guards to `SourceHub_Hub_Manager::init()` and `SourceHub_Spoke_Manager::init()`, matching the existing pattern in `SourceHub_Admin` and `SourceHub_Validation`. Under certain hosting environments (notably WPEngine MU plugin layers), `init()` was being invoked more than once per request, causing every action hook — including `transition_post_status`, `post_updated`, and `sourcehub_delayed_sync` — to be registered twice. The downstream effect was:
+  - Every editorial save triggered 2× syndication requests per spoke.
+  - Slow spokes (e.g., Williamson Source) couldn't dedupe at `receive_post` time before the second request arrived, generating frequent `race_prevented` log entries.
+  - `delayed_sync_replay` warnings on every publish (safety net catching the duplicate delayed sync).
+  - Last-write-wins content corruption when AI rewriting produced non-deterministic variants between the duplicate jobs.
+- The guard is a no-op when `init()` is called only once (the normal case). When a duplicate call is detected, a single `error_log` line is written to `wp-content/debug.log` for confirmation: `SourceHub: Hub_Manager::init() called again in same request - ignoring duplicate registration`.
+
 ## [2.4.1] - 2026-05-26
 
 ### Fixed
