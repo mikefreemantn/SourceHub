@@ -2,6 +2,13 @@
 
 A powerful content syndication plugin that enables centralized editorial teams to distribute content across multiple WordPress sites with full SEO integration, AI rewriting, and smart linking capabilities.
 
+---
+
+> **👋 New developer? Start with [`HANDOFF.md`](./HANDOFF.md).**
+> It's the single entry point covering architecture, local dev setup, deployment, current state, and known issues. Read it before anything else in this repo.
+
+---
+
 ## 🎯 Overview
 
 SourceHub transforms your WordPress network into a centralized content distribution system. Create content once on your hub site and automatically syndicate it to multiple spoke sites with intelligent processing, SEO optimization, and custom linking.
