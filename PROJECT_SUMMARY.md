@@ -1,6 +1,9 @@
 # SourceHub WordPress Plugin - Project Summary & Development History
 
-**Client Report - December 15, 2025**
+**Client Report - Last updated June 8, 2026**
+
+> **📘 For an actively-maintained developer onboarding document, see [`HANDOFF.md`](./HANDOFF.md).**
+> This file is a high-level project summary suitable for client/stakeholder reporting. `HANDOFF.md` is the practical guide for any developer taking over the codebase.
 
 ---
 
@@ -14,28 +17,26 @@ SourceHub is a comprehensive WordPress content syndication plugin that enables c
 
 - **Project Start:** July 2025
 - **Client Handoff:** September 29, 2025
-- **Current Version:** 2.0.0.3
-- **Development Duration:** ~5.5 months (July - December 2025)
-- **Total Releases:** 117 versions
-- **Total Commits:** 189 commits (since handoff)
+- **Current Version:** 2.4.2 (June 1, 2026)
+- **Development Duration:** ~11 months active development (July 2025 - June 2026)
+- **Total Releases:** 142 tagged releases
+- **Total Commits:** 203 commits
 
 ---
 
 ## Code Metrics
 
 ### Lines of Code (Custom Plugin Code - Excluding Libraries)
-- **PHP Code:** 16,075 lines
-- **JavaScript:** 3,005 lines  
-- **CSS:** 2,475 lines
-- **Documentation:** 25+ markdown files
-- **Total Custom Code:** 21,555 lines
+- **PHP Code:** 22,691 lines
+- **JavaScript:** 5,108 lines
+- **CSS:** 3,861 lines
+- **Documentation:** 15+ markdown files (12 obsolete debug notes archived to `docs/archive/` in June 2026)
+- **Total Custom Code:** 31,660 lines
 
 ### Development Activity
-- **Total Commits:** 189
-- **Files Modified:** 702
-- **Lines Added:** 67,691
-- **Lines Deleted:** 26,932
-- **Net Code Growth:** 40,759 lines
+- **Total Commits:** 203
+- **Tagged Releases:** 142
+- **Active Spokes in Production:** 10 sites
 
 ### Project Files
 - **Total Project Files:** 65+ files (PHP, JS, CSS, MD)
@@ -47,8 +48,41 @@ SourceHub is a comprehensive WordPress content syndication plugin that enables c
 
 ## Major Version History
 
-### Version 2.x Series (Current - Production Ready)
-**v2.0.0.3** (December 15, 2025) - Latest
+### Version 2.4.x Series (Reliability hardening - 2026)
+**v2.4.2** (June 1, 2026) - Latest
+- Fixed duplicate hook registration causing 2× syndication jobs per save on WPEngine
+- Added `static $initialized` guards to `Hub_Manager::init()` and `Spoke_Manager::init()`
+- Resolved root cause of `race_prevented` entries on slow spokes (Williamson Source)
+- Eliminated last-write-wins content corruption from concurrent AI rewrites
+
+**v2.4.1** (May 26, 2026)
+- Fixed GitUpdater release detection (added `Release Asset: true` + `Update URI` headers)
+- Documented branch-install vs release-install gotcha in `DEPLOYMENT.md`
+
+**v2.4.0** (May 26, 2026) - Scheduled Posts Hardening
+- Multiple defenses against WP core auto-flipping `future` → `publish` when `post_date_gmt` was already in the past
+- Hub-side and spoke-side stale-future status guards
+- Spoke permalink now persisted and surfaced in syndication meta box "View" link
+- Fixed stuck-draft false positives (cron now skips drafts scheduled for the future)
+- Improved retry logic to preserve original scheduled time for future posts
+
+### Version 2.1.x - 2.3.x Series (Feature expansion, early 2026)
+**~3 releases (v2.1.0, v2.2.0, v2.3.0)** focused on:
+- Messaging system between hub editors (Slack-like in-plugin chat)
+- Bug tracker improvements with email notifications
+- Activity log filtering, pagination, and export hardening
+- Auto-syndication rule engine refinements
+
+### Version 2.0.1.x - 2.0.2.x Series (Stabilization, late 2025 - early 2026)
+**~15 patch releases** addressing:
+- Sync status race conditions on fast-completing spokes
+- Yoast meta save timing
+- Featured image metadata sync (title, alt, caption, description)
+- Gallery image processing
+- CORS handling for Local by Flywheel environments
+
+### Version 2.0.0.x Series (Production Ready - Late 2025)
+**v2.0.0.3** (December 15, 2025)
 - Activity Log timestamp improvements (full date/time display)
 - Publication storage reference documentation
 - Timezone conversion fixes
@@ -316,11 +350,12 @@ This includes:
 ## Current Status
 
 ### Production Ready ✅
-- Version 2.0.0.3 deployed to main branch
-- All critical bugs resolved
-- Comprehensive testing completed
-- Full documentation provided
-- Automated deployment pipeline established
+- Version **2.4.2** deployed to main branch and live on hub2a.wpenginepowered.com + 10 spoke sites
+- Duplicate hook registration root cause resolved (June 2026)
+- Scheduled post premature-publish bug resolved (May 2026)
+- Developer handoff documentation completed (June 2026 — see `HANDOFF.md`)
+- Repo documentation cleaned: 12 obsolete debug notes archived to `docs/archive/`
+- Automated deployment pipeline established via GitUpdater + tagged releases
 
 ### Active Features
 - ✅ Hub & Spoke syndication
@@ -360,16 +395,18 @@ This includes:
 
 - **GitHub:** https://github.com/mikefreemantn/SourceHub
 - **Current Branch:** main
-- **Latest Release:** v2.0.0.3
+- **Latest Release:** v2.4.2
 - **License:** GPL v2 or later
 - **WordPress Compatibility:** 5.0+
 - **PHP Requirement:** 7.4+
+- **Production Hub:** hub2a.wpenginepowered.com (WP Engine)
+- **Production Spokes:** 10 sites (Williamson, Sumner, Rutherford, Wilson, Robertson, Cannon, Davidson, Maury, Dickson, Cheatham)
 
 ---
 
 ## Conclusion
 
-SourceHub represents a comprehensive, production-ready WordPress content syndication solution with 440+ hours of development spanning 5.5 months (July - December 2025), 117 releases, and 21,555+ lines of custom code. The plugin successfully solves complex technical challenges around async processing, race conditions, SEO integration, and multi-site content distribution.
+SourceHub represents a comprehensive, production-ready WordPress content syndication solution. Across 11 months of active development (July 2025 - June 2026), the project has delivered 142 tagged releases, 31,000+ lines of custom code, and resolved a long list of complex technical challenges including async processing, race conditions on slow spokes, SEO timing issues, scheduled post status transitions, and the duplicate-hook-registration bug that took multiple weeks to diagnose in mid-2026.
 
 The project demonstrates expertise in:
 - WordPress plugin architecture
@@ -382,10 +419,11 @@ The project demonstrates expertise in:
 - DevOps and deployment automation
 - Technical documentation
 
-**Project Status:** Production Ready & Actively Maintained
+**Project Status:** Production Ready & Ready for Developer Handoff
 
 ---
 
-*Report Generated: December 15, 2025*
+*Original report: December 15, 2025*
+*Updated: June 8, 2026 — v2.4.2, handoff-ready*
 *Developer: Mike Freeman - Man Over Machine*
 *Contact: https://manovermachine.com*
