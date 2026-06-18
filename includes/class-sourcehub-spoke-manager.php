@@ -1108,32 +1108,53 @@ class SourceHub_Spoke_Manager {
             // If the filenames match, the image is already set - skip download
             if ($current_image_filename === $new_image_filename) {
                 error_log('SourceHub Spoke: Featured image already exists for post ' . $post_id . ', skipping download');
+                // Still make sure Yoast's OG image points at the existing
+                // thumbnail - corrects posts whose OG image was computed before
+                // the thumbnail existed. Cheap and idempotent.
+                $this->sync_yoast_og_image($post_id, $current_thumbnail_id);
                 return;
             }
         }
 
-        // Download image using wp_remote_get
-        $response = wp_remote_get($image_data['url'], array(
-            'timeout' => 90,
-            'sslverify' => false
-        ));
-        
-        if (is_wp_error($response)) {
-            SourceHub_Logger::error(
-                'Failed to download featured image: ' . $response->get_error_message(),
-                array('url' => $image_data['url'], 'error' => $response->get_error_message()),
-                $post_id,
-                null,
-                'set_featured_image'
-            );
-            return;
+        // Download image using wp_remote_get. We allow a single retry on a
+        // *connection* error (not on an HTTP status, which won't fix itself) to
+        // ride out a transient network blip. Per-attempt timeout is kept low so
+        // the worst-case total (2 x 45s) does not exceed the previous single
+        // 90s attempt - we don't want to lengthen spoke processing, which would
+        // widen the window for the hub-side duplicate-sync race.
+        $max_attempts = 2;
+        $response = null;
+        $response_code = 0;
+        $last_error = '';
+
+        for ($attempt = 1; $attempt <= $max_attempts; $attempt++) {
+            $response = wp_remote_get($image_data['url'], array(
+                'timeout' => 45,
+                'sslverify' => false
+            ));
+
+            // Connection-level error - worth one retry.
+            if (is_wp_error($response)) {
+                $last_error = $response->get_error_message();
+                error_log(sprintf('SourceHub Spoke: Featured image download attempt %d/%d failed for post %d: %s',
+                    $attempt, $max_attempts, $post_id, $last_error));
+                $response = null;
+                continue;
+            }
+
+            // Got a response - a non-200 status won't change on retry, so stop.
+            $response_code = wp_remote_retrieve_response_code($response);
+            if ($response_code !== 200) {
+                $last_error = 'HTTP status ' . $response_code;
+                $response = null;
+            }
+            break;
         }
-        
-        $response_code = wp_remote_retrieve_response_code($response);
-        if ($response_code !== 200) {
+
+        if (!$response) {
             SourceHub_Logger::error(
-                'Featured image download failed with status code: ' . $response_code,
-                array('url' => $image_data['url'], 'response_code' => $response_code),
+                'Failed to download featured image: ' . $last_error,
+                array('url' => $image_data['url'], 'error' => $last_error),
                 $post_id,
                 null,
                 'set_featured_image'
@@ -1227,7 +1248,15 @@ class SourceHub_Spoke_Manager {
         }
 
         set_post_thumbnail($post_id, $attachment_id);
-        
+
+        // Point Yoast's OpenGraph/social image at this attachment. Yoast only
+        // falls back to the featured image when its OG image is computed *after*
+        // the thumbnail exists; because syndication attaches the image after the
+        // post is already saved/published, that fallback frequently misses and
+        // social platforms get the site default. Setting it explicitly (and
+        // refreshing the indexable) makes the behaviour deterministic.
+        $this->sync_yoast_og_image($post_id, $attachment_id);
+
         SourceHub_Logger::success(
             'Featured image set successfully',
             array('attachment_id' => $attachment_id, 'post_id' => $post_id),
@@ -1235,6 +1264,74 @@ class SourceHub_Spoke_Manager {
             null,
             'set_featured_image'
         );
+    }
+
+    /**
+     * Point Yoast's OpenGraph image at the given attachment and refresh the
+     * stored indexable so the change takes effect immediately.
+     *
+     * Safe no-op when Yoast is not active or the attachment is invalid.
+     *
+     * @param int $post_id       Post ID
+     * @param int $attachment_id Attachment ID to use as the OG image
+     */
+    private function sync_yoast_og_image($post_id, $attachment_id) {
+        if (empty($attachment_id)) {
+            return;
+        }
+
+        if (!class_exists('SourceHub_Yoast_Integration') || !SourceHub_Yoast_Integration::is_yoast_active()) {
+            return;
+        }
+
+        $image_url = wp_get_attachment_image_url($attachment_id, 'full');
+        if (!$image_url) {
+            return;
+        }
+
+        update_post_meta($post_id, '_yoast_wpseo_opengraph-image', esc_url_raw($image_url));
+        update_post_meta($post_id, '_yoast_wpseo_opengraph-image-id', (int) $attachment_id);
+
+        SourceHub_Logger::info(
+            'Set Yoast OpenGraph image from featured image',
+            array('attachment_id' => (int) $attachment_id, 'image_url' => $image_url),
+            $post_id,
+            null,
+            'yoast_og_image'
+        );
+
+        $this->refresh_yoast_indexable($post_id);
+    }
+
+    /**
+     * Force Yoast to rebuild its indexable for a post.
+     *
+     * Yoast caches the computed OG image in the wp_yoast_indexable table. When
+     * we attach the featured image out-of-band (after the post is saved), that
+     * cached value can be stale (often the site default). Deleting the indexable
+     * makes Yoast regenerate it lazily on next access with the correct image.
+     *
+     * Fully guarded - any failure is logged and ignored.
+     *
+     * @param int $post_id Post ID
+     */
+    private function refresh_yoast_indexable($post_id) {
+        clean_post_cache($post_id);
+
+        if (!function_exists('YoastSEO')) {
+            return;
+        }
+
+        try {
+            $repository = YoastSEO()->classes->get(\Yoast\WP\SEO\Repositories\Indexable_Repository::class);
+            $indexable = $repository->find_by_id_and_type($post_id, 'post', false);
+            if ($indexable && $indexable->id) {
+                $indexable->delete();
+                error_log('SourceHub Spoke: Refreshed Yoast indexable for post ' . $post_id);
+            }
+        } catch (\Throwable $e) {
+            error_log('SourceHub Spoke: Yoast indexable refresh skipped for post ' . $post_id . ': ' . $e->getMessage());
+        }
     }
 
     /**

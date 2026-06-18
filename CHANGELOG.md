@@ -2,6 +2,17 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.3] - 2026-06-16
+
+### Fixed
+- **Featured image not used as the social/OpenGraph image on spokes** — Syndicated posts were intermittently sharing the spoke site's *default* OG image to social media instead of the article's featured image. Root cause: the spoke attaches the featured image *after* the post is saved/published, so Yoast computes and caches its OpenGraph image before a thumbnail exists, then never refreshes it. Fixes:
+  - **Explicit OG image** — `set_featured_image()` now sets `_yoast_wpseo_opengraph-image` (to the spoke's own attachment URL) and `_yoast_wpseo_opengraph-image-id` (the new spoke attachment ID) immediately after `set_post_thumbnail()`, instead of relying on Yoast's timing-sensitive featured-image fallback. Also applied on the "image already exists" skip path so re-syncs correct older posts.
+  - **Indexable refresh** — after the thumbnail is set, the post's Yoast indexable is cleared (`clean_post_cache()` + a guarded `Indexable_Repository` delete) so Yoast regenerates the cached OG image with the correct value. Fully guarded; a no-op when Yoast is inactive or the API is unavailable.
+  - **Download safety net** — the featured-image download now retries once on a *connection* error (not on an HTTP status), with a reduced 45s per-attempt timeout so worst-case processing time stays at/below the previous single 90s attempt and does not widen the duplicate-sync window.
+  - Both the create and update spoke paths are covered, since all logic lives inside `set_featured_image()`.
+
+  Note: social platforms cache OG images on first scrape; already-shared posts must be re-scraped manually to pick up the corrected image.
+
 ## [2.4.2] - 2026-06-01
 
 ### Fixed
