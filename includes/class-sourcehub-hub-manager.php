@@ -3786,42 +3786,29 @@ class SourceHub_Hub_Manager {
                                 // Retry the syndication
                                 $retry_count++;
                                 
-                                // Log as ERROR for first stuck detection, WARNING for subsequent retries
                                 $error_type = $is_failed ? 'failed' : 'stuck in processing';
                                 $log_message = sprintf('Post %s for %d minutes - attempting retry %d/%d to %s', 
                                     $error_type, floor($elapsed / 60), $retry_count, $max_retries, $connection_name);
-                                
-                                if ($retry_count === 1) {
-                                    // First detection - log as ERROR to trigger notifications
-                                    SourceHub_Logger::error(
-                                        $log_message,
-                                        array(
-                                            'connection_id' => $connection_id,
-                                            'elapsed_seconds' => $elapsed,
-                                            'retry_count' => $retry_count,
-                                            'post_id' => $post_id,
-                                            'status' => $status_data['status']
-                                        ),
-                                        $post_id,
-                                        $connection_id,
-                                        $is_failed ? 'failed_retry' : 'timeout_retry'
-                                    );
-                                } else {
-                                    // Subsequent retries - log as WARNING
-                                    SourceHub_Logger::warning(
-                                        $log_message,
-                                        array(
-                                            'connection_id' => $connection_id,
-                                            'elapsed_seconds' => $elapsed,
-                                            'retry_count' => $retry_count,
-                                            'post_id' => $post_id,
-                                            'status' => $status_data['status']
-                                        ),
-                                        $post_id,
-                                        $connection_id,
-                                        $is_failed ? 'failed_retry' : 'timeout_retry'
-                                    );
-                                }
+
+                                // Log ALL retry attempts as WARNING, not ERROR. A retry is a
+                                // recoverable, self-healing event (the post is usually synced
+                                // successfully on the first retry), so flagging it as an ERROR
+                                // created false alarms - "the boy who cried wolf". ERROR (and the
+                                // notifications it fires) is now reserved for the permanent-failure
+                                // branch below, which only triggers after all retries are exhausted.
+                                SourceHub_Logger::warning(
+                                    $log_message,
+                                    array(
+                                        'connection_id' => $connection_id,
+                                        'elapsed_seconds' => $elapsed,
+                                        'retry_count' => $retry_count,
+                                        'post_id' => $post_id,
+                                        'status' => $status_data['status']
+                                    ),
+                                    $post_id,
+                                    $connection_id,
+                                    $is_failed ? 'failed_retry' : 'timeout_retry'
+                                );
                                 
                                 // CRITICAL: Preserve original started_at timestamp to track total elapsed time
                                 // Only update last_sync to show when retry was triggered

@@ -2,6 +2,14 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.4] - 2026-06-16
+
+### Changed
+- **Retry attempts no longer logged as ERROR ("boy who cried wolf")** — When the timeout checker detected a post stuck in `processing` and kicked off a retry, the first detection was logged as a hard ERROR (firing email/webhook/HubChat notifications) even though the retry almost always succeeded. This filled the activity log with red "errors" for posts that actually synced fine. All retry attempts (1–6) are now logged as **WARNING**. ERROR and its notifications are reserved exclusively for the permanent-failure path (`timeout_exhausted`), which only fires after all retries are exhausted — so an ERROR now reliably means a syndication genuinely failed.
+
+### Fixed
+- **Activity log export capped at 1,000 rows** — The "Export" action on the Post Logs / activity log only exported the 1,000 most recent entries. The export now returns **all** rows matching the active filters (level / action / date), not just the most recent 1,000.
+
 ## [2.4.3] - 2026-06-16
 
 ### Fixed

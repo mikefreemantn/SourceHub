@@ -1403,7 +1403,7 @@ class SourceHub_Admin {
         try {
             // Get filters - map 'level' to 'status' for database query
             $filters = array(
-                'limit' => 1000, // Limit export to 1000 most recent logs
+                'limit' => 0, // 0 = no limit; export ALL matching logs
                 'order' => 'DESC'
             );
             
