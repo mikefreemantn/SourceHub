@@ -258,31 +258,15 @@ class SourceHub_Spoke_Manager {
                 ), 400);
             }
 
-            // Check if post already exists (prevents duplicate creation from retries)
-            $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
-            if ($existing_post) {
-                error_log(sprintf('SourceHub Spoke: Post already exists (hub_id: %d, local_id: %d). Returning success to prevent duplicate.', $data['hub_id'], $existing_post->ID));
-                
-                // Log the duplicate prevention
-                SourceHub_Logger::info(
-                    sprintf('Duplicate prevented: "%s" already exists (retry detected)', $data['title']),
-                    array(
-                        'hub_id' => $data['hub_id'],
-                        'local_id' => $existing_post->ID,
-                        'hub_url' => $data['hub_url']
-                    ),
-                    $existing_post->ID,
-                    null,
-                    'duplicate_prevented'
-                );
-                
-                return new WP_REST_Response(array(
-                    'success' => true,
-                    'message' => __('Post already exists', 'sourcehub'),
-                    'post_id' => $existing_post->ID,
-                    'status' => 'exists'
-                ), 200);
-            }
+            // Stage 2/3 reconciliation: do NOT short-circuit when a post already
+            // exists. The REST endpoint's only responsibility is validate + queue;
+            // the SINGLE create-vs-update authority is process_sync_job(), which
+            // performs a locked, uncached, idempotent upsert. Dropping a delivery
+            // here (the old 'duplicate_prevented' early-return) would mean a create
+            // that lands on an existing draft never gets enriched - the Little
+            // Caesars bug - and that becomes fatal once Stage 3 carries the image
+            // and Yoast data inside the create payload. Queuing a duplicate is
+            // safe now: the upsert turns it into a harmless full update.
 
             // Queue job for async processing
             $job_id = $this->queue_sync_job($data, 'create');
@@ -513,6 +497,39 @@ class SourceHub_Spoke_Manager {
         ));
 
         return !empty($posts) ? $posts[0] : null;
+    }
+
+    /**
+     * Find existing post by hub ID and URL using a DIRECT, UNCACHED query.
+     *
+     * Stage 2: get_posts()/WP_Query results are object-cached on managed hosts
+     * (e.g. WPEngine/Flywheel). Under concurrent syndication that stale cache is
+     * exactly what let two jobs both believe no post existed and create/duplicate
+     * (the race_prevented churn). The authoritative create-vs-update decision in
+     * process_sync_job() must therefore read straight from the database.
+     *
+     * @param int    $hub_id  Hub post ID
+     * @param string $hub_url Hub URL
+     * @return int Spoke post ID, or 0 if none
+     */
+    private function find_existing_post_uncached($hub_id, $hub_url) {
+        global $wpdb;
+
+        $post_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT p.ID
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} m1 ON p.ID = m1.post_id
+                 AND m1.meta_key = '_sourcehub_hub_id' AND m1.meta_value = %d
+             INNER JOIN {$wpdb->postmeta} m2 ON p.ID = m2.post_id
+                 AND m2.meta_key = '_sourcehub_origin_url' AND m2.meta_value = %s
+             WHERE p.post_status NOT IN ('trash', 'auto-draft', 'inherit')
+             ORDER BY p.ID ASC
+             LIMIT 1",
+            $hub_id,
+            $hub_url
+        ));
+
+        return $post_id ? (int) $post_id : 0;
     }
 
     /**
@@ -1573,64 +1590,57 @@ class SourceHub_Spoke_Manager {
             'job_processing'
         );
         
-        // Process based on action
+        // Process based on action.
+        // Stage 2: serialize concurrent jobs for the same (hub_url, hub_id) so a
+        // duplicate or competing delivery can never race the create.
+        $lock_name = 'sourcehub_upsert_' . md5($data['hub_url'] . '|' . $data['hub_id']);
+        $have_lock = false;
         try {
-            // CRITICAL: Check for existing post again during processing to prevent race conditions
-            // Multiple simultaneous requests might pass the initial check before any post is created
-            $existing_post = $this->find_existing_post($data['hub_id'], $data['hub_url']);
-            
-            if ($existing_post && $job->action === 'create') {
-                // Post was created by another simultaneous request - don't create duplicate
-                error_log(sprintf('SourceHub: Race condition prevented - post already exists (hub_id: %d, local_id: %d)', 
-                    $data['hub_id'], $existing_post->ID));
-                
+            // GET_LOCK is connection-scoped and blocks other async-job DB
+            // connections processing the same post (up to 10s). Released in the
+            // finally block below. Best-effort: if we can't get it we still run
+            // the uncached upsert, which is idempotent anyway.
+            $have_lock = ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, %d)', $lock_name, 10)) === 1);
+
+            // Idempotent upsert. Resolve the existing spoke post with an UNCACHED
+            // query (WP_Query is object-cached on managed hosts - the source of
+            // the old race_prevented duplicates), then create or fully
+            // enrich-update. The job 'action' no longer drives routing: a
+            // duplicate 'create' for an existing post becomes a full update, so
+            // the featured image + Yoast always land (this is the fix for the
+            // bare-publish race - the old code flipped status only and skipped
+            // enrichment).
+            $existing_id = $this->find_existing_post_uncached($data['hub_id'], $data['hub_url']);
+
+            // Lock safety: if we could NOT acquire the lock AND no post exists yet,
+            // another job is mid-create but hasn't committed. Blind-creating here
+            // is the only residual duplicate window, so refuse it - throw and let
+            // the job be retried; by then the other job has committed and we
+            // upsert into its post. We only ever reach create_post_from_data()
+            // below while actually holding the lock.
+            if (!$have_lock && !$existing_id) {
+                throw new Exception(sprintf(
+                    'Upsert lock not acquired for hub_id %s and no committed post yet - deferring to retry to avoid a duplicate',
+                    $data['hub_id']
+                ));
+            }
+
+            if ($existing_id) {
                 SourceHub_Logger::info(
-                    sprintf('Race condition prevented: "%s" was created by simultaneous request', $data['title']),
+                    sprintf('Idempotent upsert: existing spoke post %d for hub_id %s - applying full update', $existing_id, $data['hub_id']),
                     array(
                         'hub_id' => $data['hub_id'],
-                        'local_id' => $existing_post->ID,
-                        'job_id' => $job_id
+                        'local_id' => $existing_id,
+                        'job_id' => $job_id,
+                        'requested_action' => $job->action
                     ),
-                    $existing_post->ID,
+                    $existing_id,
                     null,
-                    'race_prevented'
+                    'sync_upsert'
                 );
-                
-                // CRITICAL: Use the existing post ID so callback tells hub which post was actually created
-                // This allows hub to consolidate duplicate job IDs to the same spoke post
-                $post_id = $existing_post->ID;
-                
-                // Check if this request has a different status than existing post (e.g., publish after draft)
-                if (isset($data['status']) && $data['status'] !== $existing_post->post_status) {
-                    error_log(sprintf('SourceHub: Race condition - updating post status from %s to %s', 
-                        $existing_post->post_status, $data['status']));
-                    
-                    wp_update_post(array(
-                        'ID' => $existing_post->ID,
-                        'post_status' => $data['status']
-                    ));
-                    
-                    SourceHub_Logger::info(
-                        sprintf('Race condition - updated post status to %s', $data['status']),
-                        array(
-                            'post_id' => $existing_post->ID,
-                            'old_status' => $existing_post->post_status,
-                            'new_status' => $data['status']
-                        ),
-                        $existing_post->ID,
-                        null,
-                        'race_status_update'
-                    );
-                }
-            } elseif ($job->action === 'create') {
-                $post_id = $this->create_post_from_data($data);
+                $post_id = $this->update_post_from_data($existing_id, $data);
             } else {
-                // Update action
-                if ($existing_post) {
-                    $post_id = $this->update_post_from_data($existing_post->ID, $data);
-                } else {
-                    $post_id = $this->create_post_from_data($data);
-                }
+                $post_id = $this->create_post_from_data($data);
             }
             
             if (is_wp_error($post_id)) {
@@ -1693,6 +1703,11 @@ class SourceHub_Spoke_Manager {
             
             // Notify hub of failure
             $this->notify_hub_completion($job_id, $data['hub_url'], $data['hub_id'], null, $e->getMessage());
+        } finally {
+            // Stage 2: always release the upsert lock, success or failure.
+            if ($have_lock) {
+                $wpdb->query($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock_name));
+            }
         }
     }
 

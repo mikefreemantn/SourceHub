@@ -2,6 +2,18 @@
 
 All notable changes to SourceHub will be documented in this file.
 
+## [2.4.5] - 2026-06-22
+
+Reliability refactor, stages 1 & 2 (see REFACTOR_PLAN.md). Each stage removes a failure *condition* rather than adding another guard.
+
+### Fixed
+- **Scheduled posts falsely retried as "stuck" (hub).** The processing-timeout checker scanned every post in `processing` with a 1-minute threshold and no concept of a legitimately-waiting scheduled post. A `future` post whose spokes correctly waited for the publish date was treated as stuck and retried hourly (1/6 → 6/6), re-sending the create and spawning duplicate in-flight jobs and duplicate completion callbacks. The checker now **skips `future` posts entirely** and uses a **5-minute** threshold sized for a real cold-start, multi-spoke publish burst. Removes the bulk of false-positive `timeout_retry` volume and the duplicates it manufactured.
+- **Syndicated posts occasionally published on a spoke without their featured image / Yoast SEO** (the "published but bare" race — e.g. the Little Caesars report). When a duplicate/competing delivery raced the initial create, the spoke took a status-only `race_prevented` shortcut that flipped the post to publish **without** applying the featured image or Yoast data, yet still reported success to the hub. The spoke now performs a **locked, idempotent upsert**:
+  - `process_sync_job()` resolves the existing post with a **direct, uncached** query (`WP_Query`/`get_posts` is object-cached on managed hosts — the actual source of the duplicate races) and routes to a **full create-or-enrich-update**. A duplicate "create" for an existing post becomes a harmless full update, so the image + Yoast always land.
+  - Concurrent jobs for the same post are serialized with a MySQL `GET_LOCK`; if the lock can't be acquired and no committed post exists yet, the job defers to retry rather than blind-creating a duplicate.
+  - The `receive-post` REST endpoint no longer drops a delivery that lands on an existing post — it always validates + queues, leaving `process_sync_job()` as the single create-vs-update authority.
+  - Eliminates the `race_prevented` / `race_status_update` / `duplicate_prevented` churn.
+
 ## [2.4.4] - 2026-06-16
 
 ### Changed

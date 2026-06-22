@@ -3733,7 +3733,13 @@ class SourceHub_Hub_Manager {
             WHERE meta_key = '_sourcehub_sync_status'"
         );
         
-        $timeout_minutes = 1;
+        // REFACTOR Stage 1: raised from 1 minute. A real 10-spoke publish burst
+        // with cold-start spoke wake-ups legitimately keeps spokes in 'processing'
+        // well past 1 minute, so the old threshold fired retries on spokes that
+        // were merely slow (not stuck) - and every false retry spawned a duplicate
+        // in-flight job and duplicate completion callbacks. 5 minutes covers the
+        // realistic fan-out window while still catching genuinely stuck jobs.
+        $timeout_minutes = 5;
         $timeout_seconds = $timeout_minutes * 60;
         $max_age_hours = 24; // Ignore posts stuck for more than 24 hours (likely abandoned)
         $max_age_seconds = $max_age_hours * 3600;
@@ -3744,6 +3750,19 @@ class SourceHub_Hub_Manager {
             $sync_status = maybe_unserialize($row->meta_value);
             
             if (!is_array($sync_status)) {
+                continue;
+            }
+
+            // REFACTOR Stage 1: never treat a scheduled (future) post as "stuck".
+            // The hub creates spoke drafts at scheduling time and the spokes
+            // correctly sit in 'processing' until the publish date arrives - which
+            // can be days away. The timeout checker has no concept of this
+            // legitimate waiting state, so it was retrying scheduled posts hourly
+            // (1/6 -> 6/6), burning every retry and re-sending the create on a
+            // post that was working as designed. Skip future posts entirely; the
+            // future->publish transition is what (re)drives their syndication.
+            $post_status = get_post_status($post_id);
+            if ($post_status === 'future') {
                 continue;
             }
             
